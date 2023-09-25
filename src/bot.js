@@ -710,9 +710,9 @@ console.log(message.attachments)
 
                     return 'Message has been sent.';
                 } else if (functionName === 'read_file') {
-                    let attachment = message.attachments.find(attachment => attachment.name === parameters.filename);
+                    let attachment = message.attachments.filter(attachment => attachment.name === parameters.filename).first();
 
-                    if (!attachment) return 'File not found.';
+                    if (!attachment?.id) return 'File not found.';
 
                     let file = await axios.get(attachment.url).catch(() => null);
 
