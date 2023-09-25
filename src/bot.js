@@ -419,7 +419,7 @@ client.on('interactionCreate', async interaction => {
 
                     messages.push({
                         role: msg.author.id === client.user.id ? 'assistant' : 'user',
-                        content: msg.author.id === client.user.id ? msg.content : `User: ${msg.member?.displayName ?? msg.author.displayName} (mention: <@${msg.author.id}>)${msg.member ? `\nUser Roles: ${msg.member.roles.cache.map(role => `@${role.name}`).join(', ')}` : ''}${reply ? `\nReplied Message Author:\n${reply.member?.displayName ?? reply.author.displayName}\nReplied Message:\n${reply.cleanContent}` : ''}\nMessage:\n${msg.cleanContent}`,
+                        content: msg.author.id === client.user.id ? msg.content : `User: ${msg.member?.displayName ?? msg.author.displayName} (mention: <@${msg.author.id}>)${msg.member ? `\nUser Roles: ${msg.member.roles.cache.map(role => `@${role.name}`).join(', ')}` : ''}${reply ? `\nReplied Message Author:\n${reply.member?.displayName ?? reply.author.displayName}\nReplied Message:\n${reply.cleanContent}` : ''}${msg.attachments.size > 0 ? `\nMessage Attachments: ${msg.attachments.map(attachment => `${attachment.url} (${attachment.name}, ${attachment.description ?? 'no description'})`).join(', ')}` : ''}\nMessage:\n${msg.cleanContent}`,
                         name: msg.author.id
                     });
                 };
@@ -445,10 +445,10 @@ client.on('interactionCreate', async interaction => {
             let reply;
 
             if (message.reference?.messageId) reply = await message.fetchReference();
-console.log(message.attachments)
+
             messages.push({
                 role: 'user',
-                content: `User: ${message.member?.displayName ?? message.author.displayName} (mention: <@${message.author.id}>)${message.member ? `\nUser Roles: ${message.member.roles.cache.map(role => `@${role.name}`).join(', ')}` : ''}${reply ? `\nReplied Message Author:\n${reply.member?.displayName ?? reply.author.displayName}\nReplied Message:\n${reply.cleanContent}` : ''}${message.attachments.size > 0 ? `\nMessage Attachments: ${message.attachments.map(attachment => `${attachment.name} (${attachment.description ?? 'No description'})`).join(', ')}` : ''}\nMessage:\n${message.type === MessageType.UserJoin ? 'User has been joined to the server.' : message.cleanContent}`,
+                content: `User: ${message.member?.displayName ?? message.author.displayName} (mention: <@${message.author.id}>)${message.member ? `\nUser Roles: ${message.member.roles.cache.map(role => `@${role.name}`).join(', ')}` : ''}${reply ? `\nReplied Message Author:\n${reply.member?.displayName ?? reply.author.displayName}\nReplied Message:\n${reply.cleanContent}` : ''}${message.attachments.size > 0 ? `\nMessage Attachments: ${message.attachments.map(attachment => `${attachment.url} (${attachment.name}, ${attachment.description ?? 'no description'})`).join(', ')}` : ''}\nMessage:\n${message.type === MessageType.UserJoin ? 'User has been joined to the server.' : message.cleanContent}`,
                 name: message.author.id
             });
 
@@ -586,7 +586,7 @@ console.log(message.attachments)
                 },
                 {
                     name: 'read_file',
-                    description: 'Reads a file from the message attachments. You can only read .png, .jpg, .txt and .json files.',
+                    description: 'Reads a file from the message attachments. You can only read .png, .jpg, .txt and .json files. You can use this function to see the sent files.',
                     parameters: {
                         type: 'object',
                         properties: {
@@ -594,12 +594,12 @@ console.log(message.attachments)
                                 type: 'string',
                                 description: 'Can only be "image" or "text". If the extension is .png or .jpg, you should use "image". If the extension is .txt or .json, you should use "text".'
                             },
-                            filename: {
+                            url: {
                                 type: 'string',
-                                description: 'The filename of the file to read.'
+                                description: 'The url of the file to read.'
                             }
                         },
-                        required: ['type', 'filename']
+                        required: ['type', 'url']
                     }
                 }
             ];
@@ -710,10 +710,6 @@ console.log(message.attachments)
 
                     return 'Message has been sent.';
                 } else if (functionName === 'read_file') {
-                    let attachment = message.attachments.filter(attachment => attachment.name === parameters.filename).first();
-
-                    if (!attachment?.id) return 'File not found.';
-
                     let file = await axios.get(attachment.url).catch(() => null);
 
                     if (!file) return 'Failed to read file.';
@@ -744,7 +740,7 @@ console.log(message.attachments)
                         let text = file.data.toString();
 
                         return text.length > 2000 ? `${text.slice(0, 2000)}...` : text;
-                    } else return 'Invalid type.';
+                    } else return 'Invalid file type.';
                 };
             };
 
