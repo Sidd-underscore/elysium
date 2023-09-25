@@ -736,7 +736,7 @@ client.on('interactionCreate', async interaction => {
                             }
                         });
 
-                        return explaination.ok ? explaination.data.result : 'Failed to read image.';
+                        return explaination.status === 200 ? explaination.data.result : 'Failed to read image.';
                     } else if (parameters.type === 'text') {
                         let text = file.data.toString();
 
