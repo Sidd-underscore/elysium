@@ -15,7 +15,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            cd ailand
+            cd elysium
             git pull
             npm install
-            pm2 reload 14
+            pm2 reload 21
