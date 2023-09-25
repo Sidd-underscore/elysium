@@ -1225,6 +1225,7 @@ client.on('interactionCreate', async interaction => {
                     if (response.ok) return respond();
                 };
 
+                /*
                 response = await request({
                     url: 'https://beta.purgpt.xyz/openai/chat/completions',
                     method: RequestMethod.Post,
@@ -1319,314 +1320,28 @@ client.on('interactionCreate', async interaction => {
                     if (response.ok) return respond();
                 };
             };
-
-            response = await request({
-                url: 'https://api.daku.tech/v1/chat/completions',
-                method: RequestMethod.Post,
-                body: {
-                    model: 'gpt-3.5-turbo-16k-0613',
-                    messages: messages,
-                    functions: requestFunctions
-                },
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.DAKU_API_KEY}`
-                }
-            }, {
-                isNotOk: response => console.log('daku is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
-            });
-
-            if (response.ok) {
-                let end = false;
-
-                console.log('Used model', response.body.model, 'daku');
-                console.log('Response', JSON.stringify(response.body, null, 4));
-
-                while (!end) {
-                    let isFunction = response.body?.choices?.[0]?.finish_reason === 'function_call';
-
-                    if (!isFunction) {
-                        end = true;
-
-                        break;
-                    };
-
-                    let usedFunction = response.body.choices[0].message?.function_call;
-                    let functionResponse;
-                    let parameters = {};
-
-                    if (!usedFunction) usedFunction = response.body.choices[0].function_call;
-                    if (usedFunction.arguments) parameters = JSON.parse(usedFunction.arguments);
-
-                    console.log('Function call detected', usedFunction, parameters);
-
-                    if (replied) replied.edit(functionMessage(usedFunction.name));
-                    else replied = await message.reply({
-                        content: functionMessage(usedFunction.name),
-                        allowedMentions: {
-                            roles: [],
-                            repliedUser: message.type === MessageType.UserJoin && guild?.welcomer?.status ? true : false
-                        }
-                    });
-
-                    functionResponse = await useFunction(usedFunction.name, parameters);
-
-                    console.log('Function response', functionResponse);
-
-                    messages.push({
-                        role: 'function',
-                        name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
-                        content: functionResponse
-                    });
-                    messages.push({
-                        role: 'system',
-                        content: 'You will NOT repeat functions.'
-                    });
-                    functions.push({
-                        name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
-                        parameters,
-                        response: functionResponse
-                    });
-
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-
-                    response = await request({
-                        url: 'https://api.daku.tech/v1/chat/completions',
-                        method: RequestMethod.Post,
-                        body: {
-                            model: 'gpt-3.5-turbo-16k-0613',
-                            messages: messages,
-                            functions: requestFunctions
-                        },
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${process.env.DAKU_API_KEY}`
-                        }
-                    }, {
-                        isNotOk: response => console.log('daku is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
-                    });
-
-                    if (!response.ok) {
-                        response.ok = false;
-
-                        break;
-                    };
-                };
-
-                if (response.ok) return respond();
-            };
-
-            response = await request({
-                url: 'https://api.openai.com/v1/chat/completions',
-                method: RequestMethod.Post,
-                body: {
-                    model: 'gpt-3.5-turbo-16k-0613',
-                    messages: messages,
-                    functions: requestFunctions
-                },
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
-                }
-            }, {
-                isNotOk: response => console.log('openai is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
-            });
-
-            if (response.ok) {
-                let end = false;
-
-                console.log('Used model', response.body.model, 'openai');
-                console.log('Response', JSON.stringify(response.body, null, 4));
-
-                while (!end) {
-                    let isFunction = response.body?.choices?.[0]?.finish_reason === 'function_call';
-
-                    if (!isFunction) {
-                        end = true;
-
-                        break;
-                    };
-
-                    let usedFunction = response.body.choices[0].message?.function_call;
-                    let functionResponse;
-                    let parameters = {};
-
-                    if (!usedFunction) usedFunction = response.body.choices[0].function_call;
-                    if (usedFunction.arguments) parameters = JSON.parse(usedFunction.arguments);
-
-                    console.log('Function call detected', usedFunction, parameters);
-
-                    if (replied) replied.edit(functionMessage(usedFunction.name));
-                    else replied = await message.reply({
-                        content: functionMessage(usedFunction.name),
-                        allowedMentions: {
-                            roles: [],
-                            repliedUser: message.type === MessageType.UserJoin && guild?.welcomer?.status ? true : false
-                        }
-                    });
-
-                    functionResponse = await useFunction(usedFunction.name, parameters);
-
-                    console.log('Function response', functionResponse);
-
-                    messages.push({
-                        role: 'function',
-                        name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
-                        content: functionResponse
-                    });
-                    messages.push({
-                        role: 'system',
-                        content: 'You will NOT repeat functions.'
-                    });
-                    functions.push({
-                        name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
-                        parameters,
-                        response: functionResponse
-                    });
-
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-
-                    response = await request({
-                        url: 'https://api.openai.com/v1/chat/completions',
-                        method: RequestMethod.Post,
-                        body: {
-                            model: 'gpt-3.5-turbo-16k-0613',
-                            messages: messages,
-                            functions: requestFunctions
-                        },
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
-                        }
-                    }, {
-                        isNotOk: response => console.log('openai is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
-                    });
-
-                    if (!response.ok) {
-                        response.ok = false;
-
-                        break;
-                    };
-                };
-
-                if (response.ok) return respond();
-            };
-
-            if (mode === 'auto') {
-                response = await request({
-                    url: 'https://galaxyai.onrender.com/v1/chat/completions',
-                    method: RequestMethod.Post,
-                    body: {
-                        model: 'gpt-3.5-turbo-16k',
-                        messages: messages
-                    },
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${process.env.GALAXYAI_API_KEY}`
-                    }
-                }, {
-                    isNotOk: response => console.log('galaxyai is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
-                });
-
-                if (response.ok) {
-                    let end = false;
-
-                    console.log('Used model', response.body.model, 'galaxyai');
-                    console.log('Response', JSON.stringify(response.body, null, 4));
-
-                    while (!end) {
-                        let isFunction = response.body?.choices?.[0]?.finish_reason === 'function_call';
-
-                        if (!isFunction) {
-                            end = true;
-
-                            break;
-                        };
-
-                        let usedFunction = response.body.choices[0].message?.function_call;
-                        let functionResponse;
-                        let parameters = {};
-
-                        if (!usedFunction) usedFunction = response.body.choices[0].function_call;
-                        if (usedFunction.arguments) parameters = JSON.parse(usedFunction.arguments);
-
-                        console.log('Function call detected', usedFunction, parameters);
-
-                        if (replied) replied.edit(functionMessage(usedFunction.name));
-                        else replied = await message.reply({
-                            content: functionMessage(usedFunction.name),
-                            allowedMentions: {
-                                roles: [],
-                                repliedUser: message.type === MessageType.UserJoin && guild?.welcomer?.status ? true : false
-                            }
-                        });
-
-                        functionResponse = await useFunction(usedFunction.name, parameters);
-
-                        console.log('Function response', functionResponse);
-
-                        messages.push({
-                            role: 'function',
-                            name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
-                            content: functionResponse
-                        });
-                        messages.push({
-                            role: 'system',
-                            content: 'You will NOT repeat functions.'
-                        });
-                        functions.push({
-                            name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
-                            parameters,
-                            response: functionResponse
-                        });
-
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-
-                        response = await request({
-                            url: 'https://galaxyai.onrender.com/v1/chat/completions',
-                            method: RequestMethod.Post,
-                            body: {
-                                model: 'gpt-3.5-turbo-16k',
-                                messages: messages
-                            },
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${process.env.GALAXYAI_API_KEY}`
-                            }
-                        }, {
-                            isNotOk: response => console.log('galaxyai is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
-                        });
-
-                        if (!response.ok) {
-                            response.ok = false;
-
-                            break;
-                        };
-                    };
-
-                    if (response.ok) return respond();
-                };
+            */
 
                 response = await request({
-                    url: 'https://beta.purgpt.xyz/openai/chat/completions',
+                    url: 'https://api.daku.tech/v1/chat/completions',
                     method: RequestMethod.Post,
                     body: {
-                        model: 'gpt-3.5-turbo-16k',
+                        model: 'gpt-3.5-turbo-16k-0613',
                         messages: messages,
-                        fallbacks: ['gpt-3.5-turbo']
+                        functions: requestFunctions
                     },
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                        Authorization: `Bearer ${process.env.DAKU_API_KEY}`
                     }
                 }, {
-                    isNotOk: response => console.log('purgpt is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
+                    isNotOk: response => console.log('daku is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
                 });
 
                 if (response.ok) {
                     let end = false;
 
-                    console.log('Used model', response.body.model, 'purgpt');
+                    console.log('Used model', response.body.model, 'daku');
                     console.log('Response', JSON.stringify(response.body, null, 4));
 
                     while (!end) {
@@ -1678,19 +1393,19 @@ client.on('interactionCreate', async interaction => {
                         await new Promise(resolve => setTimeout(resolve, 1000));
 
                         response = await request({
-                            url: 'https://beta.purgpt.xyz/openai/chat/completions',
+                            url: 'https://api.daku.tech/v1/chat/completions',
                             method: RequestMethod.Post,
                             body: {
-                                model: 'gpt-3.5-turbo-16k',
+                                model: 'gpt-3.5-turbo-16k-0613',
                                 messages: messages,
-                                fallbacks: ['gpt-3.5-turbo']
+                                functions: requestFunctions
                             },
                             headers: {
                                 'Content-Type': 'application/json',
-                                Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                                Authorization: `Bearer ${process.env.DAKU_API_KEY}`
                             }
                         }, {
-                            isNotOk: response => console.log('purgpt is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
+                            isNotOk: response => console.log('daku is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
                         });
 
                         if (!response.ok) {
@@ -1702,20 +1417,307 @@ client.on('interactionCreate', async interaction => {
 
                     if (response.ok) return respond();
                 };
-            };
 
-            if (response.ok) return respond();
-            else if (message.mentions.users.has(client.user.id)) return message.reply({
-                content: localize(locale, 'MODELS_DOWN'),
-                allowedMentions: {
-                    roles: [],
-                    repliedUser: false
-                }
-            });
-        } catch (error) {
-            console.log('Error', error);
-        };
-    });
+                response = await request({
+                    url: 'https://api.openai.com/v1/chat/completions',
+                    method: RequestMethod.Post,
+                    body: {
+                        model: 'gpt-3.5-turbo-16k-0613',
+                        messages: messages,
+                        functions: requestFunctions
+                    },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
+                    }
+                }, {
+                    isNotOk: response => console.log('openai is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
+                });
+
+                if (response.ok) {
+                    let end = false;
+
+                    console.log('Used model', response.body.model, 'openai');
+                    console.log('Response', JSON.stringify(response.body, null, 4));
+
+                    while (!end) {
+                        let isFunction = response.body?.choices?.[0]?.finish_reason === 'function_call';
+
+                        if (!isFunction) {
+                            end = true;
+
+                            break;
+                        };
+
+                        let usedFunction = response.body.choices[0].message?.function_call;
+                        let functionResponse;
+                        let parameters = {};
+
+                        if (!usedFunction) usedFunction = response.body.choices[0].function_call;
+                        if (usedFunction.arguments) parameters = JSON.parse(usedFunction.arguments);
+
+                        console.log('Function call detected', usedFunction, parameters);
+
+                        if (replied) replied.edit(functionMessage(usedFunction.name));
+                        else replied = await message.reply({
+                            content: functionMessage(usedFunction.name),
+                            allowedMentions: {
+                                roles: [],
+                                repliedUser: message.type === MessageType.UserJoin && guild?.welcomer?.status ? true : false
+                            }
+                        });
+
+                        functionResponse = await useFunction(usedFunction.name, parameters);
+
+                        console.log('Function response', functionResponse);
+
+                        messages.push({
+                            role: 'function',
+                            name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
+                            content: functionResponse
+                        });
+                        messages.push({
+                            role: 'system',
+                            content: 'You will NOT repeat functions.'
+                        });
+                        functions.push({
+                            name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
+                            parameters,
+                            response: functionResponse
+                        });
+
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+
+                        response = await request({
+                            url: 'https://api.openai.com/v1/chat/completions',
+                            method: RequestMethod.Post,
+                            body: {
+                                model: 'gpt-3.5-turbo-16k-0613',
+                                messages: messages,
+                                functions: requestFunctions
+                            },
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
+                            }
+                        }, {
+                            isNotOk: response => console.log('openai is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
+                        });
+
+                        if (!response.ok) {
+                            response.ok = false;
+
+                            break;
+                        };
+                    };
+
+                    if (response.ok) return respond();
+                };
+
+                if (mode === 'auto') {
+                    response = await request({
+                        url: 'https://galaxyai.onrender.com/v1/chat/completions',
+                        method: RequestMethod.Post,
+                        body: {
+                            model: 'gpt-3.5-turbo-16k',
+                            messages: messages
+                        },
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${process.env.GALAXYAI_API_KEY}`
+                        }
+                    }, {
+                        isNotOk: response => console.log('galaxyai is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
+                    });
+
+                    if (response.ok) {
+                        let end = false;
+
+                        console.log('Used model', response.body.model, 'galaxyai');
+                        console.log('Response', JSON.stringify(response.body, null, 4));
+
+                        while (!end) {
+                            let isFunction = response.body?.choices?.[0]?.finish_reason === 'function_call';
+
+                            if (!isFunction) {
+                                end = true;
+
+                                break;
+                            };
+
+                            let usedFunction = response.body.choices[0].message?.function_call;
+                            let functionResponse;
+                            let parameters = {};
+
+                            if (!usedFunction) usedFunction = response.body.choices[0].function_call;
+                            if (usedFunction.arguments) parameters = JSON.parse(usedFunction.arguments);
+
+                            console.log('Function call detected', usedFunction, parameters);
+
+                            if (replied) replied.edit(functionMessage(usedFunction.name));
+                            else replied = await message.reply({
+                                content: functionMessage(usedFunction.name),
+                                allowedMentions: {
+                                    roles: [],
+                                    repliedUser: message.type === MessageType.UserJoin && guild?.welcomer?.status ? true : false
+                                }
+                            });
+
+                            functionResponse = await useFunction(usedFunction.name, parameters);
+
+                            console.log('Function response', functionResponse);
+
+                            messages.push({
+                                role: 'function',
+                                name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
+                                content: functionResponse
+                            });
+                            messages.push({
+                                role: 'system',
+                                content: 'You will NOT repeat functions.'
+                            });
+                            functions.push({
+                                name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
+                                parameters,
+                                response: functionResponse
+                            });
+
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+
+                            response = await request({
+                                url: 'https://galaxyai.onrender.com/v1/chat/completions',
+                                method: RequestMethod.Post,
+                                body: {
+                                    model: 'gpt-3.5-turbo-16k',
+                                    messages: messages
+                                },
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    Authorization: `Bearer ${process.env.GALAXYAI_API_KEY}`
+                                }
+                            }, {
+                                isNotOk: response => console.log('galaxyai is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
+                            });
+
+                            if (!response.ok) {
+                                response.ok = false;
+
+                                break;
+                            };
+                        };
+
+                        if (response.ok) return respond();
+                    };
+
+                    response = await request({
+                        url: 'https://beta.purgpt.xyz/openai/chat/completions',
+                        method: RequestMethod.Post,
+                        body: {
+                            model: 'gpt-3.5-turbo-16k',
+                            messages: messages,
+                            fallbacks: ['gpt-3.5-turbo']
+                        },
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                        }
+                    }, {
+                        isNotOk: response => console.log('purgpt is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
+                    });
+
+                    if (response.ok) {
+                        let end = false;
+
+                        console.log('Used model', response.body.model, 'purgpt');
+                        console.log('Response', JSON.stringify(response.body, null, 4));
+
+                        while (!end) {
+                            let isFunction = response.body?.choices?.[0]?.finish_reason === 'function_call';
+
+                            if (!isFunction) {
+                                end = true;
+
+                                break;
+                            };
+
+                            let usedFunction = response.body.choices[0].message?.function_call;
+                            let functionResponse;
+                            let parameters = {};
+
+                            if (!usedFunction) usedFunction = response.body.choices[0].function_call;
+                            if (usedFunction.arguments) parameters = JSON.parse(usedFunction.arguments);
+
+                            console.log('Function call detected', usedFunction, parameters);
+
+                            if (replied) replied.edit(functionMessage(usedFunction.name));
+                            else replied = await message.reply({
+                                content: functionMessage(usedFunction.name),
+                                allowedMentions: {
+                                    roles: [],
+                                    repliedUser: message.type === MessageType.UserJoin && guild?.welcomer?.status ? true : false
+                                }
+                            });
+
+                            functionResponse = await useFunction(usedFunction.name, parameters);
+
+                            console.log('Function response', functionResponse);
+
+                            messages.push({
+                                role: 'function',
+                                name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
+                                content: functionResponse
+                            });
+                            messages.push({
+                                role: 'system',
+                                content: 'You will NOT repeat functions.'
+                            });
+                            functions.push({
+                                name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
+                                parameters,
+                                response: functionResponse
+                            });
+
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+
+                            response = await request({
+                                url: 'https://beta.purgpt.xyz/openai/chat/completions',
+                                method: RequestMethod.Post,
+                                body: {
+                                    model: 'gpt-3.5-turbo-16k',
+                                    messages: messages,
+                                    fallbacks: ['gpt-3.5-turbo']
+                                },
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                                }
+                            }, {
+                                isNotOk: response => console.log('purgpt is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
+                            });
+
+                            if (!response.ok) {
+                                response.ok = false;
+
+                                break;
+                            };
+                        };
+
+                        if (response.ok) return respond();
+                    };
+                };
+
+                if (response.ok) return respond();
+                else if (message.mentions.users.has(client.user.id)) return message.reply({
+                    content: localize(locale, 'MODELS_DOWN'),
+                    allowedMentions: {
+                        roles: [],
+                        repliedUser: false
+                    }
+                });
+            } catch (error) {
+                console.log('Error', error);
+            };
+        });
 
 app.get('/verify', async (req, res) => {
     let key = req.headers.authorization;
