@@ -711,7 +711,9 @@ client.on('interactionCreate', async interaction => {
 
                     return 'Message has been sent.';
                 } else if (functionName === 'read_file') {
-                    let file = await axios.get(parameters.url).catch(() => null);
+                    let file = await axios.get(parameters.url, {
+                        responseType: 'arraybuffer'
+                    }).catch(() => null);
 
                     if (!file) return 'Failed to read file.';
 
