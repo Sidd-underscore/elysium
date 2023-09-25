@@ -299,7 +299,7 @@ client.on('interactionCreate', async interaction => {
 
                 if (Array.isArray(choicesMessage)) choicesMessage = choicesMessage[0];
 
-                let respondMessage = (choicesMessage ?? 'An error occured, please try again later.').replace(/(User:(\n| ).*|)(\nUser Roles:(\n| ).*|)(\nReplied Message Author:(\n| ).*|)(\nReplied Message:(\n| ).*|)(\nMessage:(\n| )|)/g, '')
+                let respondMessage = (choicesMessage ?? 'An error occured, please try again later.').replace(/(User:(\n| ).*|)(\nUser Roles:(\n| ).*|)(\nReplied Message Author:(\n| ).*|)(\nReplied Message:(\n| ).*|)(\nMessage Attachments:(\n| ).*|)(\nMessage:(\n| )|)/g, '')
 
                 if (functions.length > 0) {
                     await db.set(`functions.${message.id}`, functions);
@@ -448,7 +448,7 @@ client.on('interactionCreate', async interaction => {
 
             messages.push({
                 role: 'user',
-                content: `User: ${message.member?.displayName ?? message.author.displayName} (mention: <@${message.author.id}>)${message.member ? `\nUser Roles: ${message.member.roles.cache.map(role => `@${role.name}`).join(', ')}` : ''}${reply ? `\nReplied Message Author:\n${reply.member?.displayName ?? reply.author.displayName}\nReplied Message:\n${reply.cleanContent}` : ''}\nMessage:\n${message.type === MessageType.UserJoin ? 'User has been joined to the server.' : message.cleanContent}`,
+                content: `User: ${message.member?.displayName ?? message.author.displayName} (mention: <@${message.author.id}>)${message.member ? `\nUser Roles: ${message.member.roles.cache.map(role => `@${role.name}`).join(', ')}` : ''}${reply ? `\nReplied Message Author:\n${reply.member?.displayName ?? reply.author.displayName}\nReplied Message:\n${reply.cleanContent}` : ''}${message.attachments.size > 0 ? `\nMessage Attachments: ${message.attachments.map(attachment => `${attachment.name} (${attachment.description ?? 'No description'})`).join(', ')}` : ''}\nMessage:\n${message.type === MessageType.UserJoin ? 'User has been joined to the server.' : message.cleanContent}`,
                 name: message.author.id
             });
 
@@ -583,6 +583,24 @@ client.on('interactionCreate', async interaction => {
                         },
                         required: ['message']
                     }
+                },
+                {
+                    name: 'read_file',
+                    description: 'Reads a file from the message attachments. You can only read .png, .jpg, .txt and .json files.',
+                    parameters: {
+                        type: 'object',
+                        properties: {
+                            type: {
+                                type: 'string',
+                                description: 'Can only be "image" or "text". If the extension is .png or .jpg, you should use "image". If the extension is .txt or .json, you should use "text".'
+                            },
+                            filename: {
+                                type: 'string',
+                                description: 'The filename of the file to read.'
+                            }
+                        },
+                        required: ['type', 'filename']
+                    }
                 }
             ];
             let replied;
@@ -609,6 +627,8 @@ client.on('interactionCreate', async interaction => {
                         return 'Searching server members...';
                     case 'send_dm':
                         return 'Sending direct message...';
+                    case 'read_file':
+                        return 'Reading file...';
                     default:
                         return 'Calling function...';
                 };
@@ -689,6 +709,42 @@ client.on('interactionCreate', async interaction => {
                     }).catch(error => console.log(error));
 
                     return 'Message has been sent.';
+                } else if (functionName === 'read_file') {
+                    let attachment = message.attachments.find(attachment => attachment.name === parameters.filename);
+
+                    if (!attachment) return 'File not found.';
+
+                    let file = await axios.get(attachment.url).catch(() => null);
+
+                    if (!file) return 'Failed to read file.';
+
+                    if (parameters.type === 'image') {
+                        let image = await sharp(file.data)
+                            .resize(200)
+                            .png({
+                                compressionLevel: 4,
+                                quality: 70
+                            })
+                            .toBuffer()
+
+                        if (!image) return 'Failed to read image.';
+
+                        let explaination = response = await axios.post('https://beta.purgpt.xyz/hugging-face/images/explain', {
+                            model: 'blip-image-captioning-large',
+                            image: image.toString('base64')
+                        }, {
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                            }
+                        });
+
+                        return explaination.ok ? explaination.data.result : 'Failed to read image.';
+                    } else if (parameters.type === 'text') {
+                        let text = file.data.toString();
+
+                        return text.length > 2000 ? `${text.slice(0, 2000)}...` : text;
+                    } else return 'Invalid type.';
                 };
             };
 
