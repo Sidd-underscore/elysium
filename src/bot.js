@@ -726,8 +726,6 @@ client.on('interactionCreate', async interaction => {
                             })
                             .toBuffer()
 
-                        if (!image) return 'Failed to read image.';
-
                         let explaination = response = await axios.post('https://beta.purgpt.xyz/hugging-face/images/explain', {
                             model: 'blip-image-captioning-large',
                             image: image.toString('base64')
