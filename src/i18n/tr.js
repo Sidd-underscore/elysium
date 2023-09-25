@@ -36,7 +36,7 @@ module.exports = {
     BUY_ON_GITHUB: 'GitHub üzerinden satın al ($2/ay)',
     BUY_ON_SERVER: 'Discord Sunucusu üzerinden satın al (1 ay için 2.99$)',
     BUY_NOW: 'Şimdi satın al!',
-    NOT_VERIFIED: 'Hop, dur bakalım! Sanırım buralarda yenisin, değil mi? Lütfen önce hesabını doğrula.',
+    NOT_VERIFIED: 'Hop, dur bakalım! Sanırım buralarda yenisin, değil mi? Lütfen önce hesabını doğrula.\n\n**NOT:** Eğer zaten doğruladıysanız, bunun için çok üzgünüz. Bazı sorunlar nedeniyle veritabanını sıfırlamak zorunda kaldık. Lütfen tekrar doğrulayın.',
     VERIFY_NOW: 'Şimdi Doğrula',
     SWITCH_MODEL_SUCCESS: 'Model başarıyla değiştirildi!',
     OWNERS_NOTE: '# Lütfen bunu önce okuyun!\n## Elysium\'un Sahibinden Not\nBildiğiniz gibi birden fazla yapay zeka modeli kullanıyoruz. Bunların çoğu ücretsiz olarak bize geliyor, ancak hepsi değil, özellikle sohbet özelliği.\n\nSohbet özelliğini mümkün olduğunca iyi tutmak istediğimiz için orijinal OpenAI\'yi sohbet özelliği için kullanıyoruz. Ancak OpenAI ücretsiz değil. Bu nedenle sohbet özelliğini canlı tutmamıza yardımcı olmak istiyorsanız, lütfen </premium:1149719096515104901> komutunu kullanarak yalnızca $2/ay premiumumuza göz atın.\n\nDestekleriniz için teşekkürler! Artık bu komutu yeniden deneyebilirsiniz.',

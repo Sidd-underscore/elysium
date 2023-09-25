@@ -36,7 +36,7 @@ module.exports = {
     BUY_ON_GITHUB: 'Buy on GitHub (2$/month)',
     BUY_ON_SERVER: 'Buy on Discord Server (2.99$ for 1 month)',
     BUY_NOW: 'Buy now!',
-    NOT_VERIFIED: 'Hold on! I guess you are new here, right? Please verify your account first.',
+    NOT_VERIFIED: 'Hold on! I guess you are new here, right? Please verify your account first.\n\n**NOTE:** If you already verified, we are so sorry for this. We had to reset database because of some issues. Please verify again.',
     VERIFY_NOW: 'Verify Now',
     SWITCH_MODEL_SUCCESS: 'Model switched successfully!',
     OWNERS_NOTE: '# Please read this before!\n## A Note From Elysium\'s Owner\nWell, as you know we are using multiple AI models. Most of them coming us free but not all of them, especially the chat feature.\n\nWe are using original OpenAI for chat feature because we want to keep the chat experience as good as possible. However, OpenAI is not free. So if you want to help us keep the chat feature alive, please take a look for our only 2$/month premium by using </premium:1149719096515104901> command.\n\nThanks for your support! You can now retry this command.',
