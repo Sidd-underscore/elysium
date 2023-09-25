@@ -445,7 +445,7 @@ client.on('interactionCreate', async interaction => {
             let reply;
 
             if (message.reference?.messageId) reply = await message.fetchReference();
-
+console.log(message.attachments)
             messages.push({
                 role: 'user',
                 content: `User: ${message.member?.displayName ?? message.author.displayName} (mention: <@${message.author.id}>)${message.member ? `\nUser Roles: ${message.member.roles.cache.map(role => `@${role.name}`).join(', ')}` : ''}${reply ? `\nReplied Message Author:\n${reply.member?.displayName ?? reply.author.displayName}\nReplied Message:\n${reply.cleanContent}` : ''}${message.attachments.size > 0 ? `\nMessage Attachments: ${message.attachments.map(attachment => `${attachment.name} (${attachment.description ?? 'No description'})`).join(', ')}` : ''}\nMessage:\n${message.type === MessageType.UserJoin ? 'User has been joined to the server.' : message.cleanContent}`,
