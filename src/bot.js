@@ -726,7 +726,7 @@ client.on('interactionCreate', async interaction => {
                             })
                             .toBuffer()
 
-                        let explaination = response = await axios.post('https://beta.purgpt.xyz/hugging-face/images/explain', {
+                        let explaination = await axios.post('https://beta.purgpt.xyz/hugging-face/images/explain', {
                             model: 'blip-image-captioning-large',
                             image: image.toString('base64')
                         }, {
@@ -735,8 +735,6 @@ client.on('interactionCreate', async interaction => {
                                 Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
                             }
                         });
-
-                        console.log('Image explaination', explaination);
 
                         return explaination.ok ? explaination.data.result : 'Failed to read image.';
                     } else if (parameters.type === 'text') {
