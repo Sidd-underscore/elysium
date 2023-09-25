@@ -12,6 +12,7 @@ const EmbedMaker = require('./modules/embed');
 const express = require('express');
 const { execSync } = require('node:child_process');
 const { IpFilter } = require('express-ipfilter');
+const sharp = require('sharp');
 
 const client = new Client({
     intents: [
