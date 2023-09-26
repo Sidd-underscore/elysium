@@ -845,7 +845,7 @@ client.on('interactionCreate', async interaction => {
                             Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
                         }
                     }, {
-                        isOk: response => console.log('Function call OK', JSON.stringify(response.body, null, 4)),
+                        isOk: response => console.log('used openai as fallback', JSON.stringify(response.body, null, 4)),
                         isNotOk: response => console.log(JSON.stringify(response.body, null, 4))
                     });
 
