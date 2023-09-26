@@ -832,6 +832,23 @@ client.on('interactionCreate', async interaction => {
                         isNotOk: response => console.log(JSON.stringify(response.body, null, 4))
                     });
 
+                                                            if (!response.ok || !response?.body?.choices?.[0]?.message?.content) response = await request({
+                        url: 'https://api.openai.com/v1/chat/completions',
+                        method: RequestMethod.Post,
+                        body: {
+                            model: 'gpt-4-0613',
+                            messages: messages,
+                            functions: requestFunctions
+                        },
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
+                        }
+                    }, {
+                        isOk: response => console.log('Function call OK', JSON.stringify(response.body, null, 4)),
+                        isNotOk: response => console.log(JSON.stringify(response.body, null, 4))
+                    });
+
                     if (!response.ok) {
                         response.ok = false;
 
