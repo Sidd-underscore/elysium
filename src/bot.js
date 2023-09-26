@@ -688,6 +688,20 @@ client.on('interactionCreate', async interaction => {
                         }
                     });
 
+                    if (!results.ok) results = await request({
+                        url: 'https://beta.purgpt.xyz/hugging-face/images/generations',
+                        method: RequestMethod.Post,
+                        body: {
+                            model: 'stable-diffusion-1.5',
+                            prompt: parameters.prompt,
+                            n: parameters.count ?? 1
+                        },
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                        }
+                    });
+
                     if (results.ok) files = files.concat(results.body.data.map(image => image.url));
 
                     return results.ok ? 'Your image has been drawn and will be sent along with your message.' : 'Function call failed.';
