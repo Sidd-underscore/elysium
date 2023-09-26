@@ -736,11 +736,11 @@ client.on('interactionCreate', async interaction => {
                             }
                         });
 
-                        return explaination.status === 200 ? explaination.data.result : 'Failed to read image.';
+                        return 'Image content: ' + explaination.status === 200 ? explaination.data.result : 'Failed to read image.';
                     } else if (parameters.type === 'text') {
                         let text = file.data.toString();
 
-                        return text.length > 2000 ? `${text.slice(0, 2000)}...` : text;
+                        return 'File content: ' + text.length > 2000 ? `${text.slice(0, 2000)}...` : text;
                     } else return 'Invalid file type.';
                 };
             };
