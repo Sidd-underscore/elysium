@@ -43,7 +43,7 @@ module.exports = {
             embeds: [
                 new EmbedMaker(interaction.client)
                 .setTitle(localize(locale, 'PERSONAL_ACCOUNT'))
-                .setDescription(`- **${localize(locale, 'USAGE')}:** ${user.usage}/${!user.tier ? 50 : user.tier === 1 ? 100 : user.tier === 2 ? 200 : '∞'}\n- **${localize(locale, 'BONUS')}:** ${user.bonus}\n- **${localize(locale, 'TIER')}:** ${user.tier ?? localize(locale, 'FREE')}\n- **${localize(locale, 'IMAGE_EDITS')}:** ${user.imageEdits ? '✅' : '❌'}\n- **${localize(locale, 'GPT4')}:** ${user.gpt4 ? '✅' : '❌'}\n- **${localize(locale, 'GIFTS')}:** ${user.gifts.length ? user.gifts.map(gift => `||\`${gift}\`||`).join(', ') : localize(locale, 'NONE')}`)
+                .setDescription(`- **${localize(locale, 'USAGE')}:** ${user.usage}/${!user.tier ? 50 : user.tier === 1 ? 100 : user.tier === 2 ? 200 : '∞'}\n- **${localize(locale, 'BONUS')}:** ${user.bonus}\n- **${localize(locale, 'TIER')}:** ${user.tier ?? localize(locale, 'FREE')}\n- **${localize(locale, 'GPT4')}:** ${user.gpt4 ? '✅' : '❌'}\n- **${localize(locale, 'GIFTS')}:** ${user.gifts.length ? user.gifts.map(gift => `||\`${gift}\`||`).join(', ') : localize(locale, 'NONE')}`)
             ]
         });
     }
