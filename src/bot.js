@@ -661,29 +661,31 @@ client.on('interactionCreate', async interaction => {
             let replied;
 
             function functionMessage(functionName) {
+                let responseMessage = response.body?.choices?.[0]?.message?.content;
+
                 switch (functionName) {
                     case 'fetch_channels':
-                        return 'Fethcing server channels...';
+                        return responseMessage ? `${responseMessage} **(Fethcing server channels...)**` : 'Fethcing server channels...';
                     case 'fetch_roles':
-                        return 'Fetching server roles...';
+                        return responseMessage ? `${responseMessage} **(Fethcing server roles...)**` : 'Fetching server roles...';
                     case 'fetch_emojis':
-                        return 'Fetching server emojis...';
+                        return responseMessage ? `${responseMessage} **(Fethcing server emojis...)**` : 'Fetching server emojis...';
                     case 'fetch_pins':
-                        return 'Fetching channel pins...';
+                        return responseMessage ? `${responseMessage} **(Fethcing channel pins...)**` : 'Fetching channel pins...';
                     case 'web_search':
-                        return 'Searching on Google...';
+                        return responseMessage ? `${responseMessage} **(Searching on Google...)**` : 'Searching on Google...';
                     case 'ai_tools':
-                        return 'Searching AI tools...';
+                        return responseMessage ? `${responseMessage} **(Searching AI tools...)**` : 'Searching AI tools...';
                     case 'draw_image':
-                        return 'Drawing image...';
+                        return responseMessage ? `${responseMessage} **(Drawing image...)**` : 'Drawing image...';
                     case 'react_message':
-                        return 'Reacting to message...';
+                        return responseMessage ? `${responseMessage} **(Reacting to message...)**` : 'Reacting to message...';
                     case 'member_mention':
-                        return 'Searching server members...';
+                        return responseMessage ? `${responseMessage} **(Searching server members...)**` : 'Searching server members...';
                     case 'send_dm':
-                        return 'Sending direct message...';
+                        return responseMessage ? `${responseMessage} **(Sending direct message...)**` : 'Sending direct message...';
                     case 'read_file':
-                        return 'Reading file...';
+                        return responseMessage ? `${responseMessage} **(Reading file...)**` : 'Reading file...';
                     default:
                         return 'Calling function...';
                 };
