@@ -1120,9 +1120,8 @@ client.on('interactionCreate', async interaction => {
                     if (response.ok) return respond();
                 };
 
-                /*
                 response = await request({
-                    url: 'https://ktcwfz-8000.csb.app/api/v2/chat/completions',
+                    url: 'https://testapi.personalapi.repl.co/v1/chat/completions',
                     method: RequestMethod.Post,
                     body: {
                         model: 'gpt-4',
@@ -1191,7 +1190,7 @@ client.on('interactionCreate', async interaction => {
                         await new Promise(resolve => setTimeout(resolve, 1000));
 
                         response = await request({
-                            url: 'https://ktcwfz-8000.csb.app/api/v2/chat/completions',
+                            url: 'https://testapi.personalapi.repl.co/v1/chat/completions',
                             method: RequestMethod.Post,
                             body: {
                                 model: 'gpt-4',
@@ -1214,7 +1213,6 @@ client.on('interactionCreate', async interaction => {
 
                     if (response.ok) return respond();
                 };
-                */
 
                 response = await request({
                     url: 'https://thirdparty.webraft.in/v1/chat/completions',
