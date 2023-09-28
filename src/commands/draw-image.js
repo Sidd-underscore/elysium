@@ -84,7 +84,7 @@ module.exports = {
         };
         let locale = interaction.locale;
 
-        if (user.usage >= 25 && !user.premium) return interaction.editReply(localize(locale, 'LIMIT_REACHED', 25));
+        
 
         async function respond() {
             await interaction.editReply({

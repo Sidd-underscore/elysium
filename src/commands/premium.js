@@ -24,16 +24,8 @@ module.exports = {
             embeds: [
                 new EmbedMaker(interaction.client)
                 .setTitle(`${emojis.premium} Premium`)
-                .setDescription(localize(locale, 'PREMIUM_DESCRIPTION'))
+                .setDescription(localize(locale, 'TIER_LIST'))
                 .setFields(
-                    {
-                        name: localize(locale, 'WHAT_WILL_YOU_GET'),
-                        value: localize(locale, 'PREMIUM_PERKS')
-                    },
-                    {
-                        name: `${emojis.premium} ${localize(locale, 'BUY_NOW')}`,
-                        value: `- [${localize(locale, 'BUY_ON_GITHUB')}](https://github.com/sponsors/Tolga1452/sponsorships?sponsor=Tolga1452&tier_id=316102&preview=false)\n- [${localize(locale, 'BUY_ON_SERVER')}](${isInDEH ? 'https://discord.com/channels/1089540433010491392/shop/1151516725070807070' : 'https://discord.gg/experiments'})`
-                    },
                     {
                         name: localize(locale, 'SHOULD_I_DO_ANYTHING'),
                         value: localize(locale, 'CONTACT_TOLGCHU')

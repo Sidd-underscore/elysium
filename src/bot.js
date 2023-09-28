@@ -144,6 +144,42 @@ client.on('interactionCreate', async interaction => {
             });
         };
 
+        if (['ask', 'draw-image', 'explain-image', 'server-wizard', 'speak'].includes(interaction.commandName)) {
+            let user = await db.get(`users.${interaction.user.id}`) ?? {
+                usage: 0,
+                tier: 0,
+                bonus: 0
+            };
+
+            if (!user.bonus) user.bonus = 0;
+            if (!user.tier) user.tier = 0;
+            if (user.bonus > 0) {
+                user.bonus--;
+
+                await db.set(`users.${interaction.user.id}.bonus`, user.bonus);
+            } else if (user.tier === 0 && user.usage > 50) return interaction.reply({
+                content: localize(interaction.locale, 'LIMIT_REACHED', 50),
+                ephemeral: true
+            });
+            else if (user.tier === 1 && user.usage > 100) return interaction.reply({
+                content: localize(interaction.locale, 'LIMIT_REACHED', 100),
+                ephemeral: true
+            });
+            else if (user.tier === 2 && user.usage > 250) return interaction.reply({
+                content: localize(interaction.locale, 'LIMIT_REACHED', 250),
+                ephemeral: true
+            });
+            else if (user.tier === 3 && user.usage > 500) return interaction.reply({
+                content: localize(interaction.locale, 'LIMIT_REACHED', 500),
+                ephemeral: true
+            });
+            else {
+                user.usage++;
+
+                await db.set(`users.${interaction.user.id}.usage`, user.usage);
+            };
+        };
+
         try {
             await command.execute(interaction);
         } catch (error) {
@@ -231,7 +267,9 @@ client.on('interactionCreate', async interaction => {
                 saveChatHistory: true,
                 chats: {
                     elysium: []
-                }
+                },
+                tier: 0,
+                bonus: 0
             };
             let mode = user.mode ?? 'auto';
             let personalityId = user.personality ?? 'elysium';
@@ -251,18 +289,6 @@ client.on('interactionCreate', async interaction => {
 
             console.log('message received:', message.content);
 
-            if (user.usage >= 25 && !user.premium) {
-                if ((message.mentions.users.has(client.user.id) || message.content.toLowerCase().includes('elysium')) || (guild?.aiChannel?.status && guild?.aiChannel?.channel === message.channelId)) return message.reply({
-                    content: localize(locale, 'LIMIT_REACHED', 25),
-                    allowedMentions: {
-                        roles: [],
-                        repliedUser: false
-                    }
-                });
-
-                return;
-            };
-
             if (((message.mentions.users.has(client.user.id) || message.content.toLowerCase().includes('elysium')) || (guild?.aiChannel?.status && guild?.aiChannel?.channel === message.channelId) || !message.guild) && !(await db.has(`users.${message.author.id}.verified`))) return message.reply({
                 content: localize(locale, 'NOT_VERIFIED'),
                 components: [
@@ -275,6 +301,28 @@ client.on('interactionCreate', async interaction => {
                         )
                 ]
             }).catch(error => console.log(error));
+
+            if (!user.bonus) user.bonus = 0;
+            if (!user.tier) user.tier = 0;
+            if (user.bonus > 0) {
+            } else if (user.tier === 0 && user.usage > 50) return message.reply({
+                content: localize('en-US', 'LIMIT_REACHED', 50),
+                ephemeral: true
+            });
+            else if (user.tier === 1 && user.usage > 100) return message.reply({
+                content: localize('en-US', 'LIMIT_REACHED', 100),
+                ephemeral: true
+            });
+            else if (user.tier === 2 && user.usage > 250) return message.reply({
+                content: localize('en-US', 'LIMIT_REACHED', 250),
+                ephemeral: true
+            });
+            else if (user.tier === 3 && user.usage > 500) return message.reply({
+                content: localize('en-US', 'LIMIT_REACHED', 500),
+                ephemeral: true
+            });
+            else {
+            };
 
             /*
             if (message.mentions.users.has(client.user.id) && !(await db.has(`users.${message.author.id}.dismissed`))) {
@@ -300,7 +348,7 @@ client.on('interactionCreate', async interaction => {
 
                 if (Array.isArray(choicesMessage)) choicesMessage = choicesMessage[0];
 
-                let respondMessage = (choicesMessage ?? 'An error occured, please try again later.').replace(/(User:(\n| ).*|)(\nUser Roles:(\n| ).*|)(\nReplied Message Author:(\n| ).*|)(\nReplied Message:(\n| ).*|)(\nMessage Attachments:(\n| ).*|)(\nMessage:(\n| )|)/g, '')
+                let respondMessage = (choicesMessage ?? 'An error occured, please try again later.').replace(/(User:(\n| ).*|)(\nUser Roles:(\n| ).*|)(\nReplied Message Author:(\n| ).*|)(\nReplied Message:(\n| ).*|)(\nMessage Attachments:(\n| ).*|)(\nMessage:(\n| )|)/g, '').replace('[16K-Optional]', '')
 
                 if (functions.length > 0) {
                     await db.set(`functions.${message.id}`, functions);
@@ -392,9 +440,15 @@ client.on('interactionCreate', async interaction => {
                     await db.set(`users.${message.author.id}.chats.${personalityId}`, messageHistory.splice(0, 100));
                 };
                 if ((message.mentions.users.has(client.user.id) || message.content.toLowerCase().includes('elysium')) || (guild?.randomChat?.status && guild?.randomChat?.channel === message.channelId)) {
-                    user.usage++;
+                    if (user.bonus > 0) {
+                        user.bonus--;
 
-                    db.set(`users.${message.author.id}`, user);
+                        await db.set(`users.${message.author.id}.bonus`, user.bonus);
+                    } else {
+                        user.usage++;
+
+                        await db.set(`users.${message.author.id}.usage`, user.usage);
+                    };
                 };
 
                 let trainingEnabled = await db.get(`training.${message.author.id}`);
@@ -846,7 +900,7 @@ client.on('interactionCreate', async interaction => {
                         isNotOk: response => console.log(JSON.stringify(response.body, null, 4))
                     });
 
-                                                            if (!response.ok || !response?.body?.choices?.[0]?.message?.content) response = await request({
+                    if ((!response.ok || !response?.body?.choices?.[0]?.message?.content) && user.gpt4) response = await request({
                         url: 'https://api.openai.com/v1/chat/completions',
                         method: RequestMethod.Post,
                         body: {
@@ -873,103 +927,103 @@ client.on('interactionCreate', async interaction => {
                 if (response.ok) return respond();
             };
 
-            /*
-            response = await request({
-                url: 'https://api.openai.com/v1/chat/completions',
-                method: RequestMethod.Post,
-                body: {
-                    model: 'gpt-4-0613',
-                    messages: messages,
-                    functions: requestFunctions
-                },
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
-                }
-            }, {
-                isNotOk: response => console.log('openai is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
-            });
+            if (user.gpt4) {
+                response = await request({
+                    url: 'https://api.openai.com/v1/chat/completions',
+                    method: RequestMethod.Post,
+                    body: {
+                        model: 'gpt-4-0613',
+                        messages: messages,
+                        functions: requestFunctions
+                    },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
+                    }
+                }, {
+                    isNotOk: response => console.log('openai is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
+                });
 
-            if (response.ok) {
-                let end = false;
+                if (response.ok) {
+                    let end = false;
 
-                console.log('Used model', response.body.model);
-                console.log('Response', JSON.stringify(response.body, null, 4));
+                    console.log('Used model', response.body.model);
+                    console.log('Response', JSON.stringify(response.body, null, 4));
 
-                while (!end) {
-                    let isFunction = response.body?.choices?.[0]?.finish_reason === 'function_call';
+                    while (!end) {
+                        let isFunction = response.body?.choices?.[0]?.finish_reason === 'function_call';
 
-                    if (!isFunction) {
-                        end = true;
+                        if (!isFunction) {
+                            end = true;
 
-                        break;
+                            break;
+                        };
+
+                        let usedFunction = response.body.choices[0].message?.function_call;
+                        let functionResponse;
+                        let parameters = {};
+
+                        if (!usedFunction) usedFunction = response.body.choices[0].function_call;
+                        if (usedFunction.arguments) parameters = JSON.parse(usedFunction.arguments);
+
+                        console.log('Function call detected', usedFunction, parameters);
+
+                        if (replied) replied.edit(functionMessage(usedFunction.name));
+                        else replied = await message.reply({
+                            content: functionMessage(usedFunction.name),
+                            allowedMentions: {
+                                roles: [],
+                                repliedUser: message.type === MessageType.UserJoin && guild?.welcomer?.status ? true : false
+                            }
+                        });
+
+                        functionResponse = await useFunction(usedFunction.name, parameters);
+
+                        console.log('Function response', functionResponse);
+
+                        messages.push({
+                            role: 'function',
+                            name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
+                            content: functionResponse
+                        });
+                        messages.push({
+                            role: 'system',
+                            content: 'You will NOT repeat functions.'
+                        });
+                        functions.push({
+                            name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
+                            parameters,
+                            response: functionResponse
+                        });
+
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+
+                        response = await request({
+                            url: 'https://api.openai.com/v1/chat/completions',
+                            method: RequestMethod.Post,
+                            body: {
+                                model: 'gpt-4-0613',
+                                messages: messages,
+                                functions: requestFunctions
+                            },
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
+                            }
+                        }, {
+                            isNotOk: response => console.log('openai is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
+                        });
+
+                        if (!response.ok) {
+                            response.ok = false;
+
+                            break;
+                        };
                     };
 
-                    let usedFunction = response.body.choices[0].message?.function_call;
-                    let functionResponse;
-                    let parameters = {};
-
-                    if (!usedFunction) usedFunction = response.body.choices[0].function_call;
-                    if (usedFunction.arguments) parameters = JSON.parse(usedFunction.arguments);
-
-                    console.log('Function call detected', usedFunction, parameters);
-
-                    if (replied) replied.edit(functionMessage(usedFunction.name));
-                    else replied = await message.reply({
-                        content: functionMessage(usedFunction.name),
-                        allowedMentions: {
-                            roles: [],
-                            repliedUser: message.type === MessageType.UserJoin && guild?.welcomer?.status ? true : false
-                        }
-                    });
-
-                    functionResponse = await useFunction(usedFunction.name, parameters);
-
-                    console.log('Function response', functionResponse);
-
-                    messages.push({
-                        role: 'function',
-                        name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
-                        content: functionResponse
-                    });
-                    messages.push({
-                        role: 'system',
-                        content: 'You will NOT repeat functions.'
-                    });
-                    functions.push({
-                        name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
-                        parameters,
-                        response: functionResponse
-                    });
-
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-
-                    response = await request({
-                        url: 'https://api.openai.com/v1/chat/completions',
-                        method: RequestMethod.Post,
-                        body: {
-                            model: 'gpt-4-0613',
-                            messages: messages,
-                            functions: requestFunctions
-                        },
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
-                        }
-                    }, {
-                        isNotOk: response => console.log('openai is dead', response.status, response.statusText, JSON.stringify(response.body, null, 4))
-                    });
-
-                    if (!response.ok) {
-                        response.ok = false;
-
-                        break;
-                    };
+                    if (response.ok) return respond();
                 };
-
-                if (response.ok) return respond();
             };
-            */
 
             if (mode === 'auto') {
                 response = await request({
@@ -1785,7 +1839,7 @@ app.get('/verify', async (req, res) => {
     };
 });
 
-async function runAtMidnight() {
+async function runOnMonday() {
     let users = await db.get('users') ?? {};
 
     for (let user in users) {
@@ -1804,18 +1858,14 @@ async function runAtMidnight() {
 
 function startInterval() {
     const now = new Date();
-    const midnight = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() + 1,
-        0, 0, 0
-    );
-    const timeUntilMidnight = midnight - now;
+    const daysUntilMonday = (8 - now.getUTCDay()) % 7; // Calculate days until next Monday
+    const nextMonday = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + daysUntilMonday, 0, 0, 0);
+    const timeUntilMonday = nextMonday - now;
 
     setTimeout(() => {
-        runAtMidnight();
-        setInterval(runAtMidnight, 24 * 60 * 60 * 1000);
-    }, timeUntilMidnight);
+        runOnMonday();
+        setInterval(runOnMonday, 7 * 24 * 60 * 60 * 1000); // Repeat every 7 days
+    }, timeUntilMonday);
 };
 
 startInterval();

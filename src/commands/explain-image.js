@@ -49,7 +49,7 @@ module.exports = {
         };
         let locale = interaction.locale;
 
-        if (user.usage >= 25 && !user.premium) return interaction.editReply(localize(locale, 'LIMIT_REACHED', 25));
+        
         if (attachment.contentType !== 'image/png' && attachment.contentType !== 'image/jpeg') return interaction.editReply(localize(locale, 'INVALID_IMAGE'));
 
         async function respond() {
@@ -82,9 +82,9 @@ module.exports = {
             responseType: 'arraybuffer'
         });
         let image = await sharp(imageBuffer.data)
-            .resize(200)
+            .resize(256)
             .png({
-                compressionLevel: 4,
+                compressionLevel: 8,
                 quality: 70
             })
             .toBuffer()

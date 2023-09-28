@@ -99,7 +99,7 @@ module.exports = {
             premium: false
         };
 
-        if (user.usage >= 25 && !user.premium) return interaction.editReply(localize(locale, 'LIMIT_REACHED', 25));
+        
         if (subcommand === 'setup-channels') {
             if (!interaction.appPermissions.has('ManageChannels')) return interaction.editReply(localize(locale, 'MISSING_PERMISSION', 'Manage Channels'));
 
