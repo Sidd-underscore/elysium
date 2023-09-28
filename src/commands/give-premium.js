@@ -71,7 +71,7 @@ module.exports = {
 
         let user = interaction.options.getUser('user');
         let github = interaction.options.getString('github');
-        let item = interaction.options.getInteger('tier');
+        let item = interaction.options.getInteger('item');
         let userData = await db.get(`users.${user.id}`) ?? {
             usage: 0,
             tier: 0,
