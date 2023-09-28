@@ -80,17 +80,17 @@ module.exports = {
 
         if (!userData.bonus) userData.bonus = 0;
 
+        console.log(item);
+
         if ([1, 2, 3].includes(item)) {
             userData.tier = item;
 
-            if (item >= 2) userData.imageEdits = true;
             if (item === 3) userData.gpt4 = true;
 
             timer('sendUserMessage', { // 1 month
                 time: 2592000000,
                 callback: async () => {
                     await db.set(`users.${c.userId}.tier`, 0);
-                    await db.set(`users.${c.userId}.imageEdits`, false);
                     await db.set(`users.${c.userId}.gpt4`, false);
                 },
                 userId: ownerId,
