@@ -11,7 +11,7 @@ module.exports = {
     DEVELOPER_ONLY: 'This action can only be performed by the developers of the bot!',
     OUTPUT: 'Output',
     ERROR: 'Error',
-    LIMIT_REACHED: 'You have reached the limit of {{0}} requests per day. You can get premium by using the </premium:1149719096515104901> command to remove this limit.',
+    LIMIT_REACHED: 'You have reached the limit of {{0}} requests per week. You can get premium by using the </premium:1149719096515104901> command to remove this limit.',
     MODELS_DOWN: 'All models we use are currently down. Please try again later and DO NOT ping the developers about this.\n\n## Why this happening?\nFree providers are not stable and our original OpenAI credits are over. You can help us by getting premium. You can get premium by using the </premium:1149719096515104901> command.\n\nThanks for your support!',
     INVALID_RESPONSE: 'AI returned an invalid response. Please try again later.',
     CHANNELS_SETUP: 'Channels setup successfully!',
