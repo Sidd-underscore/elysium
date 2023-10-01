@@ -11,7 +11,7 @@ module.exports = {
     DEVELOPER_ONLY: 'Bu eylem yalnızca botun geliştiricileri tarafından gerçekleştirilebilir!',
     OUTPUT: 'Çıktı',
     ERROR: 'Hata',
-    LIMIT_REACHED: 'Günlük {{0}} istek limitine ulaştınız. Bu limiti kaldırmak için </premium:1149719096515104901> komutunu kullanarak premium alabilirsiniz.',
+    LIMIT_REACHED: 'Haftalık {{0}} istek limitine ulaştınız. Bu limiti kaldırmak için </premium:1149719096515104901> komutunu kullanarak premium alabilirsiniz.',
     MODELS_DOWN: 'Kullandığımız tüm modeller şu anda kapalı. Lütfen daha sonra tekrar deneyin ve bunun hakkında geliştiricileri ETİKETLEMEYİN.\n\n## Neden böyle oluyor?\nÜcretsiz sağlayıcılar stabil değildir ve orijinal OpenAI kredilerimiz bitti. Premium alarak bize yardımcı olabilirsiniz. </premium:1149719096515104901> komutunu kullanarak premium alabilirsiniz.\n\nDestekleriniz için teşekkürler!',
     INVALID_RESPONSE: 'Yapay zeka geçersiz bir yanıt döndürdü. Lütfen daha sonra tekrar deneyin.',
     CHANNELS_SETUP: 'Kanallar başarıyla ayarlandı!',
