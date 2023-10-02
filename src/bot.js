@@ -1851,7 +1851,7 @@ async function runOnMonday() {
     let data = await db.get('trainMessages');
 
     writeFileSync('./trainMessages.json', JSON.stringify((data ?? []), null, 4), 'utf-8');
-    execSync('git add . && git commit -m "Save train messages" && git push');
+    //execSync('git add . && git commit -m "Save train messages" && git push');
 
     console.log('Saved train messages');
 };
