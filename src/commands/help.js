@@ -27,7 +27,7 @@ module.exports = {
         const embed = new EmbedMaker(interaction.client)
             .setTitle(localize(locale, 'HELP_MENU_TITLE'))
             .setDescription(localize(locale, 'LOCALIZATION_PERCENTAGE', locale, getPercentage(locale)))
-            .addFields({
+            .setFields({
                 name: localize(locale, 'CONDITIONS'),
                 value: localize(locale, 'TOS_AND_PRIVACY')
             });
