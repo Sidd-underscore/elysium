@@ -16,15 +16,15 @@ Welcome to Elysium! Elysium is an AI bot designed to enhance your Discord experi
 
 ## 4. Limitation of Liability
 
-5.1. While we strive to provide a reliable and quality service, the Bot is provided "as is" without any warranties. We shall not be liable for any direct or indirect damages arising from the use of the Bot.
+4.1. While we strive to provide a reliable and quality service, the Bot is provided "as is" without any warranties. We shall not be liable for any direct or indirect damages arising from the use of the Bot.
 
 ## 5. Dispute Resolution
 
-6.1. In the event of any disputes or issues related to the Bot, users are encouraged to join our Discord server at https://discord.gg/experiments and use the #feedback channel to report problems or seek assistance.
+5.1. In the event of any disputes or issues related to the Bot, users are encouraged to join our Discord server at https://discord.gg/experiments and use the #feedback channel to report problems or seek assistance.
 
 ## 6. Modifications to the Terms
 
-7.1. We reserve the right to modify or update these Terms at any time. Any changes will be effective immediately upon posting the updated Terms on our [Discord server](https://discord.gg/experiments). Users are responsible for regularly reviewing these Terms for updates.
+6.1. We reserve the right to modify or update these Terms at any time. Any changes will be effective immediately upon posting the updated Terms on our [Discord server](https://discord.gg/experiments). Users are responsible for regularly reviewing these Terms for updates.
 
 ## 7. Conclusion
 
