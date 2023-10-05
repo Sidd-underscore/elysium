@@ -26,7 +26,11 @@ module.exports = {
 
         const embed = new EmbedMaker(interaction.client)
             .setTitle(localize(locale, 'HELP_MENU_TITLE'))
-            .setDescription(localize(locale, 'LOCALIZATION_PERCENTAGE', locale, getPercentage(locale)));
+            .setDescription(localize(locale, 'LOCALIZATION_PERCENTAGE', locale, getPercentage(locale)))
+            .addFields({
+                name: localize(locale, 'CONDITIONS'),
+                value: localize(locale, 'TOS_AND_PRIVACY')
+            });
 
         for (let command of commands) {
             let category = command.category;

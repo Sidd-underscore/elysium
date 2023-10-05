@@ -74,4 +74,6 @@ module.exports = {
     GIFTS: 'Gifts',
     NONE: 'None',
     PROMO_CODE_USED: 'You have successfully used the promo code!',
+    CONDITIONS: 'Conditions',
+    TOS_AND_PRIVACY: 'By using this bot, you agree to our [Terms of Service](https://elysium.tolgchu.xyz/tos) and [Privacy Policy](https://elysium.tolgchu.xyz/privacy).'
 };

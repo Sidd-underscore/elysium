@@ -73,5 +73,7 @@ module.exports = {
     BONUS: 'Kalan Bonus İstekler',
     GIFTS: 'Hediyeler',
     NONE: 'Yok',
-    PROMO_CODE_USED: 'Promosyon kodunu başarıyla kullandınız!'
+    PROMO_CODE_USED: 'Promosyon kodunu başarıyla kullandınız!',
+    CONDITIONS: 'Koşullar',
+    TOS_AND_PRIVACY: 'Bu botu kullanarak, [Kullanım Koşulları](https://elysium.tolgchu.xyz/tos) ve [Gizlilik Politikası](https://elysium.tolgchu.xyz/privacy)\'mızı kabul etmiş olursunuz.'
 };
