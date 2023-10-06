@@ -110,9 +110,7 @@ module.exports = {
                         content: `${question ? `Find the answer of "${question}" question` : 'Summarize'} this page (${url}):\n\n${page}`
                     }
                 ],
-                fallbacks: ['gpt-3.5-turbo'],
-                max_tokens: 1000,
-                maxTokens: 1000
+                fallbacks: ['gpt-3.5-turbo']
             },
             headers: {
                 'Content-Type': 'application/json',

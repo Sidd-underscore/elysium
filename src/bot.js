@@ -694,6 +694,26 @@ client.on('interactionCreate', async interaction => {
                     }
                 }
             ];
+
+            if (user.tier === 3) requestFunctions.push({
+                name: 'summarize_page',
+                description: 'Summarizes a web page. You can use this function to find some information about a web page.',
+                parameters: {
+                    type: 'object',
+                    properties: {
+                        url: {
+                            type: 'string',
+                            description: 'The url of the web page to summarize.'
+                        },
+                        question: {
+                            type: 'string',
+                            description: 'The question to ask about the web page. Don\'t use this parameter if you want to summarize the web page.'
+                        }
+                    },
+                    required: ['url']
+                }
+            });
+
             let replied;
 
             function functionMessage(functionName) {
@@ -722,6 +742,8 @@ client.on('interactionCreate', async interaction => {
                         return responseMessage ? `${responseMessage} **(Sending direct message...)**` : 'Sending direct message...';
                     case 'read_file':
                         return responseMessage ? `${responseMessage} **(Reading file...)**` : 'Reading file...';
+                    case 'summarize_page':
+                        return responseMessage ? `${responseMessage} **(Summarizing web page...)**` : 'Summarizing web page...';
                     default:
                         return 'Calling function...';
                 };
@@ -848,7 +870,37 @@ client.on('interactionCreate', async interaction => {
 
                         return `File content: ${text.length > 2000 ? `${text.slice(0, 2000)}...` : text}`;
                     } else return 'Invalid file type.';
+                } else if (functionName === 'summarize_page') {
+                    let page = (await axios.get(parameters.url, {
+                        responseType: 'text'
+                    })).data;
+
+                    let response;
+
+                    if (page.length > 36000) page = page.slice(0, 36000) + '...';
+
+                    response = await request({
+                        url: 'https://beta.purgpt.xyz/openai/chat/completions',
+                        method: RequestMethod.Post,
+                        body: {
+                            model: 'gpt-3.5-turbo-16k',
+                            messages: [
+                                {
+                                    role: 'user',
+                                    content: `${parameters.question ? `Find the answer of "${parameters.question}" question` : 'Summarize'} this page (${parameters.url}):\n\n${page}`
+                                }
+                            ],
+                            fallbacks: ['gpt-3.5-turbo']
+                        },
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                        }
+                    });
+
+                    return response.ok ? response.body.choices[0].message.content : 'Function call failed.';
                 };
+
             };
 
             response = await request({
