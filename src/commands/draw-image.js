@@ -4,7 +4,6 @@ const { QuickDB } = require("quick.db");
 const { localize } = require("../modules/localization");
 const EmbedMaker = require("../modules/embed");
 const { request, RequestMethod } = require("fetchu.js");
-const { randomItem } = require("@tolga1452/toolbox.js");
 
 const db = new QuickDB();
 
@@ -85,23 +84,23 @@ module.exports = {
         };
         let locale = interaction.locale;
 
-        async function respond(res) {
-            console.log(response.body ?? response);
+        
 
+        async function respond() {
             await interaction.editReply({
-                files: (res ?? response).body.data.map(image => image.url),
+                files: response.body.data.map(image => image.url),
                 embeds: debug ? [
                     new EmbedMaker(interaction.client)
                         .setTitle('Debug')
                         .setFields(
                             {
                                 name: 'Model',
-                                value: (res ?? response).body.model ?? 'Unknown',
+                                value: response.body.model ?? 'Unknown',
                                 inline: true
                             },
                             {
                                 name: 'Provider',
-                                value: (res ?? response).body.provider ?? 'Unknown',
+                                value: response.body.provider ?? 'Unknown',
                                 inline: true
                             }
                         )
@@ -162,7 +161,7 @@ module.exports = {
                     Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
                 }
             });
-
+            
             if (response.ok) return respond();
 
             response = await request({
@@ -193,76 +192,6 @@ module.exports = {
                     Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
                 }
             });
-
-            if (response.ok) return respond();
-
-            let model = randomItem(['6478743e65b8382b26af2722', '64a3f35d9d71c7e4366ef560', '646f101a5bbe174ac6587a6a', '64f1cde7a943d9f46e7da245', '64a3f7af82ced7b15beeb02f', '646f101b5bbe174ac6587a75', '6437d0232c2a7f1ab203fcda', '6437d01e2c2a7f1ab203fcd1', '6437d01b2c2a7f1ab203fcca', '64c06246f56427ea7934179e', '6426f9c60ca4651b98b91a6b', '646f10175bbe174ac6587a53']);
-            console.log(model)
-            response = await axios.post('https://creator.aitubo.ai/api/job/create', JSON.parse(`{\"imagePath\":\"\",\"count\":${count},\"width\":512,\"height\":512,\"guidanceScale\":7,\"steps\":20,\"strength\":0.8,\"controlModel\":\"\",\"prompt\":\"${prompt}\",\"negativePrompt\":\"\",\"modelId\":\"${model}\",\"loras\":[],\"controlStrength\":1,\"scheduler\":\"DPMSolverMultistep\",\"promptOptimizer\":false,\"hdEnhance\":false}`), {
-                headers: {
-                    "accept": "application/json, text/plain, */*",
-                    "accept-language": "en,tr;q=0.9,en-GB;q=0.8,en-US;q=0.7",
-                    "authorization": `Bearer ${process.env.AITUBO_API_KEY}`,
-                    "content-type": "application/json",
-                    "sec-ch-ua": "\"Microsoft Edge\";v=\"119\", \"Chromium\";v=\"119\", \"Not?A_Brand\";v=\"24\"",
-                    "sec-ch-ua-mobile": "?0",
-                    "sec-ch-ua-platform": "\"Windows\"",
-                    "sec-fetch-dest": "empty",
-                    "sec-fetch-mode": "cors",
-                    "sec-fetch-site": "same-site",
-                    "x-app-name": "aitubo-web",
-                    "x-app-version": "1.0.3",
-                    "Referer": "https://app.aitubo.ai/",
-                    "Referrer-Policy": "strict-origin-when-cross-origin"
-                }
-            }).catch(error => error.response);
-
-            console.log(response.data);
-
-            if (response) response.ok = response?.status === 200;
-            if (response && response.ok) {
-                let finished = false;
-                let job = response.data.data.id;
-
-                while (!finished) {
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-
-                    response = await request({
-                        url: `https://creator.aitubo.ai/api/job/get?id=${job}`,
-                        method: RequestMethod.Get
-                    });
-
-                    console.log(response.body);
-
-                    if (!response.ok) {
-                        finished = true;
-
-                        continue;
-                    };
-                    if (response.body.data.status === 3) {
-                        response.ok = false;
-                        finished = true;
-
-                        continue;
-                    };
-                    if (response.body.data.status === 2) {
-                        request.body = {
-                            model,
-                            provider: 'Aitubo',
-                            data: response.body.data.result.data.images.map(image => `${response.body.data.result.data.domain}${image}`)
-                        };
-                        finished = true;
-
-                        return respond({
-                            body: {
-                                model,
-                                provider: 'Aitubo',
-                                data: response.body.data.result.data.images.map(image => `${response.body.data.result.data.domain}${image}`)
-                            }
-                        });
-                    };
-                };
-            };
         };
 
         if (response?.status === 200) return respond();
