@@ -207,9 +207,10 @@ module.exports = {
                 }
             }).catch(() => null);
 
-            response.ok = response?.status === 200;
+            console.log(response.data);
 
-            if (response.ok) {
+            if (response) response.ok = response?.status === 200;
+            if (response && response.ok) {
                 let finished = false;
 
                 while (!finished) {
