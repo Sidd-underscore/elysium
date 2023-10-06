@@ -4,6 +4,7 @@ const { QuickDB } = require("quick.db");
 const { localize } = require("../modules/localization");
 const EmbedMaker = require("../modules/embed");
 const { request, RequestMethod } = require("fetchu.js");
+const { randomItem } = require("@tolga1452/toolbox.js");
 
 const db = new QuickDB();
 
@@ -84,8 +85,6 @@ module.exports = {
         };
         let locale = interaction.locale;
 
-        
-
         async function respond() {
             await interaction.editReply({
                 files: response.body.data.map(image => image.url),
@@ -161,7 +160,7 @@ module.exports = {
                     Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
                 }
             });
-            
+
             if (response.ok) return respond();
 
             response = await request({
@@ -192,6 +191,63 @@ module.exports = {
                     Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
                 }
             });
+
+            if (response.ok) return respond();
+
+            let model = randomItem(['6478743e65b8382b26af2722', '64a3f35d9d71c7e4366ef560', '646f101a5bbe174ac6587a6a', '64f1cde7a943d9f46e7da245', '64a3f7af82ced7b15beeb02f', '646f101b5bbe174ac6587a75', '646f10165bbe174ac6587a44', '6437d0232c2a7f1ab203fcda', '64c16efe04d57a6438e4e045', '6437d01e2c2a7f1ab203fcd1', '6437d01b2c2a7f1ab203fcca', '64c06246f56427ea7934179e', '6426f9c60ca4651b98b91a6b', '646f10175bbe174ac6587a53']);
+
+            response = await request({
+                url: 'https://creator.aitubo.ai/api/job/create',
+                method: RequestMethod.Post,
+                body: {
+                    prompt,
+                    modelId: model
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                }
+            }, {
+                isNotOk: response => console.log(response.body)
+            });
+
+            if (response.ok) {
+                let finished = false;
+
+                while (!finished) {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+
+                    response = await request({
+                        url: `https://creator.aitubo.ai/api/job/get?id=${response.body.data.id}`,
+                        method: RequestMethod.Get,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        finished = true;
+
+                        continue;
+                    };
+                    if (response.body.data.status === 3) {
+                        finished = true;
+
+                        continue;
+                    };
+                    if (response.body.data.status === 2) {
+                        request.body = {
+                            model,
+                            provider: 'Aitubo',
+                            data: response.body.data.result.data.images.map(image => `${response.body.data.result.data.domain}${image}`)
+                        };
+                        finished = true;
+
+                        continue;
+                    };
+                };
+            };
         };
 
         if (response?.status === 200) return respond();
