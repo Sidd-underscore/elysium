@@ -201,7 +201,7 @@ module.exports = {
                 controlModel: 'checkpoint',
                 modelId: model,
                 count: count,
-                imagePath: null
+                imagePath: ''
             }, {
                 headers: {
                     'Content-Type': 'application/json',
