@@ -194,7 +194,7 @@ module.exports = {
 
             if (response.ok) return respond();
 
-            let model = randomItem(['AbyssOrangeMix3']);
+            let model = randomItem(['sd_1.5']);
 console.log(model);
             response = await request({
                 url: 'https://creator.aitubo.ai/api/job/create',
