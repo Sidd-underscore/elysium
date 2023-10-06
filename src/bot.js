@@ -1227,7 +1227,7 @@ client.on('interactionCreate', async interaction => {
                 };
 
                 response = await request({
-                    url: 'https://testapi.personalapi.repl.co/v1/chat/completions',
+                    url: 'https://public.personalapi.repl.co/api/v2/chat/completions',
                     method: RequestMethod.Post,
                     body: {
                         model: 'gpt-4',
@@ -1296,7 +1296,7 @@ client.on('interactionCreate', async interaction => {
                         await new Promise(resolve => setTimeout(resolve, 1000));
 
                         response = await request({
-                            url: 'https://testapi.personalapi.repl.co/v1/chat/completions',
+                            url: 'https://public.personalapi.repl.co/api/v2/chat/completions',
                             method: RequestMethod.Post,
                             body: {
                                 model: 'gpt-4',
