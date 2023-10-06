@@ -198,7 +198,7 @@ module.exports = {
 
             response = await axios.post('https://creator.aitubo.ai/api/job/create', {
                 prompt,
-                controlModel: '',
+                controlModel: 'checkpoint',
                 modelId: model,
                 count: count
             }, {
