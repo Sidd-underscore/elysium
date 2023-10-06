@@ -3,6 +3,7 @@ const { request, RequestMethod } = require("fetchu.js");
 const { localize } = require("../modules/localization");
 const { QuickDB } = require("quick.db");
 const { default: axios } = require("axios");
+const EmbedMaker = require("../modules/embed");
 
 const db = new QuickDB();
 
