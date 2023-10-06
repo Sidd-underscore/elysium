@@ -253,7 +253,7 @@ console.log(model)
                         };
                         finished = true;
 
-                        continue;
+                        return respond();
                     };
                 };
             };
