@@ -220,12 +220,13 @@ module.exports = {
             if (response) response.ok = response?.status === 200;
             if (response && response.ok) {
                 let finished = false;
+                let job = response.data.data.id;
 
                 while (!finished) {
                     await new Promise(resolve => setTimeout(resolve, 1000));
 
                     response = await request({
-                        url: `https://creator.aitubo.ai/api/job/get?id=${response.data.data.id}`,
+                        url: `https://creator.aitubo.ai/api/job/get?id=${job}`,
                         method: RequestMethod.Get,
                         headers: {
                             'Content-Type': 'application/json',
