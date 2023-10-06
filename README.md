@@ -1,6 +1,10 @@
-# `discord.js` Bot Template
+# Elysium
 
-This is a template for a Discord bot. It is written in JavaScript and uses the `discord.js` library. It is designed to be easy to use and easy to modify.
+This is the source code for you favorite AI Discord bot. It is written in JavaScript and uses the `discord.js` library. It is designed to be easy to use and easy to modify.
+
+Includes conmands that allow you to generate and explain images, chat with the assistant and set custom personalities, transcribe text into audio, and so much more!
+
+> AI is powered by [PurGPT](https://purgpt.xyz) and Tolgchu's own money (when PurGPT is offline)
 
 ## Features
 
