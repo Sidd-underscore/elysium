@@ -422,7 +422,11 @@ client.on('interactionCreate', async interaction => {
                         repliedUser: message.type === MessageType.UserJoin && guild?.welcomer?.status ? true : respondMessage.includes(`<@${message.author.id}>`)
                     },
                     files: files.splice(0, 10)
-                }).catch(error => console.log('Error while editing replied message:', error));
+                }).catch(error => {
+                    console.log('Error while editing replied message:', error)
+
+                    replied.edit('An error occured while sending the message. Please try again later.').catch(() => null);
+                });
                 else message.reply({
                     content: respondMessage[0],
                     allowedMentions: {
@@ -440,7 +444,11 @@ client.on('interactionCreate', async interaction => {
                             )
                     ] : [],
                     files: files.splice(0, 10)
-                }).catch(error => console.log(error));
+                }).catch(error => {
+                    console.log(error);
+
+                    message.reply('An error occured while sending the message. Please try again later.').catch(() => null);
+                });
                 if (respondMessage.length > 1) {
                     for (let i = 1; i < respondMessage.length; i++) {
                         await new Promise(resolve => setTimeout(resolve, 1000));
