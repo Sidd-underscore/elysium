@@ -77,4 +77,5 @@ module.exports = {
     CONDITIONS: 'Conditions',
     TOS_AND_PRIVACY: 'By using this bot, you agree to our [Terms of Service](https://elysium.tolgchu.xyz/tos) and [Privacy Policy](https://elysium.tolgchu.xyz/privacy).',
     EARLY_ACCESS: 'This feature is currently in early access. You can get early access by using the </premium:1149719096515104901> command.',
+    INVALID_URL: 'You entered an invalid URL or I am unable to access the URL you entered. Please try again later.',
 };

@@ -871,9 +871,15 @@ client.on('interactionCreate', async interaction => {
                         return `File content: ${text.length > 2000 ? `${text.slice(0, 2000)}...` : text}`;
                     } else return 'Invalid file type.';
                 } else if (functionName === 'summarize_page') {
-                    let page = (await axios.get(parameters.url, {
-                        responseType: 'text'
-                    })).data;
+                    let page;
+
+                    try {
+                        page = (await axios.get(parameters.url, {
+                            responseType: 'text'
+                        })).data;
+                    } catch (error) {
+                        return interaction.editReply(localize(locale, 'INVALID_URL'));
+                    };
 
                     let response;
 

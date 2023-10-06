@@ -92,9 +92,16 @@ module.exports = {
             await db.set(`users.${interaction.user.id}`, user);
         };
 
-        let page = (await axios.get(url, {
-            responseType: 'text'
-        })).data;
+        let page;
+
+        try {
+            page = (await axios.get(url, {
+                responseType: 'text'
+            })).data;
+        } catch (error) {
+            return interaction.editReply(localize(locale, 'INVALID_URL'));
+        };
+
         let response;
 
         if (page.length > 36000) page = page.slice(0, 36000) + '...';

@@ -77,4 +77,5 @@ module.exports = {
     CONDITIONS: 'Koşullar',
     TOS_AND_PRIVACY: 'Bu botu kullanarak, [Kullanım Koşulları](https://elysium.tolgchu.xyz/tos) ve [Gizlilik Politikası](https://elysium.tolgchu.xyz/privacy)\'mızı kabul etmiş olursunuz.',
     EARLY_ACCESS: 'Bu özellik şu anda erken erişimdedir. Erken erişim almak için </premium:1149719096515104901> komutunu kullanabilirsiniz.',
+    INVALID_URL: 'Geçersiz bir URL girdiniz veya girdiğiniz URL\'ye erişemiyorum. Lütfen daha sonra tekrar deneyin.'
 };
