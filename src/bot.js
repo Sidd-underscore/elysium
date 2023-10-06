@@ -875,8 +875,6 @@ client.on('interactionCreate', async interaction => {
                         responseType: 'text'
                     })).data;
 
-                    console.log(page)
-
                     let response;
 
                     if (page.length > 36000) page = page.slice(0, 36000) + '...';
@@ -898,6 +896,8 @@ client.on('interactionCreate', async interaction => {
                             'Content-Type': 'application/json',
                             Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
                         }
+                    }, {
+                        isOk: response => console.log('used purgpt', JSON.stringify(response.body, null, 4)),
                     });
 
                     return response.ok ? response.body.choices[0].message.content : 'Function call failed.';
