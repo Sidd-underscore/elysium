@@ -205,7 +205,7 @@ module.exports = {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${process.env.AITUBO_API_KEY}`
                 }
-            }).catch(() => null);
+            }).catch(error => error.response);
 
             console.log(response.data);
 
