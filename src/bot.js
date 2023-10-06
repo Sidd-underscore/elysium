@@ -875,6 +875,8 @@ client.on('interactionCreate', async interaction => {
                         responseType: 'text'
                     })).data;
 
+                    console.log(page)
+
                     let response;
 
                     if (page.length > 36000) page = page.slice(0, 36000) + '...';
