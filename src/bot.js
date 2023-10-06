@@ -878,7 +878,7 @@ client.on('interactionCreate', async interaction => {
                             responseType: 'text'
                         })).data;
                     } catch (error) {
-                        return interaction.editReply(localize(locale, 'INVALID_URL'));
+                        page = localize(locale, 'INVALID_URL');
                     };
 
                     let response;
