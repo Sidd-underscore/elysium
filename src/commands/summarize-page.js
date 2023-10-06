@@ -1,46 +1,44 @@
-const { default: axios } = require("axios");
 const { SlashCommandBuilder, ChatInputCommandInteraction } = require("discord.js");
-const { QuickDB } = require("quick.db");
-const { localize } = require("../modules/localization");
-const EmbedMaker = require("../modules/embed");
 const { request, RequestMethod } = require("fetchu.js");
-
-const db = new QuickDB();
+const { localize } = require("../modules/localization");
 
 module.exports = {
     category: 'General',
     data: new SlashCommandBuilder()
-        .setName('ask')
+        .setName('summarize-page')
         .setNameLocalizations({
-            tr: 'sor'
+            tr: 'sayfayı-özetle'
         })
-        .setDescription("Asks something to the AI")
+        .setDescription('Summarizes the given web page')
         .setDescriptionLocalizations({
-            tr: 'Yapay zekaya bir şey sorar'
+            tr: 'Verilen web sayfasını özetler'
         })
         .addStringOption(option => option
-            .setName('prompt')
-            .setDescription('The question you want to ask')
+            .setName('url')
+            .setDescription('The URL of the web page you want to summarize')
             .setDescriptionLocalizations({
-                tr: 'Sormak istediğiniz soru'
+                tr: 'Özetlemek istediğiniz web sayfasının URL\'si'
             })
             .setRequired(true)
         )
         .addBooleanOption(option => option
             .setName('debug')
+            .setNameLocalizations({
+                tr: 'hata-ayıklama'
+            })
             .setDescription('Debug mode. Default: false')
             .setDescriptionLocalizations({
                 tr: 'Hata ayıklama modu. Varsayılan: false'
             })
             .setRequired(false)
-        ),
+            ),
     /**
      * @param {ChatInputCommandInteraction} interaction 
      */
     async execute(interaction) {
         await interaction.deferReply();
 
-        let question = interaction.options.getString('prompt');
+        let url = interaction.options.getString('url');
         let debug = interaction.options.getBoolean('debug') ?? false;
         let user = await db.get(`users.${interaction.user.id}`) ?? {
             usage: 0
@@ -77,68 +75,33 @@ module.exports = {
             await db.set(`users.${interaction.user.id}`, user);
         };
 
+        let page = (await request({
+            url,
+            method: RequestMethod.Get,
+            headers: {
+                'Accept': 'text/html'
+            }
+        }))?.body;
         let response;
+
+        console.log(page);
+
+        if (page.length > 36000) page = page.slice(0, 36000) + '...';
 
         response = await request({
             url: 'https://beta.purgpt.xyz/openai/chat/completions',
             method: RequestMethod.Post,
             body: {
-                model: 'gpt-4',
+                model: 'gpt-3.5-turbo-16k',
                 messages: [
                     {
                         role: 'user',
-                        content: question
+                        content: `Summarize this page (${url}):\n\n${page}`
                     }
                 ],
-                fallbacks: ['gpt-4-32k', 'gpt-3.5-turbo', 'gpt-3.5-turbo-16k'],
-                max_tokens: 1900,
-                maxTokens: 1900
-            },
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
-            }
-        });
-
-        if (response.ok) return respond();
-
-        response = await request({
-            url: 'https://beta.purgpt.xyz/hugging-face/chat/completions',
-            method: RequestMethod.Post,
-            body: {
-                model: 'llama-2-70b-chat',
-                messages: [
-                    {
-                        role: 'user',
-                        content: question
-                    }
-                ],
-                fallbacks: ['llama-2-13b-chat', 'llama-2-7b-chat', 'llama-80b'],
-                max_tokens: 1900,
-                maxTokens: 1900
-            },
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
-            }
-        });
-
-        if (response.ok) return respond();
-
-        response = await request({
-            url: 'https://beta.purgpt.xyz/purgpt/chat/completions',
-            method: RequestMethod.Post,
-            body: {
-                model: 'vicuna-7b-v1.5-16k',
-                messages: [
-                    {
-                        role: 'user',
-                        content: question
-                    }
-                ],
-                max_tokens: 1900,
-                maxTokens: 1900,
-                fallbacks: ['pur-001', 'pur-rp']
+                fallbacks: ['gpt-3.5-turbo'],
+                max_tokens: 1000,
+                maxTokens: 1000
             },
             headers: {
                 'Content-Type': 'application/json',

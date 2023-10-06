@@ -176,15 +176,15 @@ client.on('interactionCreate', async interaction => {
             });
         };
 
-        if (['ask', 'draw-image', 'explain-image', 'server-wizard', 'speak'].includes(interaction.commandName)) {
-            let user = await db.get(`users.${interaction.user.id}`) ?? {
-                usage: 0,
-                tier: 0,
-                bonus: 0
-            };
+        let user = await db.get(`users.${interaction.user.id}`) ?? {
+            usage: 0,
+            tier: 0,
+            bonus: 0
+        };
 
-            if (!user.bonus) user.bonus = 0;
-            if (!user.tier) user.tier = 0;
+        if (!user.bonus) user.bonus = 0;
+        if (!user.tier) user.tier = 0;
+        if (['ask', 'draw-image', 'explain-image', 'server-wizard', 'speak', 'summarize-page'].includes(interaction.commandName)) {
             if (user.bonus > 0) {
                 user.bonus--;
 
@@ -211,6 +211,10 @@ client.on('interactionCreate', async interaction => {
                 await db.set(`users.${interaction.user.id}.usage`, user.usage);
             };
         };
+        if (['summarize-page'].includes(interaction.commandName) && user.tier !== 3) return interaction.reply({
+            content: localize(interaction.locale, 'EARLY_ACCESS'),
+            ephemeral: true
+        });
 
         try {
             await command.execute(interaction);
