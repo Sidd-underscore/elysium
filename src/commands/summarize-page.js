@@ -1,6 +1,9 @@
 const { SlashCommandBuilder, ChatInputCommandInteraction } = require("discord.js");
 const { request, RequestMethod } = require("fetchu.js");
 const { localize } = require("../modules/localization");
+const { QuickDB } = require("quick.db");
+
+const db = new QuickDB();
 
 module.exports = {
     category: 'General',
