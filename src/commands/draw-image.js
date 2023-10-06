@@ -200,7 +200,8 @@ module.exports = {
                 prompt,
                 controlModel: 'checkpoint',
                 modelId: model,
-                count: count
+                count: count,
+                imagePath: null
             }, {
                 headers: {
                     'Content-Type': 'application/json',
