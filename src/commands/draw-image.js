@@ -232,6 +232,7 @@ module.exports = {
                         continue;
                     };
                     if (response.body.data.status === 3) {
+                        response.ok = false;
                         finished = true;
 
                         continue;
