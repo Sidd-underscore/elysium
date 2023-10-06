@@ -26,6 +26,17 @@ module.exports = {
             })
             .setRequired(true)
         )
+        .addStringOption(option => option
+            .setName('question')
+            .setNameLocalizations({
+                tr: 'soru'
+            })
+            .setDescription('The question you want to ask to the AI')
+            .setDescriptionLocalizations({
+                tr: 'Yapay zekaya sormak istediğiniz soru'
+            })
+            .setRequired(false)
+        )
         .addBooleanOption(option => option
             .setName('debug')
             .setNameLocalizations({
@@ -36,7 +47,7 @@ module.exports = {
                 tr: 'Hata ayıklama modu. Varsayılan: false'
             })
             .setRequired(false)
-            ),
+        ),
     /**
      * @param {ChatInputCommandInteraction} interaction 
      */
@@ -44,6 +55,7 @@ module.exports = {
         await interaction.deferReply();
 
         let url = interaction.options.getString('url');
+        let question = interaction.options.getString('question');
         let debug = interaction.options.getBoolean('debug') ?? false;
         let user = await db.get(`users.${interaction.user.id}`) ?? {
             usage: 0
@@ -85,8 +97,6 @@ module.exports = {
         })).data;
         let response;
 
-        console.log(page);
-
         if (page.length > 36000) page = page.slice(0, 36000) + '...';
 
         response = await request({
@@ -97,7 +107,7 @@ module.exports = {
                 messages: [
                     {
                         role: 'user',
-                        content: `Summarize this page (${url}):\n\n${page}`
+                        content: `${question ? `Find the answer of "${question}" question` : 'Summarize'} this page (${url}):\n\n${page}`
                     }
                 ],
                 fallbacks: ['gpt-3.5-turbo'],
