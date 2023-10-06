@@ -85,23 +85,23 @@ module.exports = {
         };
         let locale = interaction.locale;
 
-        async function respond() {
+        async function respond(res) {
             console.log(response.body ?? response);
 
             await interaction.editReply({
-                files: response.body.data.map(image => image.url),
+                files: (res ?? response).body.data.map(image => image.url),
                 embeds: debug ? [
                     new EmbedMaker(interaction.client)
                         .setTitle('Debug')
                         .setFields(
                             {
                                 name: 'Model',
-                                value: response.body.model ?? 'Unknown',
+                                value: (res ?? response).body.model ?? 'Unknown',
                                 inline: true
                             },
                             {
                                 name: 'Provider',
-                                value: response.body.provider ?? 'Unknown',
+                                value: (res ?? response).body.provider ?? 'Unknown',
                                 inline: true
                             }
                         )
@@ -197,7 +197,7 @@ module.exports = {
             if (response.ok) return respond();
 
             let model = randomItem(['6478743e65b8382b26af2722', '64a3f35d9d71c7e4366ef560', '646f101a5bbe174ac6587a6a', '64f1cde7a943d9f46e7da245', '64a3f7af82ced7b15beeb02f', '646f101b5bbe174ac6587a75', '6437d0232c2a7f1ab203fcda', '6437d01e2c2a7f1ab203fcd1', '6437d01b2c2a7f1ab203fcca', '64c06246f56427ea7934179e', '6426f9c60ca4651b98b91a6b', '646f10175bbe174ac6587a53']);
-console.log(model)
+            console.log(model)
             response = await axios.post('https://creator.aitubo.ai/api/job/create', JSON.parse(`{\"imagePath\":\"\",\"count\":${count},\"width\":512,\"height\":512,\"guidanceScale\":7,\"steps\":20,\"strength\":0.8,\"controlModel\":\"\",\"prompt\":\"${prompt}\",\"negativePrompt\":\"\",\"modelId\":\"${model}\",\"loras\":[],\"controlStrength\":1,\"seed\":6686973158238759,\"scheduler\":\"DPMSolverMultistep\",\"promptOptimizer\":false,\"hdEnhance\":false}`), {
                 headers: {
                     "accept": "application/json, text/plain, */*",
@@ -253,7 +253,11 @@ console.log(model)
                         };
                         finished = true;
 
-                        return respond();
+                        return respond({
+                            model,
+                            provider: 'Aitubo',
+                            data: response.body.data.result.data.images.map(image => `${response.body.data.result.data.domain}${image}`)
+                        });
                     };
                 };
             };
