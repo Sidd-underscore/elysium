@@ -195,7 +195,7 @@ module.exports = {
             if (response.ok) return respond();
 
             let model = randomItem(['6478743e65b8382b26af2722', '64a3f35d9d71c7e4366ef560', '646f101a5bbe174ac6587a6a', '64f1cde7a943d9f46e7da245', '64a3f7af82ced7b15beeb02f', '646f101b5bbe174ac6587a75', '646f10165bbe174ac6587a44', '6437d0232c2a7f1ab203fcda', '64c16efe04d57a6438e4e045', '6437d01e2c2a7f1ab203fcd1', '6437d01b2c2a7f1ab203fcca', '64c06246f56427ea7934179e', '6426f9c60ca4651b98b91a6b', '646f10175bbe174ac6587a53']);
-
+console.log(model);
             response = await request({
                 url: 'https://creator.aitubo.ai/api/job/create',
                 method: RequestMethod.Post,
