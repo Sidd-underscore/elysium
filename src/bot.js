@@ -422,7 +422,7 @@ client.on('interactionCreate', async interaction => {
                         repliedUser: message.type === MessageType.UserJoin && guild?.welcomer?.status ? true : respondMessage.includes(`<@${message.author.id}>`)
                     },
                     files: files.splice(0, 10)
-                }).catch(() => null);
+                }).catch(error => console.log('Error while editing replied message:', error));
                 else message.reply({
                     content: respondMessage[0],
                     allowedMentions: {
