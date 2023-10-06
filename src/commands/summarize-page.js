@@ -2,6 +2,7 @@ const { SlashCommandBuilder, ChatInputCommandInteraction } = require("discord.js
 const { request, RequestMethod } = require("fetchu.js");
 const { localize } = require("../modules/localization");
 const { QuickDB } = require("quick.db");
+const { default: axios } = require("axios");
 
 const db = new QuickDB();
 
@@ -78,13 +79,9 @@ module.exports = {
             await db.set(`users.${interaction.user.id}`, user);
         };
 
-        let page = (await request({
-            url,
-            method: RequestMethod.Get,
-            headers: {
-                'Accept': 'text/html'
-            }
-        }))?.body;
+        let page = (await axios.get(url, {
+            responseType: 'text'
+        })).data;
         let response;
 
         console.log(page);
