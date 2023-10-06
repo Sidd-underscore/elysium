@@ -201,11 +201,12 @@ module.exports = {
                 method: RequestMethod.Post,
                 body: {
                     prompt,
-                    modelId: model
+                    modelId: model,
+                    count: count
                 },
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                    Authorization: `Bearer ${process.env.AITUBO_API_KEY}`
                 }
             }, {
                 isNotOk: response => console.log(response.body)
