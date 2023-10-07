@@ -48,8 +48,6 @@ module.exports = {
         };
         let locale = interaction.locale;
 
-        
-
         async function respond() {
             await interaction.editReply({
                 files: [response.body.url],
@@ -64,7 +62,7 @@ module.exports = {
                             },
                             {
                                 name: 'Provider',
-                                value: response.body.provider ?? 'Unknown',
+                                value: response.body.provider ?? 'DakuGPT',
                                 inline: true
                             }
                         )
@@ -79,15 +77,16 @@ module.exports = {
         let response;
 
         response = await request({
-            url: 'https://beta.purgpt.xyz/google/audio/speech',
+            url: 'https://elysium-verify.glitch.me/daku?path=/audio/speech',
             method: RequestMethod.Post,
             body: {
-                model: 'google-speech',
+                model: 'voice-charlotte',
                 input: prompt
             },
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                Authorization: `Bearer ${process.env.VERIFY_KEY}`,
+                'x-daku-key': process.env.DAKU_API_KEY
             }
         }, {
             isNotOk: response => console.log(response.body)

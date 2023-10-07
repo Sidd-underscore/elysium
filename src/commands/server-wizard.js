@@ -99,7 +99,7 @@ module.exports = {
             premium: false
         };
 
-        
+
         if (subcommand === 'setup-channels') {
             if (!interaction.appPermissions.has('ManageChannels')) return interaction.editReply(localize(locale, 'MISSING_PERMISSION', 'Manage Channels'));
 
@@ -144,34 +144,19 @@ module.exports = {
                 }
             ];
             let response = await request({
-                url: 'https://beta.purgpt.xyz/openai/chat/completions',
+                url: 'https://elysium-verify.glitch.me/daku?path=/chat/completions',
                 method: RequestMethod.Post,
                 body: {
-                    model: 'gpt-4-32k',
-                    messages,
-                    fallbacks: ['gpt-4', 'gpt-3.5-turbo-16k', 'gpt-3.5-turbo']
+                    model: 'gpt-4',
+                    messages
                 },
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                    Authorization: `Bearer ${process.env.VERIFY_KEY}`,
+                    'x-daku-key': process.env.DAKU_API_KEY
                 }
             });
 
-            if (!response.ok) {
-                response = await request({
-                    url: 'https://beta.purgpt.xyz/purgpt/chat/completions',
-                    method: RequestMethod.Post,
-                    body: {
-                        model: 'vicuna-7b-v1.5-16k',
-                        messages,
-                        fallbacks: ['pur-001', 'pur-rp']
-                    },
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
-                    }
-                });
-            };
             if (!response.ok) return interaction.editReply(localize(locale, 'MODELS_DOWN'));
 
             let message = response.body.choices[0].message;
@@ -274,38 +259,21 @@ module.exports = {
                     });
 
                     let response = await request({
-                        url: 'https://beta.purgpt.xyz/openai/chat/completions',
+                        url: 'https://elysium-verify.glitch.me/daku?path=/chat/completions',
                         method: RequestMethod.Post,
                         body: {
-                            model: 'gpt-4-32k',
-                            messages,
-                            fallbacks: ['gpt-4', 'gpt-3.5-turbo-16k', 'gpt-3.5-turbo']
+                            model: 'gpt-4',
+                            messages
                         },
                         headers: {
                             'Content-Type': 'application/json',
-                            Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                            Authorization: `Bearer ${process.env.VERIFY_KEY}`,
+                            'x-daku-key': process.env.DAKU_API_KEY
                         }
                     }, {
                         isNotOk: (response) => console.log(response.body, response.status)
                     });
 
-                    if (!response.ok) {
-                        response = await request({
-                            url: 'https://beta.purgpt.xyz/purgpt/chat/completions',
-                            method: RequestMethod.Post,
-                            body: {
-                                model: 'vicuna-7b-v1.5-16k',
-                                messages,
-                                fallbacks: ['pur-001', 'pur-rp']
-                            },
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
-                            }
-                        }, {
-                            isNotOk: (response) => console.log(response.body)
-                        });
-                    };
                     if (!response.ok) return interaction.editReply(localize(locale, 'MODELS_DOWN'));
 
                     let responseMessage = response.body.choices[0].message;
@@ -448,37 +416,22 @@ module.exports = {
                 }
             ];
             let response = await request({
-                url: 'https://beta.purgpt.xyz/openai/chat/completions',
+                url: 'https://elysium-verify.glitch.me/daku?path=/chat/completions',
                 method: RequestMethod.Post,
                 body: {
-                    model: 'gpt-4-32k',
-                    messages,
-                    fallbacks: ['gpt-4', 'gpt-3.5-turbo-16k', 'gpt-3.5-turbo']
+                    model: 'gpt-4',
+                    messages
                 },
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                    Authorization: `Bearer ${process.env.VERIFY_KEY}`,
+                    'x-daku-key': process.env.DAKU_API_KEY
                 }
             }, {
                 isOk: (response) => console.log(JSON.stringify(response.body, null, 2)),
                 isNotOk: (response) => console.log(response.body, response.status)
             });
 
-            if (!response.ok) {
-                response = await request({
-                    url: 'https://beta.purgpt.xyz/purgpt/chat/completions',
-                    method: RequestMethod.Post,
-                    body: {
-                        model: 'vicuna-7b-v1.5-16k',
-                        messages,
-                        fallbacks: ['pur-001', 'pur-rp']
-                    },
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
-                    }
-                });
-            };
             if (!response.ok) return interaction.editReply(localize(locale, 'MODELS_DOWN'));
 
             let message = response.body.choices[0].message;
@@ -598,39 +551,22 @@ module.exports = {
                     });
 
                     let response = await request({
-                        url: 'https://beta.purgpt.xyz/openai/chat/completions',
+                        url: 'https://elysium-verify.glitch.me/daku?path=/chat/completions',
                         method: RequestMethod.Post,
                         body: {
-                            model: 'gpt-4-32k',
-                            messages,
-                            fallbacks: ['gpt-4', 'gpt-3.5-turbo-16k', 'gpt-3.5-turbo']
+                            model: 'gpt-4',
+                            messages
                         },
                         headers: {
                             'Content-Type': 'application/json',
-                            Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                            Authorization: `Bearer ${process.env.VERIFY_KEY}`,
+                            'x-daku-key': process.env.DAKU_API_KEY
                         }
                     }, {
                         isOk: (response) => console.log(JSON.stringify(response.body, null, 2)),
                         isNotOk: (response) => console.log(response.body, response.status)
                     });
 
-                    if (!response.ok) {
-                        response = await request({
-                            url: 'https://beta.purgpt.xyz/purgpt/chat/completions',
-                            method: RequestMethod.Post,
-                            body: {
-                                model: 'vicuna-7b-v1.5-16k',
-                                messages,
-                                fallbacks: ['pur-001', 'pur-rp']
-                            },
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
-                            }
-                        }, {
-                            isNotOk: (response) => console.log(response.body)
-                        });
-                    };
                     if (!response.ok) return interaction.editReply(localize(locale, 'MODELS_DOWN'));
 
                     let responseMessage = response.body.choices[0].message;
