@@ -291,7 +291,7 @@ client.on('interactionCreate', async interaction => {
 
                 let possibility = randomNumber(0, 100);
 
-                if (message.content.toLowerCase().includes('elysium') || message.mentions.users.has(client.user.id) || (guild?.aiChannel?.status && guild?.aiChannel?.channel === message.channelId) || (guild?.randomChat?.status && possibility > (100 - (guild?.randomChat?.possibility ?? 1))) || (message.channel.isThread() && (await message.channel.fetchStarterMessage())?.author?.id === client.user.id) || (message.type === MessageType.UserJoin && guild?.welcomer?.status)) { }
+                if (message.content.toLowerCase().includes('elysium') || message.mentions.users.has(client.user.id) || (guild?.aiChannel?.status && guild?.aiChannel?.channel === message.channelId) || (guild?.randomChat?.status && possibility > (100 - (guild?.randomChat?.possibility ?? 1))) || (message.channel.isThread() && ((await message.channel.fetchStarterMessage())?.author?.id === client.user.id) || (await message.channel.fetchStarterMessage())?.cleanContent?.toLowerCase()?.includes('elysium') || (await message.channel.fetchOwner())?.id === client.user.id) || (message.type === MessageType.UserJoin && guild?.welcomer?.status)) { }
                 else return;
             } else if (!message.author.dmChannel) await message.author.createDM();
 
