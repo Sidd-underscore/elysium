@@ -405,6 +405,14 @@ client.on('interactionCreate', async interaction => {
                 // chunk the message for each 2000 characters
                 respondMessage = respondMessage.match(/[\s\S]{1,2000}/g);
 
+                if (respondMessage[0].length > 500) {
+                    const thread = message.startThread({
+                        name: message.content.slice(0, 25) ?? 'Elysium'
+                    });
+
+                    replied = thread.send('Waiting for response...');
+                };
+
                 if (replied) replied.edit({
                     content: respondMessage[0],
                     components: functions.length > 0 ? [
@@ -453,7 +461,7 @@ client.on('interactionCreate', async interaction => {
                     for (let i = 1; i < respondMessage.length; i++) {
                         await new Promise(resolve => setTimeout(resolve, 1000));
 
-                        message.channel.send({
+                        (replied ?? message).channel.send({
                             content: respondMessage[i],
                             allowedMentions: {
                                 users: parsedMentions?.map(mention => mention.replace(/<@!?(\d+)>/g, '$1')),
