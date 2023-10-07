@@ -1021,7 +1021,7 @@ client.on('interactionCreate', async interaction => {
 
             const gpt4Functionless = [
                 {
-                    url: 'https://pocket.daku.tech/pocketai/api/chat/completions',
+                    url: 'https://api.daku.tech/v1/chat/completions',
                     model: 'gpt-4',
                     key: 'DAKU_API_KEY',
                     function: false
@@ -1041,7 +1041,7 @@ client.on('interactionCreate', async interaction => {
             ];
             const gpt35Function = [
                 {
-                    url: 'https://pocket.daku.tech/pocketai/api/chat/completions',
+                    url: 'https://api.daku.tech/v1/chat/completions',
                     model: 'gpt-3.5-turbo-16k-0613',
                     key: 'DAKU_API_KEY',
                     function: true
