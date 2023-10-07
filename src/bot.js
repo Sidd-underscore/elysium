@@ -1021,9 +1021,9 @@ client.on('interactionCreate', async interaction => {
 
             const gpt4Functionless = [
                 {
-                    url: 'https://api.daku.tech/v1/chat/completions',
+                    url: 'https://elysium-verify.glitch.me/daku?path=/chat/completions',
                     model: 'gpt-4',
-                    key: 'DAKU_API_KEY',
+                    key: 'VERIFY_KEY',
                     function: false
                 },
                 {
@@ -1041,9 +1041,9 @@ client.on('interactionCreate', async interaction => {
             ];
             const gpt35Function = [
                 {
-                    url: 'https://api.daku.tech/v1/chat/completions',
+                    url: 'https://elysium-verify.glitch.me/daku?path=/chat/completions',
                     model: 'gpt-3.5-turbo-16k-0613',
-                    key: 'DAKU_API_KEY',
+                    key: 'VERIFY_KEY',
                     function: true
                 },
                 {
@@ -1091,7 +1091,8 @@ client.on('interactionCreate', async interaction => {
                         },
                         headers: {
                             'Content-Type': 'application/json',
-                            Authorization: `Bearer ${process.env[func.key]}`
+                            Authorization: `Bearer ${process.env[func.key]}`,
+                            'x-daku-key': func.key === 'VERIFY_KEY' ? process.env.DAKU_API_KEY : null
                         }
                     }, {
                         isOk: response => console.log('used', func.url, JSON.stringify(response.body, null, 4)),
