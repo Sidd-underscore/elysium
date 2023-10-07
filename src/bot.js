@@ -414,7 +414,9 @@ client.on('interactionCreate', async interaction => {
                         message.reply('An error occured while sending the message. Please try again later.').catch(() => null);
                     });
 
-                    replied = thread.send('Waiting for response...');
+                    if (replied) await replied.delete();
+                    
+                    replied = await thread.send('Waiting for response...');
                 };
 
                 if (replied) replied.edit({
