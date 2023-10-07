@@ -400,6 +400,9 @@ client.on('interactionCreate', async interaction => {
 
                 let parsedMentions = respondMessage.match(/<@!?(\d+)>/g);
 
+                // remove dublicated mentions
+                parsedMentions = parsedMentions?.filter((mention, index) => parsedMentions.indexOf(mention) === index);
+
                 console.log('Parsed mentions', parsedMentions?.map(mention => mention.replace(/<@!?(\d+)>/g, '$1')));
 
                 // chunk the message for each 2000 characters
@@ -468,15 +471,13 @@ client.on('interactionCreate', async interaction => {
 
                     const thread = await message.startThread({
                         name: threadName
-                    }).catch(error => {
-                        console.log(error);
+                    }).catch(error => console.log(error));
 
-                        message.reply('An error occured while sending the message. Please try again later.').catch(() => null);
-                    });
+                    if (thread) {
+                        if (replied) await replied.delete();
 
-                    if (replied) await replied.delete();
-
-                    replied = await thread.send('Waiting for response...');
+                        replied = await thread.send('Waiting for response...');
+                    };
                 };
 
                 if (replied) replied.edit({
