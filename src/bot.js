@@ -711,7 +711,7 @@ client.on('interactionCreate', async interaction => {
                         properties: {
                             prompt: {
                                 type: 'string',
-                                description: 'The prompt you want to draw. Do not use simple and short prompts. More details means better images. Please include much details as possible. Prompts must be English.'
+                                description: 'The prompt you want to draw. Do not use simple and short prompts. More details means better images. Please include as much details as possible. Prompts must be English.'
                             },
                             count: {
                                 type: 'number',
