@@ -450,7 +450,7 @@ client.on('interactionCreate', async interaction => {
                         },
                         headers: {
                             'Content-Type': 'application/json',
-                            Authrorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                            Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
                         }
                     });
 
