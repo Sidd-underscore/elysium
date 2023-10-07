@@ -881,7 +881,22 @@ client.on('interactionCreate', async interaction => {
                     });
 
                     if (!results.ok) results = await request({
-                        url: 'https://beta.purgpt.xyz/prodia/images/generations',
+                        url: 'https://elysium-verify.glitch.me/daku?path=/images/generations',
+                        method: RequestMethod.Post,
+                        body: {
+                            model: 'sdxl',
+                            prompt: parameters.prompt,
+                            n: parameters.count ?? 1
+                        },
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${process.env.VERIFY_KEY}`,
+                            'x-daku-key': process.env.DAKU_API_KEY
+                        }
+                    });
+
+                    if (!results.ok) results = await request({
+                        url: 'https://elysium-verify.glitch.me/daku?path=/images/generations',
                         method: RequestMethod.Post,
                         body: {
                             model: 'anything-diffusion-5',
@@ -890,7 +905,38 @@ client.on('interactionCreate', async interaction => {
                         },
                         headers: {
                             'Content-Type': 'application/json',
-                            Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                            Authorization: `Bearer ${process.env.VERIFY_KEY}`,
+                            'x-daku-key': process.env.DAKU_API_KEY
+                        }
+                    });
+
+                    if (!results.ok) results = await request({
+                        url: 'https://elysium-verify.glitch.me/daku?path=/images/generations',
+                        method: RequestMethod.Post,
+                        body: {
+                            model: 'stable-diffusion-2.1',
+                            prompt: parameters.prompt,
+                            n: parameters.count ?? 1
+                        },
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${process.env.VERIFY_KEY}`,
+                            'x-daku-key': process.env.DAKU_API_KEY
+                        }
+                    });
+
+                    if (!results.ok) results = await request({
+                        url: 'https://elysium-verify.glitch.me/daku?path=/images/generations',
+                        method: RequestMethod.Post,
+                        body: {
+                            model: 'dreamshaper-8',
+                            prompt: parameters.prompt,
+                            n: parameters.count ?? 1
+                        },
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${process.env.VERIFY_KEY}`,
+                            'x-daku-key': process.env.DAKU_API_KEY
                         }
                     });
 
