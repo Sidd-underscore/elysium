@@ -797,7 +797,7 @@ client.on('interactionCreate', async interaction => {
 
             if (user.tier >= 1) requestFunctions.push({
                 name: 'save_memory',
-                description: 'Saves a memory. Only use this function when you want to save a memory. Do not use this function often. Only use for important memories. Example: "I\'m now friends with user 329671025312923648 (✨Tolgchu✨)", "I had a fight with user 751092600890458203 (Pukima)"',
+                description: 'Saves a memory. You will not use this for simple things. You will only use this function for necessary memories. Example: "I\'m now friends with user 329671025312923648 (✨Tolgchu✨)", "I had a fight with user 751092600890458203 (Pukima)"',
                 parameters: {
                     type: 'object',
                     properties: {
@@ -1074,7 +1074,7 @@ client.on('interactionCreate', async interaction => {
 
                     memories.push(parameters.memory);
 
-                    await db.set('memories', memories.splice(0, 25));
+                    await db.set('memories', memories.splice(-25));
 
                     return 'Memory has been saved.';
                 };
