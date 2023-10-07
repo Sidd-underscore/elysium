@@ -471,7 +471,8 @@ client.on('interactionCreate', async interaction => {
                         threadName = threadName.body.choices[0].message.content;
 
                         try {
-                            threadName = JSON.parse(threadName).name.splice(0, 100) ?? 'Elysium';
+                            threadName = JSON.parse(threadName);
+                            threadName = threadName.name.slice(0, 100) ?? 'Elysium'
                         } catch (error) {
                             threadName = message.cleanContent.slice(0, 100) ?? 'Elysium';
                         };
