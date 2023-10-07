@@ -561,7 +561,7 @@ client.on('interactionCreate', async interaction => {
                     messageHistory.push({
                         role: 'assistant',
                         content: respondMessage.join(''),
-                        name: personalityId === 'elysium' ? 'Elysium' : personalityData?.name,
+                        name: personalityId === 'elysium' ? 'elysium' : personalityData?.name?.toLowerCase().replaceAll(' ', '-').replaceAll(/[^a-zA-Z0-9]/g, ''),
                         messageId: message.id
                     });
 
