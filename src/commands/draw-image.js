@@ -87,6 +87,8 @@ module.exports = {
         
 
         async function respond() {
+            console.log(response.body);
+
             await interaction.editReply({
                 files: response.body.data.map(image => image.url),
                 embeds: debug ? [
