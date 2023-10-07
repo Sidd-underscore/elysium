@@ -1081,7 +1081,7 @@ client.on('interactionCreate', async interaction => {
 
                     await new Promise(resolve => setTimeout(resolve, 1000));
 
-                    response = await tryRequest('function');
+                    response = await tryRequest();
 
                     if (!response) {
                         response = {
