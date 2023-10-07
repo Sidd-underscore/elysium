@@ -1124,7 +1124,7 @@ client.on('interactionCreate', async interaction => {
                 let requestFunction;
 
                 if (type === 'all') requestFunction = gpt4Function.concat(gpt4Functionless, gpt35Function, gpt35Functionless);
-                else if (type === 'functionOnly') requestFunction = gpt4Function.concat(gpt4Function);
+                else if (type === 'functionOnly') requestFunction = gpt4Function.concat(gpt35Function);
 
                 for (let func of requestFunction) {
                     response = await request({
@@ -1159,7 +1159,7 @@ client.on('interactionCreate', async interaction => {
             };
 
             if (mode === 'auto') response = await tryRequest();
-            else if (mode === 'functionOnly') response = await tryRequest('functionOnly');
+            else if (mode === 'functions') response = await tryRequest('functionOnly');
 
             if (response?.response) {
                 let usedUrl = response.url;
