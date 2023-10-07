@@ -447,6 +447,10 @@ client.on('interactionCreate', async interaction => {
                                     content: `Give a topic name for this message:\n${message.cleanContent}`,
                                 }
                             ]
+                        },
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authrorization: `Bearer ${process.env.PURGPT_API_KEY}`
                         }
                     });
 
