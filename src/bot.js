@@ -454,10 +454,10 @@ client.on('interactionCreate', async interaction => {
                         }
                     });
 
-                    console.log('Thread name', threadName.ok ? threadName.body.choices[0].message.content[0] : threadName);
+                    console.log('Thread name', threadName.ok ? threadName.body.choices[0].message.content : threadName);
 
                     if (threadName.ok) {
-                        threadName = threadName.body.choices[0].message.content[0];
+                        threadName = threadName.body.choices[0].message.content;
 
                         try {
                             threadName = JSON.parse(threadName).name.splice(0, 100) ?? 'Elysium';
