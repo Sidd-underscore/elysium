@@ -95,6 +95,8 @@ client.on('ready', async () => {
     app.use(IpFilter(deniedIps));
     app.listen(3200, () => console.log('Listening on port 3200'));
 
+    if (!(await db.has('memories'))) await db.set('memories', []);
+
     /*
     let users = await db.get('users') ?? {};
 
@@ -616,6 +618,8 @@ client.on('interactionCreate', async interaction => {
 
             if (message.guild) owner = await message.guild.fetchOwner();
 
+            let memories = await db.get('memories');
+
             messages.push({
                 role: 'system',
                 content: `You are ${personalityId === 'elysium' ? 'Elysium' : personality.name}. You are chatting in a Discord server. Here are some information about your environment:\nServer: ${message.guild?.name ?? 'DMs'}${message.guild ? `\nServer Owner: ${owner.displayName}\nServer Description: ${message.guild.description ?? 'None'}` : ''}\nChannel: ${message.channel.name ?? `@${message.author.username}`} (mention: <#${message.channelId}>)\nChannel Description: ${message.channel.topic ?? 'None'}`
@@ -623,6 +627,10 @@ client.on('interactionCreate', async interaction => {
             messages.push({
                 role: 'system',
                 content: personality.description ?? defaultPersonality
+            });
+            messages.push({
+                role: 'system',
+                content: `Your memories:\n${memories.map(memory => `- ${memory}`).join('\n')}`
             });
 
             let reply;
@@ -787,6 +795,20 @@ client.on('interactionCreate', async interaction => {
                 }
             ];
 
+            if (user.tier >= 1) requestFunctions.push({
+                name: 'save_memory',
+                description: 'Saves a memory. Only use this function when you want to save a memory. Do not use this function often. Only use for important memories. Example: "I\'m now friends with user 329671025312923648 (✨Tolgchu✨)", "I had a fight with user 751092600890458203 (Pukima)"',
+                parameters: {
+                    type: 'object',
+                    properties: {
+                        memory: {
+                            type: 'string',
+                            description: 'The memory to save.'
+                        }
+                    },
+                    required: ['memory']
+                }
+            });
             if (user.tier === 3) requestFunctions.push({
                 name: 'summarize_page',
                 description: 'Summarizes a web page. You can use this function to find some information about a web page.',
@@ -836,6 +858,8 @@ client.on('interactionCreate', async interaction => {
                         return responseMessage ? `${responseMessage} **(Reading file...)**` : 'Reading file...';
                     case 'summarize_page':
                         return responseMessage ? `${responseMessage} **(Summarizing web page...)**` : 'Summarizing web page...';
+                    case 'save_memory':
+                        return responseMessage ? `${responseMessage} **(Saving memory...)**` : 'Saving memory...';
                     default:
                         return 'Calling function...';
                 };
@@ -1045,8 +1069,15 @@ client.on('interactionCreate', async interaction => {
                     });
 
                     return response.ok ? response.body.choices[0].message.content : 'Function call failed.';
-                };
+                } else if (functionName === 'save_memory') {
+                    let memories = await db.get('memories');
 
+                    memories.push(parameters.memory);
+
+                    await db.set('memories', memories.splice(0, 25));
+
+                    return 'Memory has been saved.';
+                };
             };
 
             const gpt4Function = [
