@@ -1167,6 +1167,8 @@ client.on('interactionCreate', async interaction => {
 
                 response = response.response;
 
+                console.log(response)
+
                 console.log('Used model', response.body.model, 'Used url', usedUrl);
                 console.log('Response', JSON.stringify(response.body, null, 4));
 
