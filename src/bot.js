@@ -405,9 +405,13 @@ client.on('interactionCreate', async interaction => {
                 // chunk the message for each 2000 characters
                 respondMessage = respondMessage.match(/[\s\S]{1,2000}/g);
 
-                if (respondMessage[0].length > 500) {
+                if (respondMessage[0].length > 1000) {
                     const thread = message.startThread({
                         name: message.content.slice(0, 25) ?? 'Elysium'
+                    }).catch(error => {
+                        console.log(error);
+
+                        message.reply('An error occured while sending the message. Please try again later.').catch(() => null);
                     });
 
                     replied = thread.send('Waiting for response...');
