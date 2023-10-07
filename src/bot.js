@@ -1161,13 +1161,11 @@ client.on('interactionCreate', async interaction => {
             if (mode === 'auto') response = await tryRequest();
             else if (mode === 'functionOnly') response = await tryRequest('functionOnly');
 
-            if (response) {
+            if (response?.response) {
                 let usedUrl = response.url;
                 let end = false;
 
                 response = response.response;
-
-                console.log(response)
 
                 console.log('Used model', response.body.model, 'Used url', usedUrl);
                 console.log('Response', JSON.stringify(response.body, null, 4));
