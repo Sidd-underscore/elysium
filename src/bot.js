@@ -450,8 +450,15 @@ client.on('interactionCreate', async interaction => {
                         }
                     });
 
-                    if (threadName.ok) threadName = threadName.body.choices[0].message.content[0].slice(0, 25);
-                    else threadName = message.cleanContent.slice(0, 25) ?? 'Elysium';
+                    if (threadName.ok) {
+                        threadName = threadName.body.choices[0].message.content[0];
+
+                        try {
+                            threadName = JSON.parse(threadName).name;
+                        } catch (error) {
+                            threadName = message.cleanContent.slice(0, 25) ?? 'Elysium';
+                        };
+                    } else threadName = message.cleanContent.slice(0, 25) ?? 'Elysium';
 
                     const thread = await message.startThread({
                         name: threadName
