@@ -406,7 +406,7 @@ client.on('interactionCreate', async interaction => {
                 respondMessage = respondMessage.match(/[\s\S]{1,2000}/g);
 
                 if (respondMessage[0].length > 1000) {
-                    const thread = message.startThread({
+                    const thread = await message.startThread({
                         name: message.content.slice(0, 25) ?? 'Elysium'
                     }).catch(error => {
                         console.log(error);
