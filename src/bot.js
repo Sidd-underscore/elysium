@@ -422,7 +422,7 @@ client.on('interactionCreate', async interaction => {
                             messages: [
                                 {
                                     role: 'system',
-                                    content: 'You will only respond with a JSON format, nothing else. Your format must look like this: {name: "max 25 characters"}'
+                                    content: 'You will only respond with a JSON format, nothing else. Your format must look like this: {name: "max 100 characters"}'
                                 },
                                 {
                                     role: 'user',
@@ -456,11 +456,11 @@ client.on('interactionCreate', async interaction => {
                         threadName = threadName.body.choices[0].message.content[0];
 
                         try {
-                            threadName = JSON.parse(threadName).name.splice(0, 25) ?? 'Elysium';
+                            threadName = JSON.parse(threadName).name.splice(0, 100) ?? 'Elysium';
                         } catch (error) {
-                            threadName = message.cleanContent.slice(0, 25) ?? 'Elysium';
+                            threadName = message.cleanContent.slice(0, 100) ?? 'Elysium';
                         };
-                    } else threadName = message.cleanContent.slice(0, 25) ?? 'Elysium';
+                    } else threadName = message.cleanContent.slice(0, 100) ?? 'Elysium';
 
                     const thread = await message.startThread({
                         name: threadName
