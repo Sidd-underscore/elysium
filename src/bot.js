@@ -290,8 +290,16 @@ client.on('interactionCreate', async interaction => {
                 let guild = await db.get(`guilds.${message.guild.id}`) ?? {};
 
                 let possibility = randomNumber(0, 100);
+                let isThreadEligible = false;
 
-                if (message.content.toLowerCase().includes('elysium') || message.mentions.users.has(client.user.id) || (guild?.aiChannel?.status && guild?.aiChannel?.channel === message.channelId) || (guild?.randomChat?.status && possibility > (100 - (guild?.randomChat?.possibility ?? 1))) || (message.channel.isThread() && ((await message.channel.fetchStarterMessage())?.author?.id === client.user.id) || (await message.channel.fetchStarterMessage())?.cleanContent?.toLowerCase()?.includes('elysium') || (await message.channel.fetchOwner())?.id === client.user.id) || (message.type === MessageType.UserJoin && guild?.welcomer?.status)) { }
+                if (message.channel.isThread()) {
+                    let starterMessage = (await message.channel?.fetchStarterMessage().catch(() => null)) ?? null;
+                    let owner = (await message.channel?.fetchOwner().catch(() => null)) ?? null;
+
+                    isThreadEligible = starterMessage?.author?.id === client.user.id || starterMessage?.cleanContent?.toLowerCase()?.includes('elysium') || owner?.id === client.user.id;
+                };
+
+                if (message.content.toLowerCase().includes('elysium') || message.mentions.users.has(client.user.id) || (guild?.aiChannel?.status && guild?.aiChannel?.channel === message.channelId) || (guild?.randomChat?.status && possibility > (100 - (guild?.randomChat?.possibility ?? 1))) || (message.type === MessageType.UserJoin && guild?.welcomer?.status) || isThreadEligible) { }
                 else return;
             } else if (!message.author.dmChannel) await message.author.createDM();
 
