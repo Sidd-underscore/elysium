@@ -450,10 +450,10 @@ client.on('interactionCreate', async interaction => {
                         }
                     });
 
+                    console.log('Thread name', threadName.ok ? threadName.body.choices[0].message.content[0] : threadName);
+
                     if (threadName.ok) {
                         threadName = threadName.body.choices[0].message.content[0];
-
-                        console.log('Thread name', threadName);
 
                         try {
                             threadName = JSON.parse(threadName).name.splice(0, 25) ?? 'Elysium';
@@ -1030,6 +1030,12 @@ client.on('interactionCreate', async interaction => {
                     url: 'https://pocket.daku.tech/pocketai/api/chat/completions',
                     model: 'gpt-3.5-turbo-16k-0613',
                     key: 'DAKU_API_KEY',
+                    function: true
+                },
+                {
+                    url: 'https://thirdparty.webraft.in/v1/chat/completions',
+                    model: 'gpt-3.5-turbo-16k',
+                    key: 'WEBRAFT_API_KEY',
                     function: true
                 },
                 {
