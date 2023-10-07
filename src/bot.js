@@ -406,8 +406,55 @@ client.on('interactionCreate', async interaction => {
                 respondMessage = respondMessage.match(/[\s\S]{1,2000}/g);
 
                 if (respondMessage[0].length > 1000) {
+                    if (replied) await replied.edit('Creating thread...');
+                    else replied = await message.reply({
+                        content: 'Creating thread...',
+                        allowedMentions: {
+                            repliedUser: false
+                        }
+                    });
+
+                    let threadName = await request({
+                        url: 'https://beta.purgpt.xyz/openai/chat/completions',
+                        method: RequestMethod.Post,
+                        body: {
+                            model: 'gpt-3.5-turbo',
+                            messages: [
+                                {
+                                    role: 'system',
+                                    content: 'You will only respond with a JSON format, nothing else. Your format must look like this: {name: "max 25 characters"}'
+                                },
+                                {
+                                    role: 'user',
+                                    content: 'Give a topic name for this message:\nHey, I\'m having trouble with this code. Can someone help me out?',
+                                    name: 'example_user'
+                                },
+                                {
+                                    role: 'assistant',
+                                    content: '{name: "Having trouble with code"}',
+                                },
+                                {
+                                    role: 'user',
+                                    content: 'Give a topic name for this message:\nHey, I\'m having trouble with this code. Can someone help me out?',
+                                    name: 'example_user'
+                                },
+                                {
+                                    role: 'assistant',
+                                    content: '{name: "Having trouble with code"}',
+                                },
+                                {
+                                    role: 'user',
+                                    content: `Give a topic name for this message:\n${message.cleanContent}`,
+                                }
+                            ]
+                        }
+                    });
+
+                    if (threadName.ok) threadName = threadName.body.choices[0].message.content[0].slice(0, 25);
+                    else threadName = message.cleanContent.slice(0, 25) ?? 'Elysium';
+
                     const thread = await message.startThread({
-                        name: message.content.slice(0, 25) ?? 'Elysium'
+                        name: threadName
                     }).catch(error => {
                         console.log(error);
 
@@ -415,7 +462,7 @@ client.on('interactionCreate', async interaction => {
                     });
 
                     if (replied) await replied.delete();
-                    
+
                     replied = await thread.send('Waiting for response...');
                 };
 
