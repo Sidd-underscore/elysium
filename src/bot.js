@@ -622,7 +622,7 @@ client.on('interactionCreate', async interaction => {
 
             messages.push({
                 role: 'system',
-                content: `You are ${personalityId === 'elysium' ? 'Elysium' : personality.name}. You are chatting in a Discord server. Here are some information about your environment:\nServer: ${message.guild?.name ?? 'DMs'}${message.guild ? `\nServer Owner: ${owner.displayName}\nServer Description: ${message.guild.description ?? 'None'}` : ''}\nChannel: ${message.channel.name ?? `@${message.author.username}`} (mention: <#${message.channelId}>)\nChannel Description: ${message.channel.topic ?? 'None'}`
+                content: `You are ${personalityId === 'elysium' ? 'Elysium' : personality.name}. You are chatting in a Discord server. Here are some information about your environment:\nServer: ${message.guild?.name ?? 'DMs'}${message.guild ? `\nServer Owner: ${owner.displayName}\nServer Description: ${message.guild.description ?? 'None'}` : ''}\nChannel: ${message.channel.name ?? `@${message.author.username}`} (mention: <#${message.channelId}>)\nChannel Description: ${message.channel.topic ?? 'None'}\nUTC date: ${new Date().getUTCDate()}`
             });
             messages.push({
                 role: 'system',
@@ -1117,6 +1117,12 @@ client.on('interactionCreate', async interaction => {
                 }
             ];
             const gpt35Function = [
+                {
+                    url: 'https://api.nova-oss.com/v1/chat/completions',
+                    model: 'gpt-3.5-turbo-16k',
+                    key: 'NOVA_API_KEY',
+                    function: true
+                },
                 {
                     url: 'https://elysium-verify.glitch.me/daku?path=/chat/completions',
                     model: 'gpt-3.5-turbo-16k-0613',
