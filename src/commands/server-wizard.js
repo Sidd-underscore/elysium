@@ -144,7 +144,7 @@ module.exports = {
                 }
             ];
             let response = await request({
-                url: 'https://elysium-verify.glitch.me/daku?path=/chat/completions',
+                url: 'https://purgpt.personalapi.repl.co/chat/completions',
                 method: RequestMethod.Post,
                 body: {
                     model: 'gpt-4',
@@ -152,8 +152,7 @@ module.exports = {
                 },
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.VERIFY_KEY}`,
-                    'x-daku-key': process.env.DAKU_API_KEY
+                    Authorization: `Bearer ${process.env.GENIUSAI_API_KEY}`
                 }
             });
 
@@ -259,7 +258,7 @@ module.exports = {
                     });
 
                     let response = await request({
-                        url: 'https://elysium-verify.glitch.me/daku?path=/chat/completions',
+                        url: 'https://purgpt.personalapi.repl.co/chat/completions',
                         method: RequestMethod.Post,
                         body: {
                             model: 'gpt-4',
@@ -416,7 +415,7 @@ module.exports = {
                 }
             ];
             let response = await request({
-                url: 'https://elysium-verify.glitch.me/daku?path=/chat/completions',
+                url: 'https://purgpt.personalapi.repl.co/chat/completions',
                 method: RequestMethod.Post,
                 body: {
                     model: 'gpt-4',
@@ -424,8 +423,7 @@ module.exports = {
                 },
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.VERIFY_KEY}`,
-                    'x-daku-key': process.env.DAKU_API_KEY
+                    Authorization: `Bearer ${process.env.GENIUSAI_API_KEY}`
                 }
             }, {
                 isOk: (response) => console.log(JSON.stringify(response.body, null, 2)),
@@ -551,7 +549,7 @@ module.exports = {
                     });
 
                     let response = await request({
-                        url: 'https://elysium-verify.glitch.me/daku?path=/chat/completions',
+                        url: 'https://purgpt.personalapi.repl.co/chat/completions',
                         method: RequestMethod.Post,
                         body: {
                             model: 'gpt-4',

@@ -1098,13 +1098,7 @@ client.on('interactionCreate', async interaction => {
 
             const gpt4Functionless = [
                 {
-                    url: 'https://elysium-verify.glitch.me/daku?path=/chat/completions',
-                    model: 'gpt-4',
-                    key: 'VERIFY_KEY',
-                    function: false
-                },
-                {
-                    url: 'https://public.personalapi.repl.co/api/v2/chat/completions',
+                    url: 'https://purgpt.personalapi.repl.co/chat/completions',
                     model: 'gpt-4',
                     key: 'GENIUSAI_API_KEY',
                     function: false
@@ -1121,12 +1115,6 @@ client.on('interactionCreate', async interaction => {
                     url: 'https://api.nova-oss.com/v1/chat/completions',
                     model: 'gpt-3.5-turbo-16k',
                     key: 'NOVA_API_KEY',
-                    function: true
-                },
-                {
-                    url: 'https://elysium-verify.glitch.me/daku?path=/chat/completions',
-                    model: 'gpt-3.5-turbo-16k-0613',
-                    key: 'VERIFY_KEY',
                     function: true
                 },
                 {
@@ -1147,6 +1135,12 @@ client.on('interactionCreate', async interaction => {
                     url: 'https://galaxyai.onrender.com/v1/chat/completions',
                     model: 'gpt-3.5-turbo-16k',
                     key: 'GALAXYAI_API_KEY',
+                    function: false
+                },
+                {
+                    url: 'https://purgpt.personalapi.repl.co/chat/completions',
+                    model: 'gpt-3.5-turbo-16k',
+                    key: 'GENIUSAI_API_KEY',
                     function: false
                 },
                 {

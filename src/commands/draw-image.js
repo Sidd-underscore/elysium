@@ -53,10 +53,6 @@ module.exports = {
                         tr: 'Normal'
                     },
                     value: 'regular'
-                },
-                {
-                    name: 'Anime',
-                    value: 'anime'
                 }
             )
         )
@@ -134,74 +130,6 @@ module.exports = {
             if (response.ok) return respond();
 
             response = await request({
-                url: 'https://elysium-verify.glitch.me/daku?path=/images/generations',
-                method: RequestMethod.Post,
-                body: {
-                    model: 'sdxl',
-                    prompt,
-                    n: count
-                },
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.VERIFY_KEY}`,
-                    'x-daku-key': process.env.DAKU_API_KEY
-                }
-            });
-
-            if (response.ok) return respond();
-
-            response = await request({
-                url: 'https://elysium-verify.glitch.me/daku?path=/images/generations',
-                method: RequestMethod.Post,
-                body: {
-                    model: 'anything-diffusion-5',
-                    prompt,
-                    n: count
-                },
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.VERIFY_KEY}`,
-                    'x-daku-key': process.env.DAKU_API_KEY
-                }
-            });
-
-            if (response.ok) return respond();
-
-            response = await request({
-                url: 'https://elysium-verify.glitch.me/daku?path=/images/generations',
-                method: RequestMethod.Post,
-                body: {
-                    model: 'stable-diffusion-2.1',
-                    prompt,
-                    n: count
-                },
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.VERIFY_KEY}`,
-                    'x-daku-key': process.env.DAKU_API_KEY
-                }
-            });
-
-            if (response.ok) return respond();
-
-            response = await request({
-                url: 'https://elysium-verify.glitch.me/daku?path=/images/generations',
-                method: RequestMethod.Post,
-                body: {
-                    model: 'dreamshaper-8',
-                    prompt,
-                    n: count
-                },
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.VERIFY_KEY}`,
-                    'x-daku-key': process.env.DAKU_API_KEY
-                }
-            });
-
-            if (response.ok) return respond();
-
-            response = await request({
                 url: 'https://beta.purgpt.xyz/openai/images/generations',
                 method: RequestMethod.Post,
                 body: {
@@ -230,21 +158,6 @@ module.exports = {
                 }
             }, {
                 isNotOk: response => console.log(response.body)
-            });
-        } else if (style === 'anime') {
-            response = await request({
-                url: 'https://elysium-verify.glitch.me/daku?path=/images/generations',
-                method: RequestMethod.Post,
-                body: {
-                    model: 'anime-diffusion-xl',
-                    prompt,
-                    n: count
-                },
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.VERIFY_KEY}`,
-                    'x-daku-key': process.env.DAKU_API_KEY
-                }
             });
         };
 
