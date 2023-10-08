@@ -1098,7 +1098,7 @@ client.on('interactionCreate', async interaction => {
 
             const gpt4Functionless = [
                 {
-                    url: 'https://purgpt.personalapi.repl.co/chat/completions',
+                    url: 'https://purgpt.personalapi.repl.co/v1/chat/completions',
                     model: 'gpt-4',
                     key: 'GENIUSAI_API_KEY',
                     function: false
@@ -1138,7 +1138,7 @@ client.on('interactionCreate', async interaction => {
                     function: false
                 },
                 {
-                    url: 'https://purgpt.personalapi.repl.co/chat/completions',
+                    url: 'https://purgpt.personalapi.repl.co/v1/chat/completions',
                     model: 'gpt-3.5-turbo-16k',
                     key: 'GENIUSAI_API_KEY',
                     function: false
