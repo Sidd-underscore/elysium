@@ -1197,10 +1197,10 @@ client.on('interactionCreate', async interaction => {
                                 'Content-Type': 'application/json',
                                 Authorization: `Bearer ${process.env[func.key]}`
                             },
-                            timeout: 10000
+                            timeout: 15000
                         });
                     } catch (error) {
-                        console.log('Error', func.url, error.response);
+                        console.log('Error', func.url, error.response ?? error);
 
                         continue;
                     };
