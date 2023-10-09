@@ -35,6 +35,8 @@ module.exports = {
         let personality = user?.personality ?? 'elysium';
         let chat = user?.chats?.[personality] ?? [];
 
+        console.log(chat.filter(message => message.messageId !== interaction.targetId))
+
         await db.set(`users.${interaction.user.id}.chats.${personality}`, chat.filter(message => message.messageId !== interaction.targetId));
 
         let adsMessage = randomItem(ads);
