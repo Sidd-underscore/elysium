@@ -1263,7 +1263,7 @@ client.on('interactionCreate', async interaction => {
 
                     if (!response) {
                         response = {
-                            ok: false
+                            status: 500
                         };
 
                         break;
@@ -1272,10 +1272,10 @@ client.on('interactionCreate', async interaction => {
                     console.log('Used model', response.data.model, 'Used url', response.url);
                 };
 
-                if (response.ok) return respond();
+                if (response.status === 200) return respond();
             };
 
-            if (response.ok) return respond();
+            if (response.status === 200) return respond();
             else if (message.mentions.users.has(client.user.id)) return message.reply({
                 content: localize(locale, 'MODELS_DOWN'),
                 allowedMentions: {
