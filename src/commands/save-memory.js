@@ -71,5 +71,12 @@ module.exports = {
                 memoryId
             }
         });
+
+        await db.set(`users.${interaction.user.id}`, user);
+
+        interaction.editReply({
+            content: localize(locale, 'SAVED_MEMORY'),
+            ephemeral: true
+        });
     }
 };

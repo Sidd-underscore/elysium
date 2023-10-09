@@ -82,4 +82,5 @@ module.exports = {
     ONLY_BOT_MESSAGES: "You can only use this command on Elysium's messages!",
     COOLDOWN: 'You can only use this command once every {{0}} minutes.',
     TIER_NOT_ENOUGH: 'Your tier is not enough for this command. You need to be at least Tier {{0}}.',
+    SAVED_MEMORY: 'Memory saved successfully!',
 };
