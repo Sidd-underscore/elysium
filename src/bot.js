@@ -1163,6 +1163,8 @@ client.on('interactionCreate', async interaction => {
                 if (type === 'all') requestFunction = gpt4Function.concat(gpt4Functionless, gpt35Function, gpt35Functionless);
                 else if (type === 'functionOnly') requestFunction = gpt4Function.concat(gpt35Function);
 
+                console.log('Request functions', requestFunction);
+
                 for (let func of requestFunction) {
                     response = await request({
                         url: func.url,
