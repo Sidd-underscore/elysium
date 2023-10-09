@@ -167,7 +167,7 @@ module.exports = {
             });
 
             collector.on('collect', async int => {
-                await int.deferReply({ ephemeral: true });
+                await int.deferReply({ ephemeral: true }).catch(() => collector.stop());
 
                 let name = int.fields.getTextInputValue('name');
                 let personality = int.fields.getTextInputValue('personality');
@@ -195,7 +195,7 @@ module.exports = {
                     dmOnly
                 });
 
-                int.editReply(localize(locale, 'CHAT_PERSONALITY_CREATED')).catch(() => null);
+                int.editReply(localize(locale, 'CHAT_PERSONALITY_CREATED')).catch(() => collector.stop());
             });
         } else if (subcommand === 'delete') {
             await interaction.deferReply({ ephemeral: true });
