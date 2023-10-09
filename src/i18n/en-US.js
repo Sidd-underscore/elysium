@@ -79,4 +79,6 @@ module.exports = {
     EARLY_ACCESS: 'This feature is currently in early access. You can get early access by using the </premium:1149719096515104901> command.',
     INVALID_URL: 'You entered an invalid URL or I am unable to access the URL you entered. Please try again later.',
     SETTING_SET: 'Setting set successfully!',
+    ONLY_BOT_MESSAGES: "You can only use this command on Elysium's messages!",
+    COOLDOWN: 'You can only use this command once every {{0}} minutes.',
 };

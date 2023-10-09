@@ -79,4 +79,6 @@ module.exports = {
     EARLY_ACCESS: 'Bu özellik şu anda erken erişimdedir. Erken erişim almak için </premium:1149719096515104901> komutunu kullanabilirsiniz.',
     INVALID_URL: 'Geçersiz bir URL girdiniz veya girdiğiniz URL\'ye erişemiyorum. Lütfen daha sonra tekrar deneyin.',
     SETTING_SET: 'Ayar başarıyla ayarlandı!',
+    ONLY_BOT_MESSAGES: "Bu komutu yalnızca Elysium'un mesajlarında kullanabilirsiniz!",
+    COOLDOWN: 'Bu komutu yalnızca her {{0}} dakikada bir kullanabilirsiniz.',
 };

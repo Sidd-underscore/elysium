@@ -13,6 +13,7 @@ const express = require('express');
 const { execSync } = require('node:child_process');
 const { IpFilter } = require('express-ipfilter');
 const sharp = require('sharp');
+const crypto = require('crypto');
 
 const client = new Client({
     intents: [
@@ -630,7 +631,7 @@ client.on('interactionCreate', async interaction => {
             });
             messages.push({
                 role: 'system',
-                content: `Your memories:\n${memories.map(memory => `- ${memory}`).join('\n')}`
+                content: `Your memories:\n${memories.map(memory => `- ${memory.name}`).join('\n')}`
             });
 
             let reply;
@@ -797,13 +798,17 @@ client.on('interactionCreate', async interaction => {
 
             if (user.tier >= 1) requestFunctions.push({
                 name: 'save_memory',
-                description: 'Saves a memory. You will not use this for simple things. You will only use this function for necessary memories. Example: "I\'m now friends with user 329671025312923648 (✨Tolgchu✨)", "I had a fight with user 751092600890458203 (Pukima)"',
+                description: 'Saves a memory. You will NOT use this for simple things. You will only use this function for necessary things that you don\'t want to forget. Example: "I\'m now friends with user 329671025312923648", "I had a fight with user 751092600890458203"',
                 parameters: {
                     type: 'object',
                     properties: {
                         memory: {
                             type: 'string',
                             description: 'The memory to save.'
+                        },
+                        duration: {
+                            type: 'number',
+                            description: "The duration of the memory in days. (1-3) Default: 1"
                         }
                     },
                     required: ['memory']
@@ -1071,10 +1076,28 @@ client.on('interactionCreate', async interaction => {
                     return response.ok ? response.body.choices[0].message.content : 'Function call failed.';
                 } else if (functionName === 'save_memory') {
                     let memories = await db.get('memories');
+                    let memoryId = crypto.randomBytes(16).toString('hex');
 
-                    memories.push(parameters.memory);
+                    memories.push({
+                        memory: parameters.memory,
+                        id: memoryId
+                    });
 
-                    await db.set('memories', memories.splice(-25));
+                    await db.set('memories', memories);
+
+                    timer('custom', {
+                        time: (parameters.duration ?? 1) * 24 * 60 * 60 * 1000,
+                        callback: async () => {
+                            let memories = await db.get('memories');
+
+                            memories = memories.filter(memory => memory.id !== c.memoryId);
+
+                            await db.set('memories', memories);
+                        },
+                        config: {
+                            memoryId
+                        }
+                    });
 
                     return 'Memory has been saved.';
                 };
@@ -1256,6 +1279,8 @@ client.on('interactionCreate', async interaction => {
                         parameters,
                         response: functionResponse
                     });
+
+                    if (usedFunction?.name === 'save_memory') requestFunctions = requestFunctions.filter(requestFunction => requestFunction.name !== 'save_memory');
 
                     await new Promise(resolve => setTimeout(resolve, 1000));
 
