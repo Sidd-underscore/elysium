@@ -1,5 +1,8 @@
 const { SlashCommandBuilder, ChatInputCommandInteraction, PermissionFlagsBits, ChannelType } = require("discord.js");
 const { QuickDB } = require("quick.db");
+const { localize } = require("../modules/localization");
+const { randomItem } = require("@tolga1452/toolbox.js");
+const { ads } = require("../../config");
 
 const db = new QuickDB();
 
@@ -163,6 +166,8 @@ module.exports = {
         let subcommandGroup = interaction.options.getSubcommandGroup();
         let subcommand = interaction.options.getSubcommand();
         let guild = await db.get(`guilds.${interaction.guild.id}`) ?? {};
+        let user = await db.get(`users.${interaction.user.id}`) ?? {};
+        let locale = interaction.locale;
 
         if (subcommandGroup === 'random-chat') {
             if (subcommand === 'toggle') {
@@ -177,7 +182,9 @@ module.exports = {
 
                 await db.set(`guilds.${interaction.guild.id}`, guild);
 
-                interaction.editReply('Random chat status has been changed');
+                let adsMessage = randomItem(ads);
+
+                interaction.editReply(`${localize(locale, 'SETTING_SET')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}}`);
             } else if (subcommand === 'set-possibility') {
                 let possibility = interaction.options.getInteger('possibility');
 
@@ -190,7 +197,9 @@ module.exports = {
 
                 await db.set(`guilds.${interaction.guild.id}`, guild);
 
-                interaction.editReply('Random chat possibility has been changed');
+                let adsMessage = randomItem(ads);
+
+                interaction.editReply(`${localize(locale, 'SETTING_SET')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`);
             };
         } else if (subcommandGroup === 'ai-channel') {
             if (subcommand === 'toggle') {
@@ -205,7 +214,9 @@ module.exports = {
 
                 await db.set(`guilds.${interaction.guild.id}`, guild);
 
-                interaction.editReply('AI channel status has been changed');
+                let adsMessage = randomItem(ads);
+
+                interaction.editReply(`${localize(locale, 'SETTING_SET')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`);
             } else if (subcommand === 'set') {
                 let channel = interaction.options.getChannel('channel');
 
@@ -218,7 +229,9 @@ module.exports = {
 
                 await db.set(`guilds.${interaction.guild.id}`, guild);
 
-                interaction.editReply('AI channel has been changed');
+                let adsMessage = randomItem(ads);
+
+                interaction.editReply(`${localize(locale, 'SETTING_SET')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`);
             };
         } else if (subcommandGroup === 'welcomer') {
             if (subcommand === 'toggle') {
@@ -232,7 +245,9 @@ module.exports = {
 
                 await db.set(`guilds.${interaction.guild.id}`, guild);
 
-                interaction.editReply('Welcomer status has been changed');
+                let adsMessage = randomItem(ads);
+
+                interaction.editReply(`${localize(locale, 'SETTING_SET')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`);
             };
         };
     }

@@ -1,6 +1,8 @@
 const { SlashCommandBuilder, ChatInputCommandInteraction, ContextMenuCommandBuilder, ApplicationCommandType, UserContextMenuCommandInteraction, MessageContextMenuCommandInteraction } = require("discord.js");
 const { QuickDB } = require("quick.db");
 const { localize } = require("../modules/localization");
+const { randomItem } = require("@tolga1452/toolbox.js");
+const { ads } = require("../../config");
 
 const db = new QuickDB();
 
@@ -35,6 +37,8 @@ module.exports = {
 
         await db.set(`users.${interaction.user.id}.chats.${personality}`, chat.filter(message => message.messageId !== interaction.targetId));
 
-        interaction.editReply(localize(locale, 'MESSAGE_REMOVED'));
+        let adsMessage = randomItem(ads);
+
+        interaction.editReply(`${localize(locale, 'MESSAGE_REMOVED')}${user.tier >= 2 ? null : `\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`);
     }
 };

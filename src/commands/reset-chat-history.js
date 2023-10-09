@@ -1,6 +1,8 @@
 const { SlashCommandBuilder, ChatInputCommandInteraction } = require("discord.js");
 const { QuickDB } = require("quick.db");
 const { localize } = require("../modules/localization");
+const { randomItem } = require("@tolga1452/toolbox.js");
+const { ads } = require("../../config");
 
 const db = new QuickDB();
 
@@ -27,6 +29,8 @@ module.exports = {
         
         await db.set(`users.${interaction.user.id}.chats.${personality}`, []);
 
-        await interaction.editReply(localize(locale, 'CHAT_HISTORY_RESET'));
+        let adsMessage = randomItem(ads);
+
+        await interaction.editReply(`${localize(locale, 'CHAT_HISTORY_RESET')}${user.tier >= 2 ? null : `\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`);
     }
 };

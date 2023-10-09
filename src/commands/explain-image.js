@@ -54,7 +54,7 @@ module.exports = {
 
         async function respond() {
             await interaction.editReply({
-                content: response.data.result,
+                content: `${response.data.result}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`,
                 embeds: debug ? [
                     new EmbedMaker(interaction.client)
                         .setTitle('Debug')

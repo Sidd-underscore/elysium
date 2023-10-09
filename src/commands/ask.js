@@ -4,6 +4,8 @@ const { QuickDB } = require("quick.db");
 const { localize } = require("../modules/localization");
 const EmbedMaker = require("../modules/embed");
 const { request, RequestMethod } = require("fetchu.js");
+const { randomItem } = require("@tolga1452/toolbox.js");
+const { ads } = require("../../config");
 
 const db = new QuickDB();
 
@@ -52,8 +54,10 @@ module.exports = {
 
             if (respondMessage.length > 1990) respondMessage = respondMessage.slice(0, 1990) + '...';
 
+            let adsMessage = randomItem(ads);
+
             await interaction.editReply({
-                content: respondMessage,
+                content: `${respondMessage}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`,
                 embeds: debug ? [
                     new EmbedMaker(interaction.client)
                         .setTitle('Debug')

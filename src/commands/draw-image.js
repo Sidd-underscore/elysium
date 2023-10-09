@@ -4,6 +4,8 @@ const { QuickDB } = require("quick.db");
 const { localize } = require("../modules/localization");
 const EmbedMaker = require("../modules/embed");
 const { request, RequestMethod } = require("fetchu.js");
+const { randomItem } = require("@tolga1452/toolbox.js");
+const { ads } = require("../../config");
 
 const db = new QuickDB();
 
@@ -80,12 +82,13 @@ module.exports = {
         };
         let locale = interaction.locale;
 
-        
-
         async function respond() {
             console.log(response.body);
 
+            let adsMessage = randomItem(ads);
+
             await interaction.editReply({
+                content: user.tier >= 2 ? null : `**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`,
                 files: response.body.data.map(image => image.url),
                 embeds: debug ? [
                     new EmbedMaker(interaction.client)

@@ -1,6 +1,11 @@
 const { SlashCommandBuilder, ChatInputCommandInteraction } = require("discord.js");
 const { localize, getPercentage } = require("../modules/localization");
 const EmbedMaker = require("../modules/embed");
+const { randomItem } = require("@tolga1452/toolbox.js");
+const { ads } = require("../../config");
+const { QuickDB } = require("quick.db");
+
+const db = new QuickDB();
 
 module.exports = {
     category: 'General',
@@ -18,6 +23,15 @@ module.exports = {
      */
     async execute(interaction) {
         await interaction.deferReply();
+
+        let user = await db.get(`users.${interaction.user.id}`) ?? {
+            tier: 0,
+            bonus: 0,
+            usage: 0,
+            imageEdits: false,
+            gpt4: false,
+            gifts: []
+        };
 
         let allCommands = await interaction.client.application.commands.fetch();
         let commands = interaction.client.commands.toJSON();
@@ -47,7 +61,10 @@ module.exports = {
             });
         };
 
+        let adsMessage = randomItem(ads);
+
         interaction.editReply({
+            content: user.tier >= 2 ? null : `**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`,
             embeds: [embed]
         });
     }

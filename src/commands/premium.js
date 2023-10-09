@@ -2,6 +2,11 @@ const { SlashCommandBuilder, ChatInputCommandInteraction, ActionRowBuilder, Butt
 const EmbedMaker = require("../modules/embed");
 const { localize } = require("../modules/localization");
 const { emojis } = require("../../config");
+const { QuickDB } = require("quick.db");
+const { randomItem } = require("@tolga1452/toolbox.js");
+const { ads } = require("../../config");
+
+const db = new QuickDB();
 
 module.exports = {
     category: 'General',
@@ -18,9 +23,19 @@ module.exports = {
         await interaction.deferReply();
 
         let locale = interaction.locale;
-        let isInDEH = await interaction.client.guilds.cache.get('1089540433010491392').members.fetch(interaction.user.id).catch(() => null) !== null;
+        let user = await db.get(`users.${interaction.user.id}`) ?? {
+            tier: 0,
+            bonus: 0,
+            usage: 0,
+            imageEdits: false,
+            gpt4: false,
+            gifts: []
+        };
+
+        let adsMessage = randomItem(ads);
 
         interaction.editReply({
+            content: user.tier >= 2 ? null : `**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`,
             embeds: [
                 new EmbedMaker(interaction.client)
                 .setTitle(`${emojis.premium} Premium`)

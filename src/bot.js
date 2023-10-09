@@ -1104,6 +1104,12 @@ client.on('interactionCreate', async interaction => {
                     function: false
                 },
                 {
+                    url: 'https://thirdparty.webraft.in/v1/chat/completions',
+                    model: 'gpt-4-32k',
+                    key: 'WEBRAFT_API_KEY',
+                    function: true
+                },
+                {
                     url: 'https://beta.purgpt.xyz/openai/chat/completions',
                     model: 'gpt-4',
                     key: 'PURGPT_API_KEY',
@@ -1119,7 +1125,7 @@ client.on('interactionCreate', async interaction => {
                 },
                 {
                     url: 'https://thirdparty.webraft.in/v1/chat/completions',
-                    model: 'gpt-3.5-turbo-16k',
+                    model: 'gpt-3.5-turbo',
                     key: 'WEBRAFT_API_KEY',
                     function: true
                 },
@@ -1171,7 +1177,7 @@ client.on('interactionCreate', async interaction => {
                             timeout: 10000
                         });
                     } catch (error) {
-                        console.log('Error', func.url, error.response);
+                        console.log('Error', func.url, error.response.status, error.response.data);
 
                         continue;
                     };

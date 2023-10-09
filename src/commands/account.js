@@ -2,6 +2,8 @@ const { SlashCommandBuilder, ChatInputCommandInteraction } = require("discord.js
 const { QuickDB } = require("quick.db");
 const { localize } = require("../modules/localization");
 const EmbedMaker = require("../modules/embed");
+const { randomItem } = require("@tolga1452/toolbox.js");
+const { ads } = require("../../config");
 
 const db = new QuickDB();
 
@@ -39,7 +41,10 @@ module.exports = {
         if (!user.gpt4) user.gpt4 = false;
         if (!user.tier) user.tier = 0;
 
+        let adsMessage = randomItem(ads);
+
         interaction.editReply({
+            content: user.tier >= 2 ? null : `**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`,
             embeds: [
                 new EmbedMaker(interaction.client)
                 .setTitle(localize(locale, 'PERSONAL_ACCOUNT'))

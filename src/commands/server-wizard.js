@@ -5,6 +5,8 @@ const { QuickDB } = require("quick.db");
 const { default: axios } = require("axios");
 const { emojis } = require("../../config");
 const { request, RequestMethod } = require("fetchu.js");
+const { randomItem } = require("@tolga1452/toolbox.js");
+const { ads } = require("../../config");
 
 const db = new QuickDB();
 
@@ -98,7 +100,7 @@ module.exports = {
             usage: 0,
             premium: false
         };
-
+        let adsMessage;
 
         if (subcommand === 'setup-channels') {
             if (!interaction.appPermissions.has('ManageChannels')) return interaction.editReply(localize(locale, 'MISSING_PERMISSION', 'Manage Channels'));
@@ -178,7 +180,10 @@ module.exports = {
 
             if (!Array.isArray(channels)) return interaction.editReply(localize(locale, 'INVALID_RESPONSE'));
 
+            adsMessage = randomItem(ads);
+
             await interaction.editReply({
+                content: user.tier >= 2 ? null : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`,
                 embeds: [
                     new EmbedMaker(interaction.client)
                         .setTitle('Channels')
@@ -242,8 +247,11 @@ module.exports = {
                 ).catch(() => null);
                 else if (int.customId === 'follow-up-modal') {
                     await int.deferUpdate().catch(() => int.reply(localize(locale, 'SENDING_FOLLOW_UP')).catch(() => int.editReply(localize(locale, 'SENDING_FOLLOW_UP')).catch(() => null)));
+
+                    adsMessage = randomItem(ads);
+
                     await interaction.editReply({
-                        content: ''
+                        content: user.tier >= 2 ? '' : `**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`,
                     });
 
                     let message = int.fields.getTextInputValue('message');
@@ -364,11 +372,14 @@ module.exports = {
                         await new Promise(resolve => setTimeout(resolve, 1000));
                     };
 
+                    adsMessage = randomItem(ads);
+
                     await interaction.editReply({
-                        content: localize(locale, 'CHANNELS_SETUP'),
+                        content: `${localize(locale, 'CHANNELS_SETUP')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}}`,
                         components: [],
                         embeds: []
                     });
+                    await db.add(`users.${interaction.user.id}.usage`, 1);
                 };
             });
         } else if (subcommand === 'setup-roles') {
@@ -453,7 +464,10 @@ module.exports = {
 
             if (!Array.isArray(roles)) return interaction.editReply(localize(locale, 'INVALID_RESPONSE'));
 
+            adsMessage = randomItem(ads);
+
             await interaction.editReply({
+                content: user.tier >= 2 ? null : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`,
                 embeds: [
                     new EmbedMaker(interaction.client)
                         .setTitle('Roles')
@@ -533,8 +547,11 @@ module.exports = {
                 ).catch(() => null);
                 else if (int.customId === 'follow-up-modal') {
                     await int.deferUpdate().catch(() => int.reply(localize(locale, 'SENDING_FOLLOW_UP')).catch(() => int.editReply(localize(locale, 'SENDING_FOLLOW_UP')).catch(() => null)));
+
+                    adsMessage = randomItem(ads);
+
                     await interaction.editReply({
-                        content: ''
+                        content: user.tier >= 2 ? '' : `**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`,
                     });
 
                     let message = int.fields.getTextInputValue('message');
@@ -599,7 +616,10 @@ module.exports = {
                         return interaction.editReply(localize(locale, 'INVALID_RESPONSE'));
                     };
 
+                    adsMessage = randomItem(ads);
+
                     await interaction.editReply({
+                        content: user.tier >= 2 ? null : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`,
                         embeds: [
                             new EmbedMaker(interaction.client)
                                 .setTitle('Roles')
@@ -665,11 +685,14 @@ module.exports = {
                         await new Promise(resolve => setTimeout(resolve, 1000));
                     };
 
+                    adsMessage = randomItem(ads);
+
                     await interaction.editReply({
-                        content: localize(locale, 'ROLES_SETUP'),
+                        content: `${localize(locale, 'ROLES_SETUP')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`,
                         components: [],
                         embeds: []
                     });
+                    await db.add(`users.${interaction.user.id}.usage`, 1);
                 };
             });
         };

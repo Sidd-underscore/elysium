@@ -1,6 +1,8 @@
 const { SlashCommandBuilder, ChatInputCommandInteraction } = require("discord.js");
 const { QuickDB } = require("quick.db");
 const { localize } = require("../modules/localization");
+const { randomItem } = require("@tolga1452/toolbox.js");
+const { ads } = require("../../config");
 
 const db = new QuickDB();
 
@@ -52,6 +54,6 @@ module.exports = {
 
         await db.set(`users.${interaction.user.id}.mode`, mode);
 
-        await interaction.editReply(localize(interaction.locale, 'CHAT_MODE_SET'));
+        interaction.editReply(`${localize(interaction.locale, 'CHAT_MODE_SET')}`);
     }
 };
