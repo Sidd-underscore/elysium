@@ -31,6 +31,10 @@ module.exports = {
 
         let user = await db.get(`users.${interaction.user.id}`) ?? {};
 
+        if (user.tier !== 1) return interaction.editReply({
+            content: localize(locale, 'TIER_NOT_ENOUGH', 1),
+            ephemeral: true
+        });
         if (!user.lastSave) user.lastSave = 0;
         if (Date.now() - user.lastSave < 600000) return interaction.editReply({
             content: localize(locale, 'COOLDOWN', 10),
