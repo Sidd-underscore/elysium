@@ -1190,7 +1190,7 @@ client.on('interactionCreate', async interaction => {
                             url: func.url
                         };
                     } else {
-                        console.log('Invalid response', func.url, response.body);
+                        console.log('Invalid response', func.url, response);
 
                         continue;
                     };
