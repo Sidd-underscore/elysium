@@ -22,7 +22,7 @@ module.exports = {
     async execute(interaction) {
         let locale = interaction.locale;
 
-        if (interaction.targetMessage.author.id !== interaction.user.id) return interaction.reply({
+        if (interaction.targetMessage.author.id !== interaction.client.user.id) return interaction.reply({
             content: localize(locale, 'ONLY_BOT_MESSAGES'),
             ephemeral: true
         });
