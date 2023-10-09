@@ -631,7 +631,7 @@ client.on('interactionCreate', async interaction => {
             });
             messages.push({
                 role: 'system',
-                content: `Your memories:\n${memories.map(memory => `- ${memory.name}`).join('\n')}`
+                content: `Your memories:\n${memories.map(memory => `- ${memory.memory}`).join('\n')}`
             });
 
             let reply;
