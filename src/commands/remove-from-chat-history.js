@@ -35,12 +35,10 @@ module.exports = {
         let personality = user?.personality ?? 'elysium';
         let chat = user?.chats?.[personality] ?? [];
 
-        console.log(chat.filter(message => message.messageId !== interaction.targetId))
-
         await db.set(`users.${interaction.user.id}.chats.${personality}`, chat.filter(message => message.messageId !== interaction.targetId));
 
         let adsMessage = randomItem(ads);
 
-        interaction.editReply(`${localize(locale, 'MESSAGE_REMOVED')}${user.tier >= 2 ? null : `\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`);
+        interaction.editReply(`${localize(locale, 'MESSAGE_REMOVED')}${user.tier >= 2 ? '' : `\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`);
     }
 };

@@ -1200,7 +1200,7 @@ client.on('interactionCreate', async interaction => {
                             timeout: 10000
                         });
                     } catch (error) {
-                        console.log('Error', func.url, error.response?.status, error.response?.data);
+                        console.log('Error', func.url, error.response);
 
                         continue;
                     };
