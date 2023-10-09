@@ -1132,12 +1132,6 @@ client.on('interactionCreate', async interaction => {
             ];
             const gpt35Functionless = [
                 {
-                    url: 'https://galaxyai.onrender.com/v1/chat/completions',
-                    model: 'gpt-3.5-turbo-16k',
-                    key: 'GALAXYAI_API_KEY',
-                    function: false
-                },
-                {
                     url: 'https://purgpt.personalapi.repl.co/v1/chat/completions',
                     model: 'gpt-3.5-turbo-16k',
                     key: 'GENIUSAI_API_KEY',
@@ -1163,34 +1157,36 @@ client.on('interactionCreate', async interaction => {
                 if (type === 'all') requestFunction = gpt4Function.concat(gpt4Functionless, gpt35Function, gpt35Functionless);
                 else if (type === 'functionOnly') requestFunction = gpt4Function.concat(gpt35Function);
 
-                console.log('Request functions', requestFunction);
-
                 for (let func of requestFunction) {
-                    response = await request({
-                        url: func.url,
-                        method: RequestMethod.Post,
-                        body: {
+                    try {
+                        response = await axios.post(func.url, {
                             model: func.model,
                             messages: messages,
                             functions: func.function ? requestFunctions : null
-                        },
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${process.env[func.key]}`,
-                            'x-daku-key': func.key === 'VERIFY_KEY' ? process.env.DAKU_API_KEY : null
-                        }
-                    }, {
-                        isOk: response => console.log('used', func.url, JSON.stringify(response.body, null, 4)),
-                        isNotOk: response => console.log('error', func.url, response)
-                    });
+                        }, {
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${process.env[func.key]}`
+                            },
+                            timeout: 10000
+                        });
+                    } catch (error) {
+                        console.log('Error', func.url, error);
 
-                    if (response.ok && response.body?.choices && !['Internal Server Error', 'GPT-4 is down or your context is over 7100.'].includes(response.body?.choices?.[0]?.message?.content)) {
+                        continue;
+                    };
+
+                    if (response.body?.choices && !['Internal Server Error', 'GPT-4 is down or your context is over 7100.'].includes(response.body?.choices?.[0]?.message?.content)) {
                         response.url = func.url;
 
                         return {
                             response,
                             url: func.url
                         };
+                    } else {
+                        console.log('Invalid response', func.url, response.body);
+
+                        continue;
                     };
                 };
 
