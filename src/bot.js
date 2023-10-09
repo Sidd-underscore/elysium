@@ -1208,11 +1208,11 @@ client.on('interactionCreate', async interaction => {
 
                 response = response.response;
 
-                console.log('Used model', response.body.model, 'Used url', usedUrl);
-                console.log('Response', JSON.stringify(response.body, null, 4));
+                console.log('Used model', response.data.model, 'Used url', usedUrl);
+                console.log('Response', JSON.stringify(response.data, null, 4));
 
                 while (!end) {
-                    let isFunction = response.body?.choices?.[0]?.finish_reason === 'function_call';
+                    let isFunction = response.data?.choices?.[0]?.finish_reason === 'function_call';
 
                     if (!isFunction) {
                         end = true;
@@ -1220,11 +1220,11 @@ client.on('interactionCreate', async interaction => {
                         break;
                     };
 
-                    let usedFunction = response.body.choices[0].message?.function_call;
+                    let usedFunction = response.data.choices[0].message?.function_call;
                     let functionResponse;
                     let parameters = {};
 
-                    if (!usedFunction) usedFunction = response.body.choices[0].function_call;
+                    if (!usedFunction) usedFunction = response.data.choices[0].function_call;
                     if (usedFunction.arguments) parameters = JSON.parse(usedFunction.arguments);
 
                     console.log('Function call detected', usedFunction, parameters);
@@ -1269,7 +1269,7 @@ client.on('interactionCreate', async interaction => {
                         break;
                     } else response = response.response;
 
-                    console.log('Used model', response.body.model, 'Used url', response.url);
+                    console.log('Used model', response.data.model, 'Used url', response.url);
                 };
 
                 if (response.ok) return respond();
