@@ -31,7 +31,7 @@ module.exports = {
 
         let user = await db.get(`users.${interaction.user.id}`) ?? {};
 
-        if (user.tier !== 1) return interaction.editReply({
+        if (user.tier < 1) return interaction.editReply({
             content: localize(locale, 'TIER_NOT_ENOUGH', 1),
             ephemeral: true
         });
