@@ -1182,7 +1182,7 @@ client.on('interactionCreate', async interaction => {
                         continue;
                     };
 
-                    if (response.body?.choices && !['Internal Server Error', 'GPT-4 is down or your context is over 7100.'].includes(response.body?.choices?.[0]?.message?.content)) {
+                    if (response.data?.choices && !['Internal Server Error', 'GPT-4 is down or your context is over 7100.'].includes(response.data?.choices?.[0]?.message?.content)) {
                         response.url = func.url;
 
                         return {
@@ -1190,7 +1190,7 @@ client.on('interactionCreate', async interaction => {
                             url: func.url
                         };
                     } else {
-                        console.log('Invalid response', func.url, response);
+                        console.log('Invalid response', func.url, response.data);
 
                         continue;
                     };
