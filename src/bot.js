@@ -390,7 +390,7 @@ client.on('interactionCreate', async interaction => {
             async function respond() {
                 console.log('Response', JSON.stringify(response.body, null, 4));
 
-                let choicesMessage = response?.body?.choices?.[0]?.message?.content;
+                let choicesMessage = response?.data?.choices?.[0]?.message?.content;
 
                 if (Array.isArray(choicesMessage)) choicesMessage = choicesMessage[0];
 
