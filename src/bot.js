@@ -1148,6 +1148,12 @@ client.on('interactionCreate', async interaction => {
                     model: 'gpt-3.5-turbo-16k',
                     key: 'PURGPT_API_KEY',
                     function: false
+                },
+                {
+                    url: 'https://beta.purgpt.xyz/openai/chat/completions',
+                    model: 'gpt-3.5-turbo',
+                    key: 'PURGPT_API_KEY',
+                    function: false
                 }
             ];
 
@@ -1173,7 +1179,7 @@ client.on('interactionCreate', async interaction => {
                         }
                     }, {
                         isOk: response => console.log('used', func.url, JSON.stringify(response.body, null, 4)),
-                        isNotOk: response => console.log('error', func.url, JSON.stringify(response.body, null, 4))
+                        isNotOk: response => console.log('error', func.url, response)
                     });
 
                     if (response.ok && response.body?.choices && !['Internal Server Error', 'GPT-4 is down or your context is over 7100.'].includes(response.body?.choices?.[0]?.message?.content)) {
