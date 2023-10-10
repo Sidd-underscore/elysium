@@ -14,6 +14,7 @@ const { execSync } = require('node:child_process');
 const { IpFilter } = require('express-ipfilter');
 const sharp = require('sharp');
 const crypto = require('crypto');
+const { AttachmentBuilder } = require("discord.js");
 
 const client = new Client({
     intents: [
@@ -258,6 +259,32 @@ client.on('interactionCreate', async interaction => {
                                 })))
                         ]
                     });
+                    break;
+                case 'feedback':
+                    await interaction.deferReply({ ephemeral: true });
+
+                    let trainMessage = await db.get(`trainMessages.${interaction.message.id}`);
+
+                    if (args[0] === 'good') {
+                        writeFileSync(`feedback-${interaction.message.id}.json`, {
+                            feedback: {
+                                personality: true,
+                                correct: true,
+                                humanLike: true
+                            },
+                            message: trainMessage
+                        });
+
+                        client.channels.cache.get('1138469613429084192').send({
+                            content: 'New feedback',
+                            files: [
+                                new AttachmentBuilder()
+                                .setFile(`feedback-${interaction.message.id}.json`)
+                                .setName('feedback.json')
+                            ]
+                        });
+                    };
+                    break;
             };
         } catch (error) {
             logger('error', 'COMMAND', 'Error while executing message component:', `${error.message}\n`, error.stack);
@@ -387,6 +414,8 @@ client.on('interactionCreate', async interaction => {
 
             let functions = [];
             let files = [];
+            let context;
+            let trainMessage;
 
             async function respond() {
                 console.log('Response', JSON.stringify(response.body, null, 4));
@@ -408,6 +437,21 @@ client.on('interactionCreate', async interaction => {
                         }
                     });
                 };
+
+                await db.set(`trainMessages.${message.id}`, {
+                    context,
+                    trainMessage,
+                    functions,
+                    respondMessage
+                });
+
+                timer('custom', { // 24 hours
+                    time: 24 * 60 * 60 * 1000,
+                    callback: async () => await db.delete(`trainMessages.${c.messageId}`),
+                    config: {
+                        messageId: message.id
+                    }
+                });
 
                 let parsedMentions = respondMessage.match(/<@!?(\d+)>/g);
 
@@ -492,17 +536,33 @@ client.on('interactionCreate', async interaction => {
                     };
                 };
 
+                let buttons = functions.length > 0 ? [
+                    new ActionRowBuilder()
+                        .setComponents(
+                            new ButtonBuilder()
+                                .setCustomId(`functions:${message.id}`)
+                                .setLabel(localize(locale, 'SHOW_FUNCTIONS'))
+                                .setStyle(ButtonStyle.Secondary)
+                        )
+                ] : [];
+
+                buttons.push(
+                    new ActionRowBuilder()
+                        .setComponents(
+                            new ButtonBuilder()
+                                .setCustomId('feedback:good')
+                                .setEmoji('1100800055201501204')
+                                .setStyle(ButtonStyle.Success),
+                            new ButtonBuilder()
+                                .setCustomId('feedback:bad')
+                                .setEmoji('1100799905846526032')
+                                .setStyle(ButtonStyle.Danger)
+                        )
+                );
+
                 if (replied) replied.edit({
                     content: respondMessage[0],
-                    components: functions.length > 0 ? [
-                        new ActionRowBuilder()
-                            .setComponents(
-                                new ButtonBuilder()
-                                    .setCustomId(`functions:${message.id}`)
-                                    .setLabel(localize(locale, 'SHOW_FUNCTIONS'))
-                                    .setStyle(ButtonStyle.Secondary)
-                            )
-                    ] : [],
+                    components: buttons,
                     allowedMentions: {
                         users: parsedMentions?.map(mention => mention.replace(/<@!?(\d+)>/g, '$1')),
                         roles: [],
@@ -521,15 +581,7 @@ client.on('interactionCreate', async interaction => {
                         roles: [],
                         repliedUser: message.type === MessageType.UserJoin && guild?.welcomer?.status ? true : respondMessage.includes(`<@${message.author.id}>`)
                     },
-                    components: functions.length > 0 ? [
-                        new ActionRowBuilder()
-                            .setComponents(
-                                new ButtonBuilder()
-                                    .setCustomId(`functions:${message.id}`)
-                                    .setLabel(localize(locale, 'SHOW_FUNCTIONS'))
-                                    .setStyle(ButtonStyle.Secondary)
-                            )
-                    ] : [],
+                    components: buttons,
                     files: files.splice(0, 10)
                 }).catch(error => {
                     console.log(error);
@@ -621,6 +673,8 @@ client.on('interactionCreate', async interaction => {
 
             let memories = await db.get('memories');
 
+            context = `You are ${personalityId === 'elysium' ? 'Elysium' : personality.name}. You are chatting in a Discord server. Here are some information about your environment:\nServer: ${message.guild?.name ?? 'DMs'}${message.guild ? `\nServer Owner: ${owner.displayName}\nServer Description: ${message.guild.description ?? 'None'}` : ''}\nChannel: ${message.channel.name ?? `@${message.author.username}`} (mention: <#${message.channelId}>)\nChannel Description: ${message.channel.topic ?? 'None'}\nUTC date: ${new Date().toUTCString()}\n\n${personality.description ?? defaultPersonality}\n\nYour memories:\n${memories.map(memory => `- ${memory.memory}`).join('\n')}`;
+
             messages.push({
                 role: 'system',
                 content: `You are ${personalityId === 'elysium' ? 'Elysium' : personality.name}. You are chatting in a Discord server. Here are some information about your environment:\nServer: ${message.guild?.name ?? 'DMs'}${message.guild ? `\nServer Owner: ${owner.displayName}\nServer Description: ${message.guild.description ?? 'None'}` : ''}\nChannel: ${message.channel.name ?? `@${message.author.username}`} (mention: <#${message.channelId}>)\nChannel Description: ${message.channel.topic ?? 'None'}\nUTC date: ${new Date().toUTCString()}`
@@ -637,6 +691,18 @@ client.on('interactionCreate', async interaction => {
             let reply;
 
             if (message.reference?.messageId) reply = await message.fetchReference();
+
+            trainMessage = {
+                username: message?.member?.displayName ?? message.author.displayName,
+                userId: message.author.id,
+                userRoles: message.member?.roles.cache.map(role => role.name) ?? [],
+                repliedMessage: {
+                    author: reply?.member?.displayName ?? reply?.author?.displayName,
+                    content: reply?.cleanContent ?? null
+                },
+                attachments: message.attachments.map(attachment => attachment.url),
+                message: message.cleanContent
+            };
 
             messages.push({
                 role: 'user',
