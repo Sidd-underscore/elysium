@@ -327,13 +327,13 @@ client.on('interactionCreate', async interaction => {
                         collector.on('collect', async i => {
                             collector.stop();
 
-                            let reason = i.values[0];
+                            let reason = i.values;
 
                             writeFileSync(`feedback-${interaction.message.id}.json`, JSON.stringify({
                                 feedback: {
-                                    personality: !(reason === 'personality'),
-                                    correct: !(reason === 'correct'),
-                                    humanLike: !(reason === 'human_like')
+                                    personality: !reason.includes('personality'),
+                                    correct: !reason.includes('correct'),
+                                    humanLike: !reason.includes('human_like')
                                 },
                                 message: trainMessage
                             }, null, 4), 'utf-8');
