@@ -263,9 +263,7 @@ client.on('interactionCreate', async interaction => {
                 case 'feedback':
                     await interaction.deferReply({ ephemeral: true });
 
-                    let trainMessage = await db.get(`trainMessages2.${interaction.message.id}`);
-
-                    console.log(interaction.message.id, trainMessage);
+                    let trainMessage = await db.get(`trainMessages2.${interaction.message.reference.messageId}`);
 
                     if (args[0] === 'good') {
                         writeFileSync(`feedback-${interaction.message.id}.json`, JSON.stringify({
@@ -453,7 +451,7 @@ client.on('interactionCreate', async interaction => {
 
                 timer('custom', { // 24 hours
                     time: 24 * 60 * 60 * 1000,
-                    callback: async () => await db.delete(`trainMessages.${c.messageId}`),
+                    callback: async () => await db.delete(`trainMessages2.${c.messageId}`),
                     config: {
                         messageId: message.id
                     }
