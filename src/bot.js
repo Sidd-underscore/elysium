@@ -281,8 +281,11 @@ client.on('interactionCreate', async interaction => {
                                 new AttachmentBuilder()
                                 .setFile(`feedback-${interaction.message.id}.json`)
                                 .setName('feedback.json')
+                                .toJSON()
                             ]
                         });
+
+                        interaction.editReply(localize(interaction.locale, 'FEEDBACK_SENT'));
                     };
                     break;
             };

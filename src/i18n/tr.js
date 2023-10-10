@@ -83,4 +83,5 @@ module.exports = {
     COOLDOWN: 'Bu komutu yalnızca her {{0}} dakikada bir kullanabilirsiniz.',
     TIER_NOT_ENOUGH: 'Bu komut için seviyeniz yeterli değil. En az Tier {{0}} olmanız gerekir.',
     SAVED_MEMORY: 'Anı başarıyla kaydedildi!',
+    FEEDBACK_SENT: 'Geri bildiriminiz başarıyla gönderildi!',
 };
