@@ -283,8 +283,8 @@ client.on('interactionCreate', async interaction => {
                             content: 'New feedback',
                             files: [
                                 new AttachmentBuilder()
-                                .setFile(`feedback-${interaction.message.id}.json`)
-                                .setName('feedback.json')
+                                    .setFile(`feedback-${interaction.message.id}.json`)
+                                    .setName('feedback.json')
                             ]
                         });
 
@@ -298,22 +298,23 @@ client.on('interactionCreate', async interaction => {
                         interaction.editReply({
                             components: [
                                 new ActionRowBuilder()
-                                .setComponents(
-                                    new StringSelectMenuBuilder()
-                                    .setCustomId('feedback-reason')
-                                    .setPlaceholder(localize(interaction.locale, 'FEEDBACK_SELECT_REASON'))
-                                    .setOptions(
-                                        new StringSelectMenuOptionBuilder()
-                                        .setLabel(localize(interaction.locale, 'FEEDBACK_REASON_PERSONALITY'))
-                                        .setValue('personality'),
-                                        new StringSelectMenuOptionBuilder()
-                                        .setLabel(localize(interaction.locale, 'FEEDBACK_REASON_CORRECT'))
-                                        .setValue('correct'),
-                                        new StringSelectMenuOptionBuilder()
-                                        .setLabel(localize(interaction.locale, 'FEEDBACK_REASON_HUMAN_LIKE'))
-                                        .setValue('human_like')
+                                    .setComponents(
+                                        new StringSelectMenuBuilder()
+                                            .setCustomId('feedback-reason')
+                                            .setPlaceholder(localize(interaction.locale, 'FEEDBACK_SELECT_REASON'))
+                                            .setOptions(
+                                                new StringSelectMenuOptionBuilder()
+                                                    .setLabel(localize(interaction.locale, 'FEEDBACK_REASON_PERSONALITY'))
+                                                    .setValue('personality'),
+                                                new StringSelectMenuOptionBuilder()
+                                                    .setLabel(localize(interaction.locale, 'FEEDBACK_REASON_CORRECT'))
+                                                    .setValue('correct'),
+                                                new StringSelectMenuOptionBuilder()
+                                                    .setLabel(localize(interaction.locale, 'FEEDBACK_REASON_HUMAN_LIKE'))
+                                                    .setValue('human_like')
+                                            )
+                                            .setMaxValues(3)
                                     )
-                                )
                             ]
                         });
 
@@ -341,8 +342,8 @@ client.on('interactionCreate', async interaction => {
                                 content: 'New feedback',
                                 files: [
                                     new AttachmentBuilder()
-                                    .setFile(`feedback-${interaction.message.id}.json`)
-                                    .setName('feedback.json')
+                                        .setFile(`feedback-${interaction.message.id}.json`)
+                                        .setName('feedback.json')
                                 ]
                             });
 
@@ -352,7 +353,7 @@ client.on('interactionCreate', async interaction => {
                                 content: localize(interaction.locale, 'FEEDBACK_SENT'),
                                 components: []
                             });
-                            reply.edit({
+                            interaction.message.edit({
                                 components: []
                             });
                         });
