@@ -265,6 +265,8 @@ client.on('interactionCreate', async interaction => {
 
                     let trainMessage = await db.get(`trainMessages2.${interaction.message.id}`);
 
+                    console.log(interaction.message.id, trainMessage);
+
                     if (args[0] === 'good') {
                         writeFileSync(`feedback-${interaction.message.id}.json`, JSON.stringify({
                             feedback: {
