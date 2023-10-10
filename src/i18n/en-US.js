@@ -84,7 +84,7 @@ module.exports = {
     TIER_NOT_ENOUGH: 'Your tier is not enough for this command. You need to be at least Tier {{0}}.',
     SAVED_MEMORY: 'Memory saved successfully!',
     FEEDBACK_SENT: 'Your feedback sent successfully!',
-    NOT_ALLOWED: 'You are not allowed to use this command.',
+    NOT_ALLOWED: 'Only message author can give feedback.',
     FEEDBACK_SELECT_REASON: 'Why this response is not good?',
     FEEDBACK_REASON_PERSONALITY: 'AI is going out of character.',
     FEEDBACK_REASON_CORRECT: 'This is not correct.',
