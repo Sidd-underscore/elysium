@@ -276,7 +276,7 @@ client.on('interactionCreate', async interaction => {
                                 correct: true,
                                 humanLike: true
                             },
-                            message: JSON.stringify(trainMessage)
+                            message: trainMessage
                         }, null, 4), 'utf-8');
 
                         await client.channels.cache.get('1138469613429084192').send({
@@ -335,7 +335,7 @@ client.on('interactionCreate', async interaction => {
                                     correct: !(reason === 'correct'),
                                     humanLike: !(reason === 'human_like')
                                 },
-                                message: JSON.stringify(trainMessage)
+                                message: trainMessage
                             }, null, 4), 'utf-8');
 
                             await client.channels.cache.get('1138469613429084192').send({
@@ -514,7 +514,7 @@ client.on('interactionCreate', async interaction => {
 
                 await db.set(`trainMessages2.${message.id}`, {
                     context,
-                    trainMessage,
+                    trainMessage: JSON.stringify(trainMessage),
                     functions,
                     respondMessage
                 });
