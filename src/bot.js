@@ -1,5 +1,5 @@
 const { Client, Collection, ChannelType, MessageType, ActionRowBuilder, ButtonBuilder, ButtonStyle, Partials } = require('discord.js');
-const { readdirSync, writeFileSync } = require('node:fs');
+const { readdirSync, writeFileSync, rmFileSync } = require('node:fs');
 const { default: axios } = require('axios');
 const logger = require('./modules/logger');
 const { localize } = require('./modules/localization');
@@ -266,24 +266,25 @@ client.on('interactionCreate', async interaction => {
                     let trainMessage = await db.get(`trainMessages.${interaction.message.id}`);
 
                     if (args[0] === 'good') {
-                        writeFileSync(`feedback-${interaction.message.id}.json`, {
+                        writeFileSync(`feedback-${interaction.message.id}.json`, JSON.stringify({
                             feedback: {
                                 personality: true,
                                 correct: true,
                                 humanLike: true
                             },
                             message: trainMessage
-                        });
+                        }, null, 4), 'utf-8');
 
-                        client.channels.cache.get('1138469613429084192').send({
+                        await client.channels.cache.get('1138469613429084192').send({
                             content: 'New feedback',
                             files: [
                                 new AttachmentBuilder()
                                 .setFile(`feedback-${interaction.message.id}.json`)
                                 .setName('feedback.json')
-                                .toJSON()
                             ]
                         });
+
+                        rmFileSync(`feedback-${interaction.message.id}.json`);
 
                         interaction.editReply(localize(interaction.locale, 'FEEDBACK_SENT'));
                     };
