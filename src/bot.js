@@ -276,7 +276,7 @@ client.on('interactionCreate', async interaction => {
                                 correct: true,
                                 humanLike: true
                             },
-                            message: trainMessage
+                            message: JSON.stringify(trainMessage)
                         }, null, 4), 'utf-8');
 
                         await client.channels.cache.get('1138469613429084192').send({
@@ -335,7 +335,7 @@ client.on('interactionCreate', async interaction => {
                                     correct: !(reason === 'correct'),
                                     humanLike: !(reason === 'human_like')
                                 },
-                                message: trainMessage
+                                message: JSON.stringify(trainMessage)
                             }, null, 4), 'utf-8');
 
                             await client.channels.cache.get('1138469613429084192').send({
