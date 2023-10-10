@@ -514,7 +514,7 @@ client.on('interactionCreate', async interaction => {
 
                 await db.set(`trainMessages2.${message.id}`, {
                     context,
-                    trainMessage: JSON.stringify(trainMessage),
+                    trainMessage: trainMessage,
                     functions,
                     respondMessage,
                     user: message.author.id
