@@ -286,7 +286,7 @@ client.on('interactionCreate', async interaction => {
                                     .setFile(`feedback-${interaction.message.id}.json`)
                                     .setName('feedback.json')
                             ]
-                        });
+                        }).then(msg => msg.react('✅'));
 
                         execSync(`rm feedback-${interaction.message.id}.json`);
 
@@ -345,7 +345,7 @@ client.on('interactionCreate', async interaction => {
                                         .setFile(`feedback-${interaction.message.id}.json`)
                                         .setName('feedback.json')
                                 ]
-                            });
+                            }).then(msg => msg.react('✅'));
 
                             execSync(`rm feedback-${interaction.message.id}.json`);
 
