@@ -268,7 +268,7 @@ client.on('interactionCreate', async interaction => {
 
                     let trainMessage = await db.get(`trainMessages2.${interaction.message.reference.messageId}`);
 
-                    if (trainMessage.trainMessage.userId !== interaction.user.id) return interaction.editReply(localize(interaction.locale, 'NOT_ALLOWED'));
+                    if (trainMessage.user !== interaction.user.id) return interaction.editReply(localize(interaction.locale, 'NOT_ALLOWED'));
                     if (args[0] === 'good') {
                         writeFileSync(`feedback-${interaction.message.id}.json`, JSON.stringify({
                             feedback: {
@@ -516,7 +516,8 @@ client.on('interactionCreate', async interaction => {
                     context,
                     trainMessage: JSON.stringify(trainMessage),
                     functions,
-                    respondMessage
+                    respondMessage,
+                    user: message.author.id
                 });
 
                 timer('custom', { // 24 hours
