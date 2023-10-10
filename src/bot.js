@@ -1,5 +1,5 @@
 const { Client, Collection, ChannelType, MessageType, ActionRowBuilder, ButtonBuilder, ButtonStyle, Partials } = require('discord.js');
-const { readdirSync, writeFileSync, rmFileSync } = require('node:fs');
+const { readdirSync, writeFileSync } = require('node:fs');
 const { default: axios } = require('axios');
 const logger = require('./modules/logger');
 const { localize } = require('./modules/localization');
@@ -263,7 +263,7 @@ client.on('interactionCreate', async interaction => {
                 case 'feedback':
                     await interaction.deferReply({ ephemeral: true });
 
-                    let trainMessage = await db.get(`trainMessages.${interaction.message.id}`);
+                    let trainMessage = await db.get(`trainMessages2.${interaction.message.id}`);
 
                     if (args[0] === 'good') {
                         writeFileSync(`feedback-${interaction.message.id}.json`, JSON.stringify({
@@ -284,7 +284,7 @@ client.on('interactionCreate', async interaction => {
                             ]
                         });
 
-                        rmFileSync(`feedback-${interaction.message.id}.json`);
+                        execSync(`rm feedback-${interaction.message.id}.json`);
 
                         interaction.editReply(localize(interaction.locale, 'FEEDBACK_SENT'));
                     };
@@ -442,7 +442,7 @@ client.on('interactionCreate', async interaction => {
                     });
                 };
 
-                await db.set(`trainMessages.${message.id}`, {
+                await db.set(`trainMessages2.${message.id}`, {
                     context,
                     trainMessage,
                     functions,
