@@ -15,6 +15,9 @@ const { IpFilter } = require('express-ipfilter');
 const sharp = require('sharp');
 const crypto = require('crypto');
 const { AttachmentBuilder } = require("discord.js");
+const { StringSelectMenuBuilder } = require("@discordjs/builders");
+const { StringSelectMenuOptionBuilder } = require("discord.js");
+const { InteractionCollector } = require("discord.js");
 
 const client = new Client({
     intents: [
@@ -261,10 +264,11 @@ client.on('interactionCreate', async interaction => {
                     });
                     break;
                 case 'feedback':
-                    await interaction.deferReply({ ephemeral: true });
+                    let reply = await interaction.deferReply({ ephemeral: true, fetchReply: true });
 
                     let trainMessage = await db.get(`trainMessages2.${interaction.message.reference.messageId}`);
 
+                    if (trainMessage.trainMessage.userId !== interaction.user.id) return interaction.editReply(localize(interaction.locale, 'NOT_ALLOWED'));
                     if (args[0] === 'good') {
                         writeFileSync(`feedback-${interaction.message.id}.json`, JSON.stringify({
                             feedback: {
@@ -287,6 +291,71 @@ client.on('interactionCreate', async interaction => {
                         execSync(`rm feedback-${interaction.message.id}.json`);
 
                         interaction.editReply(localize(interaction.locale, 'FEEDBACK_SENT'));
+                        interaction.message.edit({
+                            components: []
+                        });
+                    } else {
+                        interaction.editReply({
+                            components: [
+                                new ActionRowBuilder()
+                                .setComponents(
+                                    new StringSelectMenuBuilder()
+                                    .setCustomId('feedback-reason')
+                                    .setPlaceholder(localize(interaction.locale, 'FEEDBACK_SELECT_REASON'))
+                                    .setOptions(
+                                        new StringSelectMenuOptionBuilder()
+                                        .setLabel(localize(interaction.locale, 'FEEDBACK_REASON_PERSONALITY'))
+                                        .setValue('personality'),
+                                        new StringSelectMenuOptionBuilder()
+                                        .setLabel(localize(interaction.locale, 'FEEDBACK_REASON_CORRECT'))
+                                        .setValue('correct'),
+                                        new StringSelectMenuOptionBuilder()
+                                        .setLabel(localize(interaction.locale, 'FEEDBACK_REASON_HUMAN_LIKE'))
+                                        .setValue('human_like')
+                                    )
+                                )
+                            ]
+                        });
+
+                        const collector = new InteractionCollector(client, {
+                            message: reply,
+                            time: 60000,
+                            filter: i => i.user.id === interaction.user.id && i.isMessageComponent() && i.customId === 'feedback-reason'
+                        });
+
+                        collector.on('collect', async i => {
+                            collector.stop();
+
+                            let reason = i.values[0];
+
+                            writeFileSync(`feedback-${interaction.message.id}.json`, JSON.stringify({
+                                feedback: {
+                                    personality: !(reason === 'personality'),
+                                    correct: !(reason === 'correct'),
+                                    humanLike: !(reason === 'human_like')
+                                },
+                                message: trainMessage
+                            }, null, 4), 'utf-8');
+
+                            await client.channels.cache.get('1138469613429084192').send({
+                                content: 'New feedback',
+                                files: [
+                                    new AttachmentBuilder()
+                                    .setFile(`feedback-${interaction.message.id}.json`)
+                                    .setName('feedback.json')
+                                ]
+                            });
+
+                            execSync(`rm feedback-${interaction.message.id}.json`);
+
+                            interaction.editReply({
+                                content: localize(interaction.locale, 'FEEDBACK_SENT'),
+                                components: []
+                            });
+                            reply.edit({
+                                components: []
+                            });
+                        });
                     };
                     break;
             };

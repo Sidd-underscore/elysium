@@ -84,4 +84,9 @@ module.exports = {
     TIER_NOT_ENOUGH: 'Bu komut için seviyeniz yeterli değil. En az Tier {{0}} olmanız gerekir.',
     SAVED_MEMORY: 'Anı başarıyla kaydedildi!',
     FEEDBACK_SENT: 'Geri bildiriminiz başarıyla gönderildi!',
+    NOT_ALLOWED: 'Bu komutu kullanmaya izniniz yok.',
+    FEEDBACK_SELECT_REASON: 'Bu yanıt neden iyi değil?',
+    FEEDBACK_REASON_PERSONALITY: 'Yapay zeka karakterinden çıkıyor.',
+    FEEDBACK_REASON_CORRECT: 'Bu doğru değil.',
+    FEEDBACK_REASON_HUMAN_LIKE: 'Yapay zeka insan gibi değil.',
 };
