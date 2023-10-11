@@ -1250,12 +1250,6 @@ client.on('interactionCreate', async interaction => {
                     model: 'gpt-4',
                     key: 'NOVA_API_KEY',
                     function: true
-                },
-                {
-                    url: 'https://zukijourney.xyzbot.net/unf/chat/completions',
-                    model: 'gpt-4',
-                    key: 'ZUKI_API_KEY',
-                    function: true
                 }
             ];
 
@@ -1267,12 +1261,6 @@ client.on('interactionCreate', async interaction => {
             });
 
             const gpt4Functionless = [
-                {
-                    url: 'https://purgpt.personalapi.repl.co/v1/chat/completions',
-                    model: 'gpt-4',
-                    key: 'GENIUSAI_API_KEY',
-                    function: false
-                },
                 {
                     url: 'https://thirdparty.webraft.in/v1/chat/completions',
                     model: 'gpt-4-32k',
@@ -1294,12 +1282,6 @@ client.on('interactionCreate', async interaction => {
                     function: true
                 },
                 {
-                    url: 'https://zukijourney.xyzbot.net/unf/chat/completions',
-                    model: 'gpt-3.5-turbo-16k',
-                    key: 'ZUKI_API_KEY',
-                    function: true
-                },
-                {
                     url: 'https://thirdparty.webraft.in/v1/chat/completions',
                     model: 'gpt-3.5-turbo',
                     key: 'WEBRAFT_API_KEY',
@@ -1309,6 +1291,12 @@ client.on('interactionCreate', async interaction => {
                     url: 'https://api.openai.com/v1/chat/completions',
                     model: 'gpt-3.5-turbo-16k-0613',
                     key: 'OPENAI_API_KEY',
+                    function: true
+                },
+                {
+                    url: 'https://zukijourney.xyzbot.net/unf/chat/completions',
+                    model: 'gpt-3.5-turbo-16k',
+                    key: 'ZUKI_API_KEY',
                     function: true
                 }
             ];
