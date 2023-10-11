@@ -548,7 +548,7 @@ client.on('interactionCreate', async interaction => {
                     });
 
                     let threadName = await request({
-                        url: 'https://beta.purgpt.xyz/openai/chat/completions',
+                        url: 'https://zukijourney.xyzbot.net/unf/chat/completions',
                         method: RequestMethod.Post,
                         body: {
                             model: 'gpt-3.5-turbo',
@@ -1250,6 +1250,12 @@ client.on('interactionCreate', async interaction => {
                     model: 'gpt-4',
                     key: 'NOVA_API_KEY',
                     function: true
+                },
+                {
+                    url: 'https://zukijourney.xyzbot.net/unf/chat/completions',
+                    model: 'gpt-4',
+                    key: 'ZUKI_API_KEY',
+                    function: true
                 }
             ];
 
@@ -1288,6 +1294,12 @@ client.on('interactionCreate', async interaction => {
                     function: true
                 },
                 {
+                    url: 'https://zukijourney.xyzbot.net/unf/chat/completions',
+                    model: 'gpt-3.5-turbo-16k',
+                    key: 'ZUKI_API_KEY',
+                    function: true
+                },
+                {
                     url: 'https://thirdparty.webraft.in/v1/chat/completions',
                     model: 'gpt-3.5-turbo',
                     key: 'WEBRAFT_API_KEY',
@@ -1301,12 +1313,6 @@ client.on('interactionCreate', async interaction => {
                 }
             ];
             const gpt35Functionless = [
-                {
-                    url: 'https://purgpt.personalapi.repl.co/v1/chat/completions',
-                    model: 'gpt-3.5-turbo-16k',
-                    key: 'GENIUSAI_API_KEY',
-                    function: false
-                },
                 {
                     url: 'https://beta.purgpt.xyz/openai/chat/completions',
                     model: 'gpt-3.5-turbo-16k',
