@@ -1250,6 +1250,12 @@ client.on('interactionCreate', async interaction => {
                     model: 'gpt-4',
                     key: 'NOVA_API_KEY',
                     function: true
+                },
+                {
+                    url: 'https://thirdparty.webraft.in/v1/chat/completions',
+                    model: 'gpt-4-32k',
+                    key: 'WEBRAFT_API_KEY',
+                    function: true
                 }
             ];
 
@@ -1261,12 +1267,6 @@ client.on('interactionCreate', async interaction => {
             });
 
             const gpt4Functionless = [
-                {
-                    url: 'https://thirdparty.webraft.in/v1/chat/completions',
-                    model: 'gpt-4-32k',
-                    key: 'WEBRAFT_API_KEY',
-                    function: true
-                },
                 {
                     url: 'https://beta.purgpt.xyz/openai/chat/completions',
                     model: 'gpt-4',
@@ -1291,12 +1291,6 @@ client.on('interactionCreate', async interaction => {
                     url: 'https://api.openai.com/v1/chat/completions',
                     model: 'gpt-3.5-turbo-16k-0613',
                     key: 'OPENAI_API_KEY',
-                    function: true
-                },
-                {
-                    url: 'https://zukijourney.xyzbot.net/v1/chat/completions',
-                    model: 'gpt-4',
-                    key: 'ZUKI_API_KEY',
                     function: true
                 }
             ];
