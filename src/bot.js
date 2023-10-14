@@ -1424,7 +1424,12 @@ client.on('interactionCreate', async interaction => {
 
             if (response.status === 200) return respond();
             else {
-                const elysiumAI = new TextServiceClient();
+                const elysiumAI = new TextServiceClient({
+                    credentials: {
+                        client_email: process.env.GOOGLE_EMAIL,
+                        private_key: process.env.GOOGLE_API_KEY
+                    }
+                });
                 const chatMessages = message.channel.messages.cache.toJSON();
 
                 let elysiumResponse = await elysiumAI.generateText({
