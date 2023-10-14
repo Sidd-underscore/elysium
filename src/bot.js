@@ -18,7 +18,6 @@ const { AttachmentBuilder } = require("discord.js");
 const { StringSelectMenuBuilder } = require("@discordjs/builders");
 const { StringSelectMenuOptionBuilder } = require("discord.js");
 const { InteractionCollector } = require("discord.js");
-const { TextServiceClient } = require("@google-ai/generativelanguage");
 
 const client = new Client({
     intents: [
@@ -1238,14 +1237,18 @@ client.on('interactionCreate', async interaction => {
                     key: 'NOVA_API_KEY',
                     function: true
                 },
-                /*
                 {
                     url: 'https://thirdparty.webraft.in/v1/chat/completions',
                     model: 'gpt-4-32k',
                     key: 'WEBRAFT_API_KEY',
                     function: true
+                },
+                {
+                    url: 'https://thirdparty.webraft.in/v1/chat/completions',
+                    model: 'gpt-4',
+                    key: 'WEBRAFT_API_KEY',
+                    function: true
                 }
-                */
             ];
 
             if (user.gpt4) gpt4Function.push({
@@ -1264,7 +1267,6 @@ client.on('interactionCreate', async interaction => {
                 }
             ];
             const gpt35Function = [
-                /*
                 {
                     url: 'https://api.nova-oss.com/v1/chat/completions',
                     model: 'gpt-3.5-turbo-16k',
@@ -1283,10 +1285,8 @@ client.on('interactionCreate', async interaction => {
                     key: 'OPENAI_API_KEY',
                     function: true
                 }
-                */
             ];
             const gpt35Functionless = [
-                /*
                 {
                     url: 'https://beta.purgpt.xyz/openai/chat/completions',
                     model: 'gpt-3.5-turbo-16k',
@@ -1299,7 +1299,6 @@ client.on('interactionCreate', async interaction => {
                     key: 'PURGPT_API_KEY',
                     function: false
                 }
-                */
             ];
 
             async function tryRequest(type = 'all') {
@@ -1423,39 +1422,13 @@ client.on('interactionCreate', async interaction => {
             };
 
             if (response.status === 200) return respond();
-            else {
-                const elysiumAI = new TextServiceClient({
-                    credentials: {
-                        client_email: process.env.GOOGLE_EMAIL,
-                        private_key: process.env.GOOGLE_API_KEY
-                    }
-                });
-                const chatMessages = message.channel.messages.cache.toJSON();
-
-                let elysiumResponse = await elysiumAI.generateText({
-                    model: 'tunedModels/elysium-3-vtsxizchupgc',
-                    temperature: 1,
-                    candidateCount: 5,
-                    top_k: 40,
-                    top_p: 0.95,
-                    max_output_tokens: 2000,
-                    stop_sequences: [],
-                    safety_settings: [{ "category": "HARM_CATEGORY_DEROGATORY", "threshold": 0 }, { "category": "HARM_CATEGORY_TOXICITY", "threshold": 0 }, { "category": "HARM_CATEGORY_VIOLENCE", "threshold": 0 }, { "category": "HARM_CATEGORY_SEXUAL", "threshold": 0 }, { "category": "HARM_CATEGORY_MEDICAL", "threshold": 0 }, { "category": "HARM_CATEGORY_DANGEROUS", "threshold": 0 }],
-                    prompt: {
-                        text: `input: You are ${personalityId === 'elysium' ? 'Elysium' : personality.name}. You are chatting in a Discord server. Here are some information about your environment:\nServer: ${message.guild?.name ?? 'DMs'}${message.guild ? `\nServer Owner: ${owner.displayName}\nServer Description: ${message.guild.description ?? 'None'}` : ''}\nChannel: ${message.channel.name ?? `@${message.author.username}`} (mention: <#${message.channelId}>)\nChannel Description: ${message.channel.topic ?? 'None'}\nUTC date: ${new Date().toUTCString()}\n\n${personality.description ?? defaultPersonality}\n\nYour memories:\n${memories.map(memory => `- ${memory.memory}`).join('\n')}\n\nMessage History\n\n${chatMessages.map(message => `Username: ${message.author.name} (${message.author.id === client.user.id ? 'you' : `id: ${message.author.id}, mention: <@${message.author.id}>`})\nMessage: ${message.cleanContent}`)}\n\nYour message:`
-                    }
-                });
-
-                if (elysiumResponse) {
-                    console.log('ElysiumAI Response', JSON.stringify(elysiumResponse, null, 2));
-                } if (message.mentions.users.has(client.user.id)) return message.reply({
-                    content: localize(locale, 'MODELS_DOWN'),
-                    allowedMentions: {
-                        roles: [],
-                        repliedUser: false
-                    }
-                });
-            };
+            else if (message.mentions.users.has(client.user.id)) return message.reply({
+                content: localize(locale, 'MODELS_DOWN'),
+                allowedMentions: {
+                    roles: [],
+                    repliedUser: false
+                }
+            });
         } catch (error) {
             console.log('Error', error);
         };
