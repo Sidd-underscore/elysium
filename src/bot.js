@@ -18,6 +18,7 @@ const { AttachmentBuilder } = require("discord.js");
 const { StringSelectMenuBuilder } = require("@discordjs/builders");
 const { StringSelectMenuOptionBuilder } = require("discord.js");
 const { InteractionCollector } = require("discord.js");
+const { TextServiceClient } = require("@google-ai/generativelanguage");
 
 const client = new Client({
     intents: [
