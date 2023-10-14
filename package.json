@@ -12,6 +12,7 @@
   "author": "Tolgchu",
   "license": "MIT",
   "dependencies": {
+    "@google-ai/generativelanguage": "^1.1.0",
     "@tolga1452/logchu": "^2.0.1",
     "@tolga1452/toolbox.js": "^1.1.0",
     "axios": "^1.4.0",
