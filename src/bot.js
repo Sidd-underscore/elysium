@@ -1237,12 +1237,14 @@ client.on('interactionCreate', async interaction => {
                     key: 'NOVA_API_KEY',
                     function: true
                 },
+                /*
                 {
                     url: 'https://thirdparty.webraft.in/v1/chat/completions',
                     model: 'gpt-4-32k',
                     key: 'WEBRAFT_API_KEY',
                     function: true
                 },
+                */
                 {
                     url: 'https://thirdparty.webraft.in/v1/chat/completions',
                     model: 'gpt-4',
