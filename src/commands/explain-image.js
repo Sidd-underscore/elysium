@@ -5,6 +5,8 @@ const { localize } = require("../modules/localization");
 const EmbedMaker = require("../modules/embed");
 const { request, RequestMethod } = require("fetchu.js");
 const sharp = require("sharp");
+const { randomItem } = require("@tolga1452/toolbox.js");
+const { ads } = require("../../config");
 
 const db = new QuickDB();
 
@@ -48,9 +50,10 @@ module.exports = {
             premium: false
         };
         let locale = interaction.locale;
-
         
         if (attachment.contentType !== 'image/png' && attachment.contentType !== 'image/jpeg') return interaction.editReply(localize(locale, 'INVALID_IMAGE'));
+
+        let adsMessage = randomItem(ads);
 
         async function respond() {
             await interaction.editReply({
