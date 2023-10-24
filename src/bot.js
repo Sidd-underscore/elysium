@@ -18,6 +18,7 @@ const { AttachmentBuilder } = require("discord.js");
 const { StringSelectMenuBuilder } = require("@discordjs/builders");
 const { StringSelectMenuOptionBuilder } = require("discord.js");
 const { InteractionCollector } = require("discord.js");
+const { chatCompletion } = require("./modules/ai");
 
 const client = new Client({
     intents: [
@@ -492,9 +493,9 @@ client.on('interactionCreate', async interaction => {
             let trainMessage;
 
             async function respond() {
-                console.log('Response', JSON.stringify(response.body, null, 4));
+                console.log('Response:', response?.response);
 
-                let choicesMessage = response?.data?.choices?.[0]?.message?.content;
+                let choicesMessage = response?.response;
 
                 if (Array.isArray(choicesMessage)) choicesMessage = choicesMessage[0];
 
@@ -539,7 +540,7 @@ client.on('interactionCreate', async interaction => {
                 respondMessage = respondMessage.match(/[\s\S]{1,2000}/g);
 
                 if (respondMessage[0].length > 1000) {
-                    if (replied) await replied.edit('Creating thread...');
+                    if (response.reply) await response.reply.edit('Creating thread...');
                     else replied = await message.reply({
                         content: 'Creating thread...',
                         allowedMentions: {
@@ -621,7 +622,7 @@ client.on('interactionCreate', async interaction => {
                         )
                 ] : [];
 
-                if (replied) replied.edit({
+                if (response.reply) response.reply.edit({
                     content: respondMessage[0],
                     components: buttons,
                     allowedMentions: {
@@ -774,656 +775,112 @@ client.on('interactionCreate', async interaction => {
             // log last 5 messages
             console.log(messages.slice(-5));
 
-            let requestFunctions = [
-                {
-                    name: 'fetch_channels',
-                    description: 'Fetches all channels in the server.',
-                    parameters: {
-                        type: 'object',
-                        properties: {}
-                    }
+            response = await chatCompletion(messages, {
+                tier1: user.tier >= 1,
+                tier2: user.tier >= 2,
+                tier3: user.tier >= 3,
+                message,
+                client,
+                functionMessages: {
+                    fetch_channels: 'Fetching server channels...',
+                    fetch_roles: 'Fetching server roles...',
+                    fetch_emojis: 'Fetching server emojis...',
+                    fetch_pins: 'Fetching channel pins...',
+                    web_search: 'Searching on Google...',
+                    ai_tools: 'Searching AI tools...',
+                    draw_image: 'Drawing image...',
+                    react_message: 'Reacting to message...',
+                    member_mention: 'Searching server members...',
+                    send_dm: 'Sending direct message...',
+                    read_file: 'Reading file...',
+                    summarize_page: 'Summarizing web page...',
+                    save_memory: 'Saving memory...'
                 },
-                {
-                    name: 'fetch_roles',
-                    description: 'Fetches all roles in the server.',
-                    parameters: {
-                        type: 'object',
-                        properties: {}
-                    }
-                },
-                {
-                    name: 'fetch_emojis',
-                    description: 'Fetches all emojis in the server.',
-                    parameters: {
-                        type: 'object',
-                        properties: {}
-                    }
-                },
-                {
-                    name: 'fetch_pins',
-                    description: 'Fetches all pins in the server.',
-                    parameters: {
-                        type: 'object',
-                        properties: {}
-                    }
-                },
-                {
-                    name: 'web_search',
-                    description: 'Search Google and return top 10 results',
-                    parameters: {
-                        type: 'object',
-                        properties: {
-                            query: {
-                                type: 'string',
-                                description: 'Query to search on Google.'
-                            }
-                        },
-                        required: ['query']
-                    }
-                },
-                {
-                    name: 'ai_tools',
-                    description: 'Searches AI tools',
-                    parameters: {
-                        type: 'object',
-                        properties: {
-                            limit: {
-                                type: 'number',
-                                description: 'Limit of the results.'
-                            },
-                            search: {
-                                type: 'string',
-                                description: 'Query to search AI tools.'
-                            }
-                        },
-                        required: ['search']
-                    }
-                },
-                {
-                    name: 'draw_image',
-                    description: 'Draws an image',
-                    parameters: {
-                        type: 'object',
-                        properties: {
-                            prompt: {
-                                type: 'string',
-                                description: 'The prompt you want to draw. Do not use simple and short prompts. More details means better images. You have to include as much details as possible. Prompts must be English.'
-                            },
-                            count: {
-                                type: 'number',
-                                description: 'The number of images you want to draw.'
-                            }
-                        },
-                        required: ['prompt']
-                    }
-                },
-                {
-                    name: 'react_message',
-                    description: 'Reacts to the message with an emoji',
-                    parameters: {
-                        type: 'object',
-                        properties: {
-                            emoji: {
-                                type: 'string',
-                                description: 'The emoji id or unicode emoji to react. Example: 1234567890 or 😂'
-                            }
-                        },
-                        required: ['emoji']
-                    }
-                },
-                {
-                    name: 'member_mention',
-                    description: 'Searches members in the server and shows their mention.',
-                    parameters: {
-                        type: 'object',
-                        properties: {
-                            name: {
-                                type: 'string',
-                                description: 'Name of the member to search.'
-                            }
-                        },
-                        required: ['name']
-                    }
-                },
-                {
-                    name: 'send_dm',
-                    description: 'Sends direct message to the user. Please do not spam.',
-                    parameters: {
-                        type: 'object',
-                        properties: {
-                            message: {
-                                type: 'string',
-                                description: 'The message content to send.'
-                            },
-                            send_files: {
-                                type: 'boolean',
-                                description: 'Whether the collected files (for example drawen images) will be sent along with the nessage. Default: false'
-                            }
-                        },
-                        required: ['message']
-                    }
-                },
-                {
-                    name: 'read_file',
-                    description: 'Reads a file from the message attachments. You can only read .png, .jpg, .txt and .json files. You can use this function to see the sent files.',
-                    parameters: {
-                        type: 'object',
-                        properties: {
-                            type: {
-                                type: 'string',
-                                description: 'Can only be "image" or "text". If the extension is .png or .jpg, you should use "image". If the extension is .txt or .json, you should use "text".'
-                            },
-                            url: {
-                                type: 'string',
-                                description: 'The url of the file to read.'
-                            }
-                        },
-                        required: ['type', 'url']
-                    }
-                }
-            ];
+                functions: {
+                    fetch_channels: async (parameters, options) => JSON.stringify((await options.message.guild.channels.fetch()).filter(channel => channel && channel.type !== ChannelType.GuildCategory).toJSON().map(channel => `#${channel.name} (<#${channel.id}>)`)),
+                    fetch_roles: async (parameters, options) => JSON.stringify((await options.message.guild.roles.fetch()).toJSON().map(role => `@${role.name}`)),
+                    fetch_emojis: async (parameters, options) => JSON.stringify(options.message.guild.emojis.cache.toJSON().map(emoji => `<${emoji.animated ? 'a' : ''}:${emoji.name}:${emoji.id}>`)),
+                    fetch_pins: async (parameters, options) => JSON.stringify((await options.message.channel.messages.fetchPinned()).toJSON().map(message => `@${message.author.username} (<@${message.author.id}>)\n${message.cleanContent}`)),
+                    web_search: async (parameters, options) => {
+                        let results = (await axios.post('https://websearch.plugsugar.com/api/plugins/websearch', {
+                            query: parameters.query
+                        }).catch(() => null))?.data;
 
-            if (user.tier >= 1) requestFunctions.push({
-                name: 'save_memory',
-                description: 'Saves a memory. You will NOT use this for simple things. You will only use this function for necessary things that you don\'t want to forget. Example: "I\'m now friends with user 329671025312923648", "I had a fight with user 751092600890458203"',
-                parameters: {
-                    type: 'object',
-                    properties: {
-                        memory: {
-                            type: 'string',
-                            description: 'The memory to save.'
-                        },
-                        duration: {
-                            type: 'number',
-                            description: "The duration of the memory in days. (1-3) Default: 1"
-                        }
+                        if (!results) return 'Function call failed.';
+                        if (results.length > 500) results = `${results.slice(0, 500)}...`;
+
+                        return JSON.stringify(results);
                     },
-                    required: ['memory']
-                }
-            });
-            if (user.tier === 3) requestFunctions.push({
-                name: 'summarize_page',
-                description: 'Summarizes a web page. You can use this function to find some information about a web page.',
-                parameters: {
-                    type: 'object',
-                    properties: {
-                        url: {
-                            type: 'string',
-                            description: 'The url of the web page to summarize.'
-                        },
-                        question: {
-                            type: 'string',
-                            description: 'The question to ask about the web page. Don\'t use this parameter if you want to summarize the web page.'
-                        }
-                    },
-                    required: ['url']
-                }
-            });
-
-            let replied;
-
-            function functionMessage(functionName) {
-                let responseMessage = response.body?.choices?.[0]?.message?.content;
-
-                switch (functionName) {
-                    case 'fetch_channels':
-                        return responseMessage ? `${responseMessage} **(Fethcing server channels...)**` : 'Fethcing server channels...';
-                    case 'fetch_roles':
-                        return responseMessage ? `${responseMessage} **(Fethcing server roles...)**` : 'Fetching server roles...';
-                    case 'fetch_emojis':
-                        return responseMessage ? `${responseMessage} **(Fethcing server emojis...)**` : 'Fetching server emojis...';
-                    case 'fetch_pins':
-                        return responseMessage ? `${responseMessage} **(Fethcing channel pins...)**` : 'Fetching channel pins...';
-                    case 'web_search':
-                        return responseMessage ? `${responseMessage} **(Searching on Google...)**` : 'Searching on Google...';
-                    case 'ai_tools':
-                        return responseMessage ? `${responseMessage} **(Searching AI tools...)**` : 'Searching AI tools...';
-                    case 'draw_image':
-                        return responseMessage ? `${responseMessage} **(Drawing image...)**` : 'Drawing image...';
-                    case 'react_message':
-                        return responseMessage ? `${responseMessage} **(Reacting to message...)**` : 'Reacting to message...';
-                    case 'member_mention':
-                        return responseMessage ? `${responseMessage} **(Searching server members...)**` : 'Searching server members...';
-                    case 'send_dm':
-                        return responseMessage ? `${responseMessage} **(Sending direct message...)**` : 'Sending direct message...';
-                    case 'read_file':
-                        return responseMessage ? `${responseMessage} **(Reading file...)**` : 'Reading file...';
-                    case 'summarize_page':
-                        return responseMessage ? `${responseMessage} **(Summarizing web page...)**` : 'Summarizing web page...';
-                    case 'save_memory':
-                        return responseMessage ? `${responseMessage} **(Saving memory...)**` : 'Saving memory...';
-                    default:
-                        return 'Calling function...';
-                };
-            };
-
-            async function useFunction(functionName, parameters) {
-                if (functionName === 'fetch_channels') return !message.guild ? "You can't do this in DMs." : JSON.stringify((await message.guild.channels.fetch()).filter(channel => channel && channel.type !== ChannelType.GuildCategory).toJSON().map(channel => `#${channel.name} (<#${channel.id}>)`));
-                else if (functionName === 'fetch_roles') return !message.guild ? "You can't do this in DMs." : JSON.stringify((await message.guild.roles.fetch()).toJSON().map(role => `@${role.name}`));
-                else if (functionName === 'fetch_emojis') return !message.guild ? "You can't do this in DMs." : JSON.stringify(message.guild.emojis.cache.toJSON().map(emoji => `<${emoji.animated ? 'a' : ''}:${emoji.name}:${emoji.id}>`));
-                else if (functionName === 'fetch_pins') return JSON.stringify((await message.channel.messages.fetchPinned()).toJSON().map(message => `@${message.author.username} (<@${message.author.id}>)\n${message.cleanContent}`));
-                else if (functionName === 'web_search') {
-                    let results = (await axios.post('https://websearch.plugsugar.com/api/plugins/websearch', {
-                        query: parameters.query
-                    }).catch(() => null))?.data;
-
-                    if (!results) return 'Function call failed.';
-
-                    // if the result length is more than 500, cut it
-                    if (results.length > 500) results = `${results.slice(0, 500)}...`;
-
-                    return JSON.stringify(results);
-                } else if (functionName === 'ai_tools') {
-                    let results = (await axios.post('https://www.aitoolhunt.com/api/fetchtools', {
+                    ai_tools: async (parameters, options) => JSON.stringify((await axios.post('https://www.aitoolhunt.com/api/fetchtools', {
                         limit: parameters.limit ?? 20,
                         search: parameters.search,
                         start: 0
-                    })).data;
+                    })).data),
+                    draw_image: async (parameters, options) => 'This function is currently disabled.',
+                    react_message: async (parameters, options) => {
+                        let messageToReact = await options.message.channel.messages.fetch(parameters.messageId).catch(() => null);
 
-                    return JSON.stringify(results);
-                } else if (functionName === 'draw_image') {
-                    let results = await request({
-                        url: 'https://beta.purgpt.xyz/stabilityai/images/generations',
-                        method: RequestMethod.Post,
-                        body: {
-                            model: 'sdxl',
-                            prompt: parameters.prompt,
-                            n: parameters.count ?? 1
-                        },
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
-                        }
-                    });
+                        if (!messageToReact) return 'Function call failed.';
 
-                    if (!results.ok) results = await request({
-                        url: 'https://elysium-verify.glitch.me/daku?path=/images/generations',
-                        method: RequestMethod.Post,
-                        body: {
-                            model: 'sdxl',
-                            prompt: parameters.prompt,
-                            n: parameters.count ?? 1
-                        },
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${process.env.VERIFY_KEY}`,
-                            'x-daku-key': process.env.DAKU_API_KEY
-                        }
-                    });
+                        await messageToReact.react(parameters.emoji);
 
-                    if (!results.ok) results = await request({
-                        url: 'https://elysium-verify.glitch.me/daku?path=/images/generations',
-                        method: RequestMethod.Post,
-                        body: {
-                            model: 'anything-diffusion-5',
-                            prompt: parameters.prompt,
-                            n: parameters.count ?? 1
-                        },
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${process.env.VERIFY_KEY}`,
-                            'x-daku-key': process.env.DAKU_API_KEY
-                        }
-                    });
+                        return 'Reacted to message.';
+                    },
+                    member_mention: async (parameters, options) => {
+                        let member = await options.message.guild.members.fetch(parameters.memberId).catch(() => null);
 
-                    if (!results.ok) results = await request({
-                        url: 'https://elysium-verify.glitch.me/daku?path=/images/generations',
-                        method: RequestMethod.Post,
-                        body: {
-                            model: 'stable-diffusion-2.1',
-                            prompt: parameters.prompt,
-                            n: parameters.count ?? 1
-                        },
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${process.env.VERIFY_KEY}`,
-                            'x-daku-key': process.env.DAKU_API_KEY
-                        }
-                    });
+                        if (!member) return 'Function call failed.';
 
-                    if (!results.ok) results = await request({
-                        url: 'https://elysium-verify.glitch.me/daku?path=/images/generations',
-                        method: RequestMethod.Post,
-                        body: {
-                            model: 'dreamshaper-8',
-                            prompt: parameters.prompt,
-                            n: parameters.count ?? 1
-                        },
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${process.env.VERIFY_KEY}`,
-                            'x-daku-key': process.env.DAKU_API_KEY
-                        }
-                    });
+                        return `<@${member.id}>`;
+                    },
+                    send_dm: async (parameters, options) => {
+                        let user = await options.client.users.fetch(parameters.userId).catch(() => null);
 
-                    if (!results.ok) results = await request({
-                        url: 'https://beta.purgpt.xyz/hugging-face/images/generations',
-                        method: RequestMethod.Post,
-                        body: {
-                            model: 'stable-diffusion-1.5',
-                            prompt: parameters.prompt,
-                            n: parameters.count ?? 1
-                        },
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
-                        }
-                    });
+                        if (!user) return 'Function call failed.';
 
-                    if (results.ok) files = files.concat(results.body.data.map(image => image.url));
+                        await user.send(parameters.message);
 
-                    return results.ok ? 'Your image has been drawn and will be sent along with your message.' : 'Function call failed.';
-                } else if (functionName === 'react_message') {
-                    await message.react(parameters.emoji).catch(() => null);
+                        return 'Sent message.';
+                    },
+                    read_file: async (parameters, options) => {
+                        let file = await axios.get(parameters.url).catch(() => null);
 
-                    return 'Reacted to message.';
-                } else if (functionName === 'member_mention') return !message.guild ? "You can't do this in DMs." : JSON.stringify(message.guild.members.cache.filter(member => member.displayName.toLowerCase().includes(parameters.name.toLowerCase())).toJSON().map(member => `@${member.displayName} (<@${member.id}>)`));
-                else if (functionName === 'send_dm') {
-                    if (!message.guild) return 'You are already in DMs.';
+                        if (!file) return 'Function call failed.';
 
-                    let user = await client.users.fetch(message.author).catch(() => null);
+                        return file.data;
+                    },
+                    summarize_page: async (parameters, options) => 'This function is currently disabled.',
+                    save_memory: async (parameters, options) => {
+                        let memories = await db.get('memories');
+                        let memoryId = crypto.randomBytes(16).toString('hex');
 
-                    if (!user) return 'User not found.';
-                    if (!user.dmChannel) await user.createDM();
+                        memories.push({
+                            memory: parameters.memory,
+                            id: memoryId
+                        });
 
-                    await user.dmChannel.send({
-                        content: parameters.message,
-                        files: parameters.send_files ? files.splice(0, 10) : []
-                    }).catch(error => console.log(error));
+                        await db.set('memories', memories);
 
-                    return 'Message has been sent.';
-                } else if (functionName === 'read_file') {
-                    let file = await axios.get(parameters.url, {
-                        responseType: 'arraybuffer'
-                    }).catch(() => null);
+                        timer('custom', {
+                            time: (parameters.duration ?? 1) * 24 * 60 * 60 * 1000,
+                            callback: async () => {
+                                let memories = await db.get('memories');
 
-                    if (!file) return 'Failed to read file.';
+                                memories = memories.filter(memory => memory.id !== c.memoryId);
 
-                    if (parameters.type === 'image') {
-                        let image = await sharp(file.data)
-                            .resize(200)
-                            .png({
-                                compressionLevel: 4,
-                                quality: 70
-                            })
-                            .toBuffer()
-
-                        let explaination = await axios.post('https://beta.purgpt.xyz/hugging-face/images/explain', {
-                            model: 'blip-image-captioning-large',
-                            image: image.toString('base64')
-                        }, {
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                                await db.set('memories', memories);
+                            },
+                            config: {
+                                memoryId
                             }
                         });
 
-                        return explaination.status === 200 ? 'Image content: ' + explaination.data.result : 'Failed to read image.';
-                    } else if (parameters.type === 'text') {
-                        let text = file.data.toString();
-
-                        return `File content: ${text.length > 2000 ? `${text.slice(0, 2000)}...` : text}`;
-                    } else return 'Invalid file type.';
-                } else if (functionName === 'summarize_page') {
-                    let page;
-
-                    try {
-                        page = (await axios.get(parameters.url, {
-                            responseType: 'text'
-                        })).data;
-                    } catch (error) {
-                        page = localize(locale, 'INVALID_URL');
-                    };
-
-                    let response;
-
-                    if (page.length > 36000) page = page.slice(0, 36000) + '...';
-
-                    response = await request({
-                        url: 'https://beta.purgpt.xyz/openai/chat/completions',
-                        method: RequestMethod.Post,
-                        body: {
-                            model: 'gpt-3.5-turbo-16k',
-                            messages: [
-                                {
-                                    role: 'user',
-                                    content: `${parameters.question ? `Find the answer of "${parameters.question}" question` : 'Summarize'} this page (${parameters.url}):\n\n${page}`
-                                }
-                            ],
-                            fallbacks: ['gpt-3.5-turbo']
-                        },
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
-                        }
-                    }, {
-                        isOk: response => console.log('used purgpt', JSON.stringify(response.body, null, 4)),
-                    });
-
-                    return response.ok ? response.body.choices[0].message.content : 'Function call failed.';
-                } else if (functionName === 'save_memory') {
-                    let memories = await db.get('memories');
-                    let memoryId = crypto.randomBytes(16).toString('hex');
-
-                    memories.push({
-                        memory: parameters.memory,
-                        id: memoryId
-                    });
-
-                    await db.set('memories', memories);
-
-                    timer('custom', {
-                        time: (parameters.duration ?? 1) * 24 * 60 * 60 * 1000,
-                        callback: async () => {
-                            let memories = await db.get('memories');
-
-                            memories = memories.filter(memory => memory.id !== c.memoryId);
-
-                            await db.set('memories', memories);
-                        },
-                        config: {
-                            memoryId
-                        }
-                    });
-
-                    return 'Memory has been saved.';
-                };
-            };
-
-            const gpt4Function = [
-                {
-                    url: 'https://api.nova-oss.com/v1/chat/completions',
-                    model: 'gpt-4',
-                    key: 'NOVA_API_KEY',
-                    function: true
-                },
-                /*
-                {
-                    url: 'https://thirdparty.webraft.in/v1/chat/completions',
-                    model: 'gpt-4-32k',
-                    key: 'WEBRAFT_API_KEY',
-                    function: true
-                },
-                */
-                {
-                    url: 'https://thirdparty.webraft.in/v1/chat/completions',
-                    model: 'gpt-4',
-                    key: 'WEBRAFT_API_KEY',
-                    function: true
+                        return 'Memory has been saved.';
+                    }
                 }
-            ];
-
-            if (user.gpt4) gpt4Function.push({
-                url: 'https://api.openai.com/v1/chat/completions',
-                model: 'gpt-4-0613',
-                key: 'OPENAI_API_KEY',
-                function: true
             });
 
-            const gpt4Functionless = [
-                {
-                    url: 'https://beta.purgpt.xyz/openai/chat/completions',
-                    model: 'gpt-4',
-                    key: 'PURGPT_API_KEY',
-                    function: false
-                }
-            ];
-            const gpt35Function = [
-                {
-                    url: 'https://api.nova-oss.com/v1/chat/completions',
-                    model: 'gpt-3.5-turbo-16k',
-                    key: 'NOVA_API_KEY',
-                    function: true
-                },
-                {
-                    url: 'https://thirdparty.webraft.in/v1/chat/completions',
-                    model: 'gpt-3.5-turbo',
-                    key: 'WEBRAFT_API_KEY',
-                    function: true
-                },
-                {
-                    url: 'https://api.openai.com/v1/chat/completions',
-                    model: 'gpt-3.5-turbo-16k-0613',
-                    key: 'OPENAI_API_KEY',
-                    function: true
-                }
-            ];
-            const gpt35Functionless = [
-                {
-                    url: 'https://beta.purgpt.xyz/openai/chat/completions',
-                    model: 'gpt-3.5-turbo-16k',
-                    key: 'PURGPT_API_KEY',
-                    function: false
-                },
-                {
-                    url: 'https://beta.purgpt.xyz/openai/chat/completions',
-                    model: 'gpt-3.5-turbo',
-                    key: 'PURGPT_API_KEY',
-                    function: false
-                }
-            ];
-
-            async function tryRequest(type = 'all') {
-                let requestFunction;
-
-                if (type === 'all') requestFunction = gpt4Function.concat(gpt4Functionless, gpt35Function, gpt35Functionless);
-                else if (type === 'functionOnly') requestFunction = gpt4Function.concat(gpt35Function);
-
-                for (let func of requestFunction) {
-                    try {
-                        response = await axios.post(func.url, {
-                            model: func.model,
-                            messages: messages,
-                            functions: func.function ? requestFunctions : null
-                        }, {
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${process.env[func.key]}`
-                            },
-                            timeout: 15000
-                        });
-                    } catch (error) {
-                        console.log('Error', func.url, error.response ?? error);
-
-                        continue;
-                    };
-
-                    if (response.data?.choices && !['Internal Server Error', 'GPT-4 is down or your context is over 7100.'].includes(response.data?.choices?.[0]?.message?.content)) {
-                        response.url = func.url;
-
-                        return {
-                            response,
-                            url: func.url
-                        };
-                    } else {
-                        console.log('Invalid response', func.url, response.data);
-
-                        continue;
-                    };
-                };
-
-                return false;
-            };
-
-            if (mode === 'auto') response = await tryRequest();
-            else if (mode === 'functions') response = await tryRequest('functionOnly');
-
-            if (response?.response) {
-                let usedUrl = response.url;
-                let end = false;
-
-                response = response.response;
-
-                console.log('Used model', response.data.model, 'Used url', usedUrl);
-                console.log('Response', JSON.stringify(response.data, null, 4));
-
-                while (!end) {
-                    let isFunction = response.data?.choices?.[0]?.finish_reason === 'function_call';
-
-                    if (!isFunction) {
-                        end = true;
-
-                        break;
-                    };
-
-                    let usedFunction = response.data.choices[0].message?.function_call;
-                    let functionResponse;
-                    let parameters = {};
-
-                    if (!usedFunction) usedFunction = response.data.choices[0].function_call;
-                    if (usedFunction.arguments) parameters = JSON.parse(usedFunction.arguments);
-
-                    console.log('Function call detected', usedFunction, parameters);
-
-                    if (replied) replied.edit(functionMessage(usedFunction.name));
-                    else replied = await message.reply({
-                        content: functionMessage(usedFunction.name),
-                        allowedMentions: {
-                            roles: [],
-                            repliedUser: message.type === MessageType.UserJoin && guild?.welcomer?.status ? true : false
-                        }
-                    });
-
-                    functionResponse = await useFunction(usedFunction.name, parameters);
-
-                    console.log('Function response', functionResponse);
-
-                    messages.push({
-                        role: 'function',
-                        name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
-                        content: functionResponse
-                    });
-                    messages.push({
-                        role: 'system',
-                        content: 'You will NOT repeat functions.'
-                    });
-                    functions.push({
-                        name: usedFunction?.name?.length > 0 ? usedFunction.name : 'unknown',
-                        parameters,
-                        response: functionResponse
-                    });
-
-                    if (usedFunction?.name === 'save_memory') requestFunctions = requestFunctions.filter(requestFunction => requestFunction.name !== 'save_memory');
-
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-
-                    response = await tryRequest();
-
-                    if (!response) {
-                        response = {
-                            status: 500
-                        };
-
-                        break;
-                    } else response = response.response;
-
-                    console.log('Used model', response.data.model, 'Used url', response.url);
-                };
-
-                if (response.status === 200) return respond();
-            };
-
-            if (response.status === 200) return respond();
+            if (response) return respond();
             else if (message.mentions.users.has(client.user.id)) return message.reply({
                 content: localize(locale, 'MODELS_DOWN'),
                 allowedMentions: {

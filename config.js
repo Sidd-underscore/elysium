@@ -20,5 +20,22 @@ module.exports = {
         'Join AnalogAI now -> 4x Faster OpenAI models at 3x cheaper model rates than official OpenAI! Every OpenAI model available including GPT-4-32K : <https://api.analogai.in/register?aff=OU9f> <https://discord.gg/byMHsX4nJj>',
         'Join AnalogAI now -> 4x Faster OpenAI models at 3x cheaper model rates than official OpenAI! Every OpenAI model available including GPT-4-32K : <https://api.analogai.in/register?aff=OU9f> <https://discord.gg/byMHsX4nJj>',
         'Join AnalogAI now -> 4x Faster OpenAI models at 3x cheaper model rates than official OpenAI! Every OpenAI model available including GPT-4-32K : <https://api.analogai.in/register?aff=OU9f> <https://discord.gg/byMHsX4nJj>'
+    ],
+    gpt4APIs: [
+        {
+            url: 'https://api.nova-oss.com/v1/chat/completions',
+            model: 'gpt-4',
+            key: 'NOVA_API_KEY'
+        },
+        {
+            url: 'https://thirdparty.webraft.in/v1/chat/completions',
+            model: 'gpt-4-32k',
+            key: 'WEBRAFT_API_KEY'
+        },
+        {
+            url: 'https://api.openai.com/v1/chat/completions',
+            model: 'gpt-4-0613',
+            key: 'OPENAI_API_KEY'
+        }
     ]
 };
