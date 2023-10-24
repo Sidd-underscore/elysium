@@ -199,12 +199,12 @@ module.exports.gpt4 = async (messages, options) => {
 
     for (let api of gpt4APIs) {
         try {
-            console.log((options.noFunctions ?? api.key === 'WEBRAFT_API_KEY') ? 'Not using functions' : 'Using functions');
+            console.log((options.noFunctions || api.key === 'WEBRAFT_API_KEY') ? 'Not using functions' : 'Using functions');
 
             response = await axios.post(api.url, {
                 model: api.model,
                 messages,
-                functions: (options.noFunctions ?? api.key === 'WEBRAFT_API_KEY') ? [] : functions
+                functions: (options.noFunctions || api.key === 'WEBRAFT_API_KEY') ? [] : functions
             }, {
                 headers: {
                     'Content-Type': 'application/json',
