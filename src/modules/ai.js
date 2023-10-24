@@ -204,7 +204,7 @@ module.exports.gpt4 = async (messages, options) => {
             response = await axios.post(api.url, {
                 model: api.model,
                 messages,
-                functions: (options.noFunctions || api.key === 'WEBRAFT_API_KEY') ? null : functions
+                functions: (options.noFunctions || api.key === 'WEBRAFT_API_KEY') ? undefined : functions
             }, {
                 headers: {
                     'Content-Type': 'application/json',
