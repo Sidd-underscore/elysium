@@ -142,7 +142,7 @@ module.exports.chatCompletion = async (messages, options) => {
 
             try {
                 let functionMessage = options?.functionMessages?.[response?.function_call?.name] ?? 'Calling function...';
-                let functionMessageContent = response?.message?.content ? `${response?.message?.content} **(${functionMessage})**` : functionMessage;
+                let functionMessageContent = response?.message ? `${response?.message} **(${functionMessage})**` : functionMessage;
 
                 await this.followUp(reply, options?.message, functionMessageContent);
 
@@ -154,7 +154,7 @@ module.exports.chatCompletion = async (messages, options) => {
             messages.push({
                 role: 'system',
                 name: response?.function_call?.name ?? 'unknown_function',
-                response: `Function response\n\n${functionResponse}`
+                content: `Function response:\n\n${functionResponse}`
             });
 
             response = await this.tryChatCompletion(messages, options);
