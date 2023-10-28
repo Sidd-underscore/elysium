@@ -526,7 +526,7 @@ client.on('interactionCreate', async interaction => {
                     let threadName = await chatCompletion([
                         {
                             role: 'system',
-                            content: 'You will only respond with a JSON format, nothing else. Your format must look like this: {name: "max 100 characters"}'
+                            content: 'You will only respond with a JSON format, nothing else. Your format must look like this: {"name": "max 100 characters"}'
                         },
                         {
                             role: 'user',
@@ -535,7 +535,7 @@ client.on('interactionCreate', async interaction => {
                         },
                         {
                             role: 'assistant',
-                            content: '{name: "Having trouble with code"}',
+                            content: '{"name": "Having trouble with code"}',
                         },
                         {
                             role: 'user',
@@ -544,7 +544,7 @@ client.on('interactionCreate', async interaction => {
                         },
                         {
                             role: 'assistant',
-                            content: '{name: "Having trouble with code"}',
+                            content: '{"name": "Having trouble with code"}',
                         },
                         {
                             role: 'user',
