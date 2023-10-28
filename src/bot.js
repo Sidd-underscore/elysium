@@ -807,11 +807,14 @@ client.on('interactionCreate', async interaction => {
                         return `<@${member.id}>`;
                     },
                     send_dm: async (parameters, options) => {
-                        let user = await options.client.users.fetch(parameters.userId).catch(() => null);
+                        let user = await client.users.fetch(message.author.id).catch(() => null);
 
                         if (!user) return 'Function call failed.';
 
-                        await user.send(parameters.message);
+                        await user.send({
+                            content: parameters.message,
+                            files: parameters.send_files ? files.splice(0, 10) : []
+                        });
 
                         return 'Sent message.';
                     },
