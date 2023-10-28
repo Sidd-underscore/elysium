@@ -6,8 +6,7 @@
   "scripts": {
     "start": "node ./src",
     "train": "node train.js",
-    "chat": "node chat.js",
-    "product": "bun start"
+    "chat": "node chat.js"
   },
   "keywords": [],
   "author": "Tolgchu",
