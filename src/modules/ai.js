@@ -47,7 +47,7 @@ module.exports.gpt4 = async (messages, options) => {
             console.log('Used API', api.url, 'with model', api.model, '-', response.data.choices[0].message.content);
 
             try {
-                return JSON.parse(response.data.choices[0].message.content.match(/^{.*}$/gm)[0]);
+                return options.disableFunctions ? response.data.choices[0].message.content : JSON.parse(response.data.choices[0].message.content.match(/^{.*}$/gm)[0]);
             } catch (error) {
                 return null;
             };
@@ -95,7 +95,7 @@ module.exports.openorca = async (messages, options) => {
         console.log('Used API', 'https://api.mandrillai.tech/v1/chat/completions', 'with model', 'mistral-7B-openorca', '-', response.data.choices[0].message.content);
 
         try {
-            return JSON.parse(response.data.choices[0].message.content.match(/^{.*}$/gm)[0]);
+            return options.disableFunctions ? response.data.choices[0].message.content : JSON.parse(response.data.choices[0].message.content.match(/^{.*}$/gm)[0]);
         } catch (error) {
             return null;
         };

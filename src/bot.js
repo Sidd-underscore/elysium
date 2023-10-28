@@ -577,7 +577,7 @@ client.on('interactionCreate', async interaction => {
                     if (thread) {
                         if (replied) await replied.delete();
 
-                        replied = await thread.send('Waiting for response...');
+                        response.reply = await thread.send('Waiting for response...');
                     };
                 };
 
