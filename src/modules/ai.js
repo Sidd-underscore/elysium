@@ -48,7 +48,11 @@ module.exports.gpt4 = async (messages, options) => {
         if (response.data?.choices && !['Internal Server Error', 'GPT-4 is down or your context is over 7100.'].includes(response.data?.choices?.[0]?.message?.content)) {
             console.log('Used API', api.url, 'with model', api.model);
 
-            return response.data.choices[0];
+            try {
+                return JSON.parse(response.data.choices[0].message.content);
+            } catch (error) {
+                return null;
+            };
         } else {
             console.log('Invalid response', api.url, api.model, response.data);
 
@@ -115,12 +119,20 @@ module.exports.followUp = async (reply, message, content) => {
     });
 };
 
+async function tryChatCompletion(messages, options) {
+    let response = await this.gpt4(messages, options);
+
+    if (!response) response = await this.openorca(messages, options);
+
+    return response;
+};
+
 module.exports.chatCompletion = async (messages, options) => {
     let end;
     let response;
     let reply;
 
-    response = await this.gpt4(messages, options);
+    response = await tryChatCompletion(messages, options);
 
     while (!end) {
         if (!response) {
@@ -128,80 +140,31 @@ module.exports.chatCompletion = async (messages, options) => {
 
             break;
         };
-        if (response.finish_reason === 'function_call') {
+        if (response.function_call?.name) {
             let functionResponse;
 
             try {
-                let functionMessage = options?.functionMessages?.[response?.message?.function_call?.name] ?? 'Calling function...';
+                let functionMessage = options?.functionMessages?.[response?.function_call?.name] ?? 'Calling function...';
                 let functionMessageContent = response?.message?.content ? `${response?.message?.content} **(${functionMessage})**` : functionMessage;
 
                 await this.followUp(reply, options?.message, functionMessageContent);
 
-                functionResponse = await options?.functions?.[response?.message?.function_call?.name](JSON.parse(response?.message?.function_call?.arguments), options);
+                functionResponse = await options?.functions?.[response?.function_call?.name](JSON.parse(response?.function_call?.parameters), options);
             } catch (error) {
                 functionResponse = 'Function call failed.';
             };
 
             messages.push({
-                role: 'function',
-                name: response?.message?.function_call?.name ?? 'unknown_function',
-                response: functionResponse
+                role: 'system',
+                name: response?.function_call?.name ?? 'unknown_function',
+                response: `Function response\n\n${functionResponse}`
             });
 
-            response = await this.gpt4(messages, options);
+            response = await tryChatCompletion(messages, options);
         } else {
             end = 'success';
 
             break;
         };
-    };
-
-    if (end === 'success') return {
-        response: response?.message?.content,
-        reply
-    };
-    else {
-        response = await this.openorca(messages, options);
-        end = null;
-
-        while (!end) {
-            if (!response) {
-                end = 'fail';
-
-                break;
-            };
-            if (response.function_call?.name) {
-                let functionResponse;
-
-                try {
-                    let functionMessage = options?.functionMessages?.[response?.function_call?.name] ?? 'Calling function...';
-                    let functionMessageContent = response?.message?.content ? `${response?.message?.content} **(${functionMessage})**` : functionMessage;
-
-                    await this.followUp(reply, options?.message, functionMessageContent);
-
-                    functionResponse = await options?.functions?.[response?.function_call?.name](JSON.parse(response?.function_call?.parameters), options);
-                } catch (error) {
-                    functionResponse = 'Function call failed.';
-                };
-
-                messages.push({
-                    role: 'system',
-                    name: response?.function_call?.name ?? 'unknown_function',
-                    response: `Function response\n\n${functionResponse}`
-                });
-
-                response = await this.openorca(messages, options);
-            } else {
-                end = 'success';
-
-                break;
-            };
-        };
-
-        if (end === 'success') return {
-            response: response?.message,
-            reply
-        };
-        else return null;
     };
 };
