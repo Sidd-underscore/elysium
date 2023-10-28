@@ -559,6 +559,8 @@ client.on('interactionCreate', async interaction => {
                         disableFunctions: true
                     });
 
+                    console.log(threadName);
+
                     if (threadName) {
                         threadName = threadName?.response;
 
