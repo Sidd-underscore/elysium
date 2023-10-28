@@ -17,8 +17,6 @@ module.exports.gpt4 = async (messages, options) => {
 
     for (let api of gpt4APIs) {
         try {
-            console.log((options.noFunctions || api.key === 'WEBRAFT_API_KEY') ? 'Not using functions' : 'Using functions');
-
             response = await axios.post(api.url, {
                 model: api.model,
                 messages: [
@@ -138,6 +136,11 @@ module.exports.chatCompletion = async (messages, options) => {
 
     while (!end) {
         if (response.function_call?.name) {
+            messages.push({
+                role: 'assistant',
+                content: JSON.stringify(response)
+            });
+
             let functionResponse;
 
             try {
@@ -156,6 +159,8 @@ module.exports.chatCompletion = async (messages, options) => {
                 name: response?.function_call?.name ?? 'unknown_function',
                 content: `Function response:\n\n${functionResponse}`
             });
+
+            console.log('Last 2 messages', messages.slice(-2));
 
             response = await this.tryChatCompletion(messages, options);
         } else {
