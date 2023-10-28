@@ -46,10 +46,10 @@ module.exports.gpt4 = async (messages, options) => {
         };
 
         if (response.data?.choices && !['Internal Server Error', 'GPT-4 is down or your context is over 7100.'].includes(response.data?.choices?.[0]?.message?.content)) {
-            console.log('Used API', api.url, 'with model', api.model);
+            console.log('Used API', api.url, 'with model', api.model, '-', response.data.choices[0].message.content);
 
             try {
-                return JSON.parse(response.data.choices[0].message.content);
+                return JSON.parse(response.data.choices[0].message.content.match(/^{.*}$/gm)[0]);
             } catch (error) {
                 return null;
             };
@@ -94,8 +94,10 @@ module.exports.openorca = async (messages, options) => {
     };
 
     if (response.data?.choices && response.data?.choices?.[0]?.message?.content !== '') {
+        console.log('Used API', 'https://api.mandrillai.tech/v1/chat/completions', 'with model', 'mistral-7B-openorca', '-', response.data.choices[0].message.content);
+
         try {
-            return JSON.parse(response.data.choices[0].message.content);
+            return JSON.parse(response.data.choices[0].message.content.match(/^{.*}$/gm)[0]);
         } catch (error) {
             return null;
         };
