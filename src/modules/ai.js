@@ -137,11 +137,6 @@ module.exports.chatCompletion = async (messages, options) => {
     response = await this.tryChatCompletion(messages, options);
 
     while (!end) {
-        if (!response) {
-            end = 'fail';
-
-            break;
-        };
         if (response.function_call?.name) {
             let functionResponse;
 
@@ -162,11 +157,17 @@ module.exports.chatCompletion = async (messages, options) => {
                 response: `Function response\n\n${functionResponse}`
             });
 
-            response = await tryChatCompletion(messages, options);
+            response = await this.tryChatCompletion(messages, options);
         } else {
-            end = 'success';
+            end = true;
 
             break;
         };
     };
+
+    if (response?.message) return {
+        response: response?.message,
+        reply
+    };
+    else return null;
 };
