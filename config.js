@@ -19,14 +19,11 @@ module.exports = {
         'Running through WebraftAI, get access to many AI models including gpt-4-32k for free! Join WebraftAI - <https://discord.gg/webraftai>',
         'Join AnalogAI now -> 4x Faster OpenAI models at 3x cheaper model rates than official OpenAI! Every OpenAI model available including GPT-4-32K : <https://api.analogai.in/register?aff=OU9f> <https://discord.gg/byMHsX4nJj>',
         'Join AnalogAI now -> 4x Faster OpenAI models at 3x cheaper model rates than official OpenAI! Every OpenAI model available including GPT-4-32K : <https://api.analogai.in/register?aff=OU9f> <https://discord.gg/byMHsX4nJj>',
-        'Join AnalogAI now -> 4x Faster OpenAI models at 3x cheaper model rates than official OpenAI! Every OpenAI model available including GPT-4-32K : <https://api.analogai.in/register?aff=OU9f> <https://discord.gg/byMHsX4nJj>'
+        'Join AnalogAI now -> 4x Faster OpenAI models at 3x cheaper model rates than official OpenAI! Every OpenAI model available including GPT-4-32K : <https://api.analogai.in/register?aff=OU9f> <https://discord.gg/byMHsX4nJj>',
+        'Would you like to learn every new feature about Discord? Join Discord Experiment Hub now! <https://discord.gg/experiments>',
+        'Explore all AI stuff with Discord AI Hub. AI APIs, proxies, datasets, models, projects, apps, and more! <https://discord.gg/GVFPCZqaCJ>'
     ],
     gpt4APIs: [
-        {
-            url: 'https://api.nova-oss.com/v1/chat/completions',
-            model: 'gpt-4',
-            key: 'NOVA_API_KEY'
-        },
         {
             url: 'https://paidapi-proxy003-webraftai.run-us-west2.goorm.app/v1/chat/completions',
             model: 'gpt-4-32k',
