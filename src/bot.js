@@ -523,50 +523,43 @@ client.on('interactionCreate', async interaction => {
                         }
                     });
 
-                    let threadName = await request({
-                        url: 'https://zukijourney.xyzbot.net/unf/chat/completions',
-                        method: RequestMethod.Post,
-                        body: {
-                            model: 'gpt-3.5-turbo',
-                            messages: [
-                                {
-                                    role: 'system',
-                                    content: 'You will only respond with a JSON format, nothing else. Your format must look like this: {name: "max 100 characters"}'
-                                },
-                                {
-                                    role: 'user',
-                                    content: 'Give a topic name for this message:\nHey, I\'m having trouble with this code. Can someone help me out?',
-                                    name: 'example_user'
-                                },
-                                {
-                                    role: 'assistant',
-                                    content: '{name: "Having trouble with code"}',
-                                },
-                                {
-                                    role: 'user',
-                                    content: 'Give a topic name for this message:\nHey, I\'m having trouble with this code. Can someone help me out?',
-                                    name: 'example_user'
-                                },
-                                {
-                                    role: 'assistant',
-                                    content: '{name: "Having trouble with code"}',
-                                },
-                                {
-                                    role: 'user',
-                                    content: `Give a topic name for this message:\n${message.cleanContent}`,
-                                }
-                            ]
+                    let threadName = await chatCompletion([
+                        {
+                            role: 'system',
+                            content: 'You will only respond with a JSON format, nothing else. Your format must look like this: {name: "max 100 characters"}'
                         },
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${process.env.PURGPT_API_KEY}`
+                        {
+                            role: 'user',
+                            content: 'Give a topic name for this message:\nHey, I\'m having trouble with this code. Can someone help me out?',
+                            name: 'example_user'
+                        },
+                        {
+                            role: 'assistant',
+                            content: '{name: "Having trouble with code"}',
+                        },
+                        {
+                            role: 'user',
+                            content: 'Give a topic name for this message:\nHey, I\'m having trouble with this code. Can someone help me out?',
+                            name: 'example_user'
+                        },
+                        {
+                            role: 'assistant',
+                            content: '{name: "Having trouble with code"}',
+                        },
+                        {
+                            role: 'user',
+                            content: `Give a topic name for this message:\n${message.cleanContent}`,
                         }
+                    ], {
+                        tier1: user.tier >= 1,
+                        tier2: user.tier >= 2,
+                        tier3: user.tier >= 3,
+                        message,
+                        client,
                     });
 
-                    console.log('Thread name', threadName.ok ? threadName.body.choices[0].message.content : threadName);
-
-                    if (threadName.ok) {
-                        threadName = threadName.body.choices[0].message.content;
+                    if (threadName) {
+                        threadName = threadName?.response;
 
                         try {
                             threadName = JSON.parse(threadName);
