@@ -568,6 +568,8 @@ client.on('interactionCreate', async interaction => {
                             threadName = JSON.parse(threadName);
                             threadName = threadName.name.slice(0, 100) ?? 'Elysium'
                         } catch (error) {
+                            console.log('Error while parsing thread name:', error);
+
                             threadName = message.cleanContent.slice(0, 100) ?? 'Elysium';
                         };
                     } else threadName = message.cleanContent.slice(0, 100) ?? 'Elysium';
