@@ -35,7 +35,7 @@ module.exports.gpt4 = async (messages, options) => {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${process.env[api.key]}`
                 },
-                timeout: 15000
+                timeout: 30000
             });
         } catch (error) {
             console.log('Error', api.url, error?.response ?? error);
@@ -83,7 +83,7 @@ module.exports.openorca = async (messages, options) => {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${process.env.MANDRILL_API_KEY}`
             },
-            timeout: 15000
+            timeout: 30000
         });
     } catch (error) {
         console.log('Error', error?.response ?? error);
@@ -137,7 +137,7 @@ module.exports.chatCompletion = async (messages, options) => {
     response = await this.tryChatCompletion(messages, options);
 
     while (!end) {
-        if (response.function_call?.name) {
+        if (response?.function_call?.name) {
             messages.push({
                 role: 'assistant',
                 content: JSON.stringify(response)
