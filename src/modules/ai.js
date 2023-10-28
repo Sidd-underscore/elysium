@@ -117,6 +117,8 @@ module.exports.followUp = async (reply, message, content) => {
             repliedUser: false
         }
     });
+
+    return reply;
 };
 
 module.exports.tryChatCompletion = async (messages, options) => {
@@ -147,7 +149,7 @@ module.exports.chatCompletion = async (messages, options) => {
                 let functionMessage = options?.functionMessages?.[response?.function_call?.name] ?? 'Calling function...';
                 let functionMessageContent = response?.message ? `${response?.message} **(${functionMessage})**` : functionMessage;
 
-                await this.followUp(reply, options?.message, functionMessageContent);
+                reply = await this.followUp(reply, options?.message, functionMessageContent);
 
                 functionResponse = await options?.functions?.[response?.function_call?.name](JSON.parse(response?.function_call?.parameters), options);
             } catch (error) {
