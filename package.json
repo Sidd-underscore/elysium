@@ -7,7 +7,7 @@
     "start": "node ./src",
     "train": "node train.js",
     "chat": "node chat.js",
-    "product": "wsl && sudo --shell && bun start"
+    "product": "bun start"
   },
   "keywords": [],
   "author": "Tolgchu",
