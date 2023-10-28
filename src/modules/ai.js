@@ -174,8 +174,8 @@ module.exports.chatCompletion = async (messages, options) => {
         };
     };
 
-    if (response?.message) return {
-        response: response?.message,
+    if (response?.message || typeof response === 'string') return {
+        response: response?.message ?? response,
         reply
     };
     else return null;
