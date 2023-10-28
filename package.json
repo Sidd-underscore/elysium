@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node ./src",
     "train": "node train.js",
-    "chat": "node chat.js"
+    "chat": "node chat.js",
+    "product": "wsl && sudo --shell && bun start"
   },
   "keywords": [],
   "author": "Tolgchu",
