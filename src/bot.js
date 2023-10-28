@@ -103,18 +103,6 @@ client.on('ready', async () => {
 
     if (!(await db.has('memories'))) await db.set('memories', []);
 
-    /*
-    let users = await db.get('users') ?? {};
-
-    await db.delete('verified');
-
-    for (let user of Object.keys(users)) {
-        await db.delete(`users.${user}.verified`);
-    };
-    */
-
-    //await db.set('trainMessages', []);
-
     checkFirstDayOfMonth();
 });
 
@@ -437,19 +425,6 @@ client.on('interactionCreate', async interaction => {
             };
 
             console.log('message received:', message.content);
-
-            if (((message.mentions.users.has(client.user.id) || message.content.toLowerCase().includes('elysium')) || (guild?.aiChannel?.status && guild?.aiChannel?.channel === message.channelId) || !message.guild) && !(await db.has(`users.${message.author.id}.verified`))) return message.reply({
-                content: localize(locale, 'NOT_VERIFIED'),
-                components: [
-                    new ActionRowBuilder()
-                        .setComponents(
-                            new ButtonBuilder()
-                                .setLabel(localize(locale, 'VERIFY_NOW'))
-                                .setStyle(ButtonStyle.Link)
-                                .setURL('https://discord.com/api/oauth2/authorize?client_id=786480896928645131&redirect_uri=https%3A%2F%2Felysium-verify.glitch.me%2F&response_type=code&scope=identify')
-                        )
-                ]
-            }).catch(error => console.log(error));
 
             if (!user.bonus) user.bonus = 0;
             if (!user.tier) user.tier = 0;
@@ -893,68 +868,13 @@ client.on('interactionCreate', async interaction => {
         };
     });
 
-app.get('/verify', async (req, res) => {
-    let key = req.headers.authorization;
-
-    if (key !== process.env.VERIFY_KEY) return res.status(401).send('Unauthorized');
-
-    res.status(204).send();
-
-    let user = req.query.user.replaceAll('.', '_');
-    let id = req.query.id;
-
-    if (await db.has(`verified.${user}`)) {
-        if (!client.users.cache.get(id).dmChannel) await client.users.cache.get(id).createDM();
-
-        return client.users.cache.get(id).send({
-            content: 'Your verification denied because you are probably using multiple accounts. If you think this is a mistake, please join our Discord server.\n\nIf you already got the verified message, please ignore this message.',
-            components: [
-                new ActionRowBuilder()
-                    .setComponents(
-                        new ButtonBuilder()
-                            .setLabel('Join Discord Server')
-                            .setStyle(ButtonStyle.Link)
-                            .setURL('https://discord.gg/experiments')
-                    )
-            ]
-        }).catch(() => null);
-    } else {
-        await db.set(`verified.${user}`, id);
-        await db.set(`users.${id}.verified`, user);
-
-        if (!client.users.cache.get(id)?.dmChannel) await client.users.cache.get(id).createDM();
-
-        if (client.users.cache.get(id)) return client.users.cache.get(id).send('You are successfully verified!').catch(() => null);
-    };
-});
-
-async function runOnMonday() {
-    let users = await db.get('users') ?? {};
-
-    for (let user in users) {
-        await db.set(`users.${user}.usage`, 0);
-    };
-
-    console.log('Reset usage');
-
-    let data = await db.get('trainMessages');
-
-    writeFileSync('./trainMessages.json', JSON.stringify((data ?? []), null, 4), 'utf-8');
-    //execSync('git add . && git commit -m "Save train messages" && git push');
-
-    console.log('Saved train messages');
-};
-
 function startInterval() {
     const now = new Date();
     const daysUntilMonday = (8 - now.getUTCDay()) % 7; // Calculate days until next Monday
     const nextMonday = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + daysUntilMonday, 0, 0, 0);
     const timeUntilMonday = nextMonday - now;
 
-    setTimeout(() => {
-        runOnMonday();
-        setInterval(runOnMonday, 7 * 24 * 60 * 60 * 1000); // Repeat every 7 days
-    }, timeUntilMonday);
+    setTimeout(() => setInterval(runOnMonday, 7 * 24 * 60 * 60 * 1000), timeUntilMonday);
 };
 
 startInterval();
