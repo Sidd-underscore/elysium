@@ -119,7 +119,7 @@ module.exports.followUp = async (reply, message, content) => {
     });
 };
 
-async function tryChatCompletion(messages, options) {
+module.exports.tryChatCompletion = async (messages, options) => {
     let response = await this.gpt4(messages, options);
 
     if (!response) response = await this.openorca(messages, options);
@@ -132,7 +132,7 @@ module.exports.chatCompletion = async (messages, options) => {
     let response;
     let reply;
 
-    response = await tryChatCompletion(messages, options);
+    response = await this.tryChatCompletion(messages, options);
 
     while (!end) {
         if (!response) {
