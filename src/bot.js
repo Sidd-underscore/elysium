@@ -781,8 +781,6 @@ client.on('interactionCreate', async interaction => {
                             query: parameters.query
                         }).catch(() => null))?.data;
 
-                        console.log(parameters, results);
-
                         if (!results) return 'Function call failed.';
                         if (results.length > 500) results = `${results.slice(0, 500)}...`;
 

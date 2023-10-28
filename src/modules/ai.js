@@ -153,6 +153,8 @@ module.exports.chatCompletion = async (messages, options) => {
 
                 functionResponse = await options?.functions?.[response?.function_call?.name](JSON.parse(response?.function_call?.parameters), options);
             } catch (error) {
+                console.log('Function call errored', JSON.parse(response?.function_call?.parameters), error);
+
                 functionResponse = 'Function call failed.';
             };
 
