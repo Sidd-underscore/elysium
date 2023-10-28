@@ -556,6 +556,7 @@ client.on('interactionCreate', async interaction => {
                         tier3: user.tier >= 3,
                         message,
                         client,
+                        disableFunctions: true
                     });
 
                     if (threadName) {
