@@ -22,8 +22,8 @@ module.exports = {
         'Join AnalogAI now -> 4x Faster OpenAI models at 3x cheaper model rates than official OpenAI! Every OpenAI model available including GPT-4-32K : <https://api.analogai.in/register?aff=OU9f> <https://discord.gg/byMHsX4nJj>',
         'Would you like to learn every new feature about Discord? Join Discord Experiment Hub now! <https://discord.gg/experiments>',
         'Explore all AI stuff with Discord AI Hub. AI APIs, proxies, datasets, models, projects, apps, and more! <https://discord.gg/GVFPCZqaCJ>',
-        '🌟 Unlock the power of FREE **DALLE-3** and diverse open-source language and image models with Mandrill API! <https://discord.gg/rNtWxkpXJn>',
-        '🌟 Unlock the power of FREE **DALLE-3** and diverse open-source language and image models with Mandrill API! <https://discord.gg/rNtWxkpXJn>'
+        '🌟 Unlock the power of **FREE DALLE-3** and diverse open-source language and image models with Mandrill API! <https://discord.gg/rNtWxkpXJn>',
+        '🌟 Unlock the power of **FREE DALLE-3** and diverse open-source language and image models with Mandrill API! <https://discord.gg/rNtWxkpXJn>'
     ],
     gpt4APIs: [
         {
