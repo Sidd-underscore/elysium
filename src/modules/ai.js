@@ -65,7 +65,7 @@ module.exports.openorca = async (messages, options) => {
     let response;
 
     try {
-        response = await axios.post('https://api.mandrillai.tech/v1/chat/completions', {
+        response = await axios.post('https://api.mandrillai.tech/v2/chat/completions', {
             model: 'mistral-7B-openorca',
             messages: options.disableFunctions ? messages : [
                 {
