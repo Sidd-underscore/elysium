@@ -56,8 +56,6 @@ module.exports = {
         let locale = interaction.locale;
 
         async function respond() {
-            console.log(response.body);
-
             let adsMessage = randomItem(ads);
 
             await interaction.editReply({
@@ -83,8 +81,10 @@ module.exports = {
                     Authorization: `Bearer ${process.env.MANDRILL_API_KEY}`
                 }
             });
+            
+            console.log(response.status, response.body)
 
-        if (response?.status === 200) return respond();
+        if (response?.ok) return respond();
         else return interaction.editReply(localize(locale, 'MODELS_DOWN'));
     }
 };
