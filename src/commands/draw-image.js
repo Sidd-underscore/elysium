@@ -69,7 +69,7 @@ module.exports = {
         };
 
         let response = await request({
-                url: 'https://api.mandrillai.tech/v1/images/generations',
+                url: 'https://api.mandrillai.tech/v2/images/generations',
                 method: RequestMethod.Post,
                 body: {
                     model: 'dalle-3',
