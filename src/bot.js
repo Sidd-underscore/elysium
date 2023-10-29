@@ -101,8 +101,6 @@ client.on('ready', async () => {
     app.use(IpFilter(deniedIps));
     app.listen(3200, () => console.log('Listening on port 3200'));
 
-    if (!(await db.has('memories'))) await db.set('memories', []);
-
     checkFirstDayOfMonth();
 });
 
@@ -706,7 +704,7 @@ client.on('interactionCreate', async interaction => {
 
             if (message.guild) owner = await message.guild.fetchOwner();
 
-            let memories = await db.get('memories');
+            let memories = (await db.get(`users.${message.author.id}.memories.${personalityId}`)) ?? [];
 
             context = `You are ${personalityId === 'elysium' ? 'Elysium' : personality.name}. You are chatting in a Discord server. Here are some information about your environment:\nServer: ${message.guild?.name ?? 'DMs'}${message.guild ? `\nServer Owner: ${owner.displayName}\nServer Description: ${message.guild.description ?? 'None'}` : ''}\nChannel: ${message.channel.name ?? `@${message.author.username}`} (mention: <#${message.channelId}>)\nChannel Description: ${message.channel.topic ?? 'None'}\nUTC date: ${new Date().toUTCString()}\n\n${personality.description ?? defaultPersonality}\n\nYour memories:\n${memories.map(memory => `- ${memory.memory}`).join('\n')}`;
 
@@ -827,7 +825,7 @@ client.on('interactionCreate', async interaction => {
                     },
                     summarize_page: async (parameters, options) => 'This function is currently disabled.',
                     save_memory: async (parameters, options) => {
-                        let memories = await db.get('memories');
+                        let memories = (await db.get(`users.${message.author.id}.memories.${personalityId}`)) ?? [];
                         let memoryId = crypto.randomBytes(16).toString('hex');
 
                         memories.push({
@@ -835,19 +833,21 @@ client.on('interactionCreate', async interaction => {
                             id: memoryId
                         });
 
-                        await db.set('memories', memories);
+                        await db.set(`users.${message.author.id}.memories.${personalityId}`, memories);
 
                         timer('custom', {
                             time: (parameters.duration ?? 1) * 24 * 60 * 60 * 1000,
                             callback: async () => {
-                                let memories = await db.get('memories');
+                                let memories = await db.get(`users.${c.userId}.memories.${c.personalityId}`);
 
                                 memories = memories.filter(memory => memory.id !== c.memoryId);
 
-                                await db.set('memories', memories);
+                                await db.set(`users.${c.userId}.memories.${c.personalityId}`, memories);
                             },
                             config: {
-                                memoryId
+                                memoryId,
+                                userId: message.author.id,
+                                personalityId: personalityId
                             }
                         });
 
