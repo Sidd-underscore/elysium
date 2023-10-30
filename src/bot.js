@@ -19,6 +19,7 @@ const { StringSelectMenuBuilder } = require("@discordjs/builders");
 const { StringSelectMenuOptionBuilder } = require("discord.js");
 const { InteractionCollector } = require("discord.js");
 const { chatCompletion } = require("./modules/ai");
+const { imageGeneration } = require("./modules/ai");
 
 const client = new Client({
     intents: [
@@ -817,7 +818,15 @@ client.on('interactionCreate', async interaction => {
                         search: parameters.search,
                         start: 0
                     })).data),
-                    draw_image: async (parameters, options) => 'This function is currently disabled.',
+                    draw_image: async (parameters, options) => {
+                        let images = await imageGeneration(parameters.prompt, parameters.count);
+
+                        if (!images) return 'Function call failed.';
+
+                        files = images.map(image => image.url);
+
+                        return 'Images has been drawn and will be sent with the message.'
+                    },
                     react_message: async (parameters, options) => {
                         let messageToReact = await options.message.channel.messages.fetch(parameters.messageId).catch(() => null);
 
