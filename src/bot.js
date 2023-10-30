@@ -828,7 +828,7 @@ client.on('interactionCreate', async interaction => {
                         return 'Images has been drawn and will be sent with the message.'
                     },
                     react_message: async (parameters, options) => {
-                        let messageToReact = await options.message.channel.messages.fetch(parameters.messageId).catch(() => null);
+                        let messageToReact = await options.message.channel.messages.fetch(message.id).catch(() => null);
 
                         if (!messageToReact) return 'Function call failed.';
 
