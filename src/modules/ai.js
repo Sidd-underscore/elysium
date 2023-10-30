@@ -208,8 +208,7 @@ module.exports.imageGeneration = async (prompt, count = 1) => {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${process.env[api.key]}`
-                },
-                timeout: 30000
+                }
             });
         } catch (error) {
             console.log('Error', api.url, error?.response ?? error);

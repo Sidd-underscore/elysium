@@ -71,7 +71,7 @@ module.exports = {
 
         let response = await imageGeneration(prompt, count);
 
-        if (response?.ok) return respond();
+        if (response) return respond();
         else return interaction.editReply(localize(locale, 'MODELS_DOWN'));
     }
 };
