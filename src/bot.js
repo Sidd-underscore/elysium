@@ -103,15 +103,15 @@ client.on('ready', async () => {
 
     checkFirstDayOfMonth();
 
-    setInterval(async () => {
+    async function setActivity() {
         let response = await chatCompletion([
             {
                 role: 'system',
-                content: 'You are Elysium and you love your best friend Kate.'
+                content: defaultPersonality
             },
             {
                 role: 'user',
-                content: 'Write something that shows your love Kate with maximum 25 characters.'
+                content: 'Write something about you with maximum 25 characters.'
             },
             {
                 role: 'assistant',
@@ -119,7 +119,7 @@ client.on('ready', async () => {
             },
             {
                 role: 'user',
-                content: 'Do it as different again.'
+                content: 'Do it again.'
             }
         ], {
             disableFunctions: true
@@ -128,7 +128,10 @@ client.on('ready', async () => {
         client.user.setActivity({
             name: response.response ?? 'Kate ❤️'
         });
-    }, 1000 * 60 * 60 * 12);
+    };
+
+    setActivity();
+    setInterval(setActivity, 1000 * 60 * 60);
 });
 
 client.on('interactionCreate', async interaction => {
