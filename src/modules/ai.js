@@ -218,7 +218,7 @@ module.exports.imageGeneration = async (prompt, count = 1) => {
         };
 
         if (response.data?.data) {
-            console.log('Used API', api.url, 'with model', api.model);
+            console.log('Used API', api.url, 'with model', api.model, '-', response.data);
 
             return response.data.data;
         } else {
