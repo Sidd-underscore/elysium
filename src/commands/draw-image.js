@@ -6,6 +6,7 @@ const EmbedMaker = require("../modules/embed");
 const { request, RequestMethod } = require("fetchu.js");
 const { randomItem } = require("@tolga1452/toolbox.js");
 const { ads } = require("../../config");
+const { imageGeneration } = require("../modules/ai");
 
 const db = new QuickDB();
 
@@ -60,7 +61,7 @@ module.exports = {
 
             await interaction.editReply({
                 content: user.tier >= 2 ? null : `**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`,
-                files: response.body.data.map(image => image.url)
+                files: response.map(image => image.url)
             });
 
             user.usage++;
@@ -68,21 +69,7 @@ module.exports = {
             await db.set(`users.${interaction.user.id}`, user);
         };
 
-        let response = await request({
-                url: 'https://api.mandrillai.tech/v2/images/generations',
-                method: RequestMethod.Post,
-                body: {
-                    model: 'dalle-3',
-                    prompt,
-                    n: count
-                },
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.MANDRILL_API_KEY}`
-                }
-            });
-            
-            console.log(response.status, response.body)
+        let response = await imageGeneration(prompt, count);
 
         if (response?.ok) return respond();
         else return interaction.editReply(localize(locale, 'MODELS_DOWN'));

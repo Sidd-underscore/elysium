@@ -3,6 +3,7 @@ const { gpt4APIs } = require("../../config");
 const { QuickDB } = require("quick.db");
 const crypto = require("crypto");
 const timer = require("./timer");
+const { imageAPIs } = require("../../config");
 
 const db = new QuickDB();
 
@@ -192,4 +193,40 @@ module.exports.chatCompletion = async (messages, options) => {
         reply
     };
     else return null;
+};
+
+module.exports.imageGeneration = async (prompt, count = 1) => {
+    let apis = imageAPIs;
+
+    for (let api of apis) {
+        try {
+            response = await axios.post(api.url, {
+                model: api.model,
+                prompt,
+                n: count
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${process.env[api.key]}`
+                },
+                timeout: 30000
+            });
+        } catch (error) {
+            console.log('Error', api.url, error?.response ?? error);
+
+            continue;
+        };
+
+        if (response.data?.data) {
+            console.log('Used API', api.url, 'with model', api.model);
+
+            return response.data.data;
+        } else {
+            console.log('Invalid response', api.url, api.model, response.data);
+
+            continue;
+        };
+    };
+
+    return null;
 };

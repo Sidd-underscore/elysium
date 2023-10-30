@@ -38,5 +38,27 @@ module.exports = {
             key: 'WEBRAFT_API_KEY'
         }
         */
+    ],
+    imageAPIs: [
+        {
+            url: 'https://api.mandrillai.tech/v2/images/generations',
+            model: 'dalle-3',
+            key: 'MANDRILL_API_KEY'
+        },
+        {
+            url: 'https://api.mandrillai.tech/v2/images/generations',
+            model: 'openjourney-xl',
+            key: 'MANDRILL_API_KEY'
+        },
+        {
+            url: 'https://api.mandrillai.tech/v2/images/generations',
+            model: 'sdxl',
+            key: 'MANDRILL_API_KEY'
+        },
+        {
+            url: 'https://api.mandrillai.tech/v2/images/generations',
+            model: 'dreamshaper',
+            key: 'MANDRILL_API_KEY'
+        }
     ]
 };
