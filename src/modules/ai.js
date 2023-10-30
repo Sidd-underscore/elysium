@@ -105,7 +105,7 @@ module.exports.vicuna = async (messages, options) => {
     };
 
     if (response.data?.choices && response.data?.choices?.[0]?.message?.content !== '') {
-        console.log('Used API', 'https://api.mandrillai.tech/v1/chat/completions', 'with model', 'mistral-7B-openorca', '-', response.data.choices[0].message.content);
+        console.log('Used API', 'https://api.mandrillai.tech/v1/chat/completions', 'with model', 'vicuna-13b-v1.5-16k', '-', response.data.choices[0].message.content);
 
         try {
             return options.disableFunctions ? response.data.choices[0].message.content : JSON.parse(response.data.choices[0].message.content.match(/^{.*}$/gm)[0]);

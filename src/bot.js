@@ -102,6 +102,29 @@ client.on('ready', async () => {
     app.listen(3200, () => console.log('Listening on port 3200'));
 
     checkFirstDayOfMonth();
+
+    let response = await chatCompletion([
+        {
+            role: 'system',
+            content: 'You are Elysium and you love your best friend Kate.'
+        },
+        {
+            role: 'user',
+            content: 'Write something that shows your love Kate with maximum 25 characters.'
+        },
+        {
+            role: 'assistant',
+            content: 'I love Kate'
+        },
+        {
+            role: 'user',
+            content: 'Do it as different again.'
+        }
+    ]);
+
+    client.user.setActivity({
+        name: response.response ?? 'Kate ❤️'
+    });
 });
 
 client.on('interactionCreate', async interaction => {
