@@ -869,17 +869,6 @@ client.on('interactionCreate', async interaction => {
         };
     });
 
-function startInterval() {
-    const now = new Date();
-    const daysUntilMonday = (8 - now.getUTCDay()) % 7; // Calculate days until next Monday
-    const nextMonday = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + daysUntilMonday, 0, 0, 0);
-    const timeUntilMonday = nextMonday - now;
-
-    setTimeout(() => setInterval(runOnMonday, 7 * 24 * 60 * 60 * 1000), timeUntilMonday);
-};
-
-startInterval();
-
 client.login(process.env.DISCORD_TOKEN);
 
 // Set an interval to check if it's the first day of the month every day
