@@ -27,17 +27,10 @@ module.exports = {
     ],
     gpt4APIs: [
         {
-            url: 'https://api.naga.ac/v1/chat/completions',
-            model: 'gpt-4',
-            key: 'NAGA_API_KEY'
-        },
-        /*
-        {
             url: 'https://paidapi-proxy003-webraftai.run-us-west2.goorm.app/v1/chat/completions',
             model: 'gpt-4-32k',
             key: 'WEBRAFT_API_KEY'
         }
-        */
     ],
     imageAPIs: [
         {

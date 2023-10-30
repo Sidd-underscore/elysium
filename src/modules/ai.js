@@ -21,13 +21,11 @@ module.exports.gpt4 = async (messages, options) => {
         model: 'gpt-3.5-turbo-16k',
         key: 'NAGA_API_KEY'
     });
-    /*
     apis.push({
         url: 'https://paidapi-proxy003-webraftai.run-us-west2.goorm.app/v1/chat/completions',
         model: 'gpt-3.5-turbo-16k',
         key: 'WEBRAFT_API_KEY'
     });
-    */
 
     for (let api of gpt4APIs) {
         try {
