@@ -26,10 +26,12 @@ module.exports = {
         '🌟 Unlock the power of **FREE DALLE-3** and diverse open-source language and image models with Mandrill API! <https://discord.gg/rNtWxkpXJn>'
     ],
     gpt4APIs: [
+        /*
         {
             url: 'https://paidapi-proxy003-webraftai.run-us-west2.goorm.app/v1/chat/completions',
             model: 'gpt-4-32k',
             key: 'WEBRAFT_API_KEY'
         }
+        */
     ]
 };
