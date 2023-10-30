@@ -120,7 +120,9 @@ client.on('ready', async () => {
             role: 'user',
             content: 'Do it as different again.'
         }
-    ]);
+    ], {
+        disableFunctions: true
+    });
 
     client.user.setActivity({
         name: response.response ?? 'Kate ❤️'
