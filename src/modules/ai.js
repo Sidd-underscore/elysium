@@ -62,7 +62,7 @@ module.exports.gpt4 = async (messages, options) => {
             try {
                 return options.disableFunctions ? response.data.choices[0].message.content : JSON.parse(response.data.choices[0].message.content.match(/^{.*}$/gm)[0]);
             } catch (error) {
-                return null;
+                return response.data.choices[0].message.content;
             };
         } else {
             console.log('Invalid response', api.url, api.model, response.data);
@@ -88,7 +88,7 @@ module.exports.vicuna = async (messages, options) => {
             ].concat(messages).concat([
                 {
                     role: 'system',
-                    content: `YOU HAVE TO RESPOND WITH THIS JSON FORMAT: {"message": "YOUR_MESSAGE", "function_call": {"name": "FUNCTION_NAME", "parameters": "FUNCTION_PARAMETERS"}}\nYou don't have to use a function, you can just leave the function_call empty. Example: {"message": "Hello"}\nExample usage with a function: {"message": "Hello", "function_call": {"name": "fetch_channels", "parameters": "{numberParam: 435, stringParam: "hello", booleanParam: true}"}\n\nYou can use these functions:\nfetch_channels()\nFetches all channels in the server.\n\nfetch_roles()\nFetches all roles in the server.\n\nfetch_emojis()\nFetches all emojis in the server.\n\nfetch_pins()\nFetches all pins in the server.\n\nweb_search(query: string)\n- query (REQUIRED): Query to search on Google.\nSearch Google and return top 10 results\n\nai_tools(limit: number, search: string)\n- limit (OPTIONAL): Limit of the results.\n- search (REQUIRED): Query to search AI tools.\nSearches AI tools\n\nreact_message(emoji: string)\n- emoji (REQUIRED): The emoji id or unicode emoji to react. Example: 1234567890 or 😂\nReacts to the message with an emoji\n\nmember_mention(name: string)\n- name (REQUIRED): Name of the member to search.\nSearches members in the server and shows their mention.\n\nsend_dm(message: string, send_files: boolean)\n- message (REQUIRED): The message content to send.\n- send_files (OPTIONAL): Whether the collected files (for example drawen images) will be sent along with the nessage. Default: false\nSends direct message to the user. Please do not spam.\n\nread_file(type: string, url: string)\n- type (REQUIRED): Can only be "image" or "text". If the extension is .png or .jpg, you should use "image". If the extension is .txt or .json, you should use "text".\n- url (REQUIRED): The url of the file to read.\nReads a file from the message attachments. You can only read .png, .jpg, .txt and .json files. You can use this function to see the sent files.${options?.tier1 ? `\n\nsave_memory(memory: string, duration: number)\n- memory (REQUIRED): The memory to save.\n- duration (OPTIONAL): The duration of the memory in days. (1-3) Default: 1\nSaves a memory. You will NOT use this for simple things. You will only use this function for necessary things that you don't want to forget. Example: "I'm now friends with user 329671025312923648", "I had a fight with user 751092600890458203"` : ''}${options?.tier3 ? `\n\nsummarize_page(url: string, question: string)\n- url (REQUIRED): The url of the web page to summarize.\n- question (OPTIONAL): The question to ask about the web page. Don't use this parameter if you want to summarize the web page.\nSummarizes a web page. You can use this function to find some information about a web page.` : ''}`
+                    content: `YOU HAVE TO RESPOND WITH THIS JSON FORMAT: {"message": "YOUR_MESSAGE", "function_call": {"name": "FUNCTION_NAME", "parameters": "FUNCTION_PARAMETERS"}}\nYou don't have to use a function, you can just leave the function_call empty. Example: {"message": "Hello"}`
                 }
             ])
         }, {
@@ -110,7 +110,7 @@ module.exports.vicuna = async (messages, options) => {
         try {
             return options.disableFunctions ? response.data.choices[0].message.content : JSON.parse(response.data.choices[0].message.content.match(/^{.*}$/gm)[0]);
         } catch (error) {
-            return null;
+            return response.data.choices[0].message.content;
         };
     } else return null;
 };
