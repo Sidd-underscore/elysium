@@ -198,7 +198,7 @@ module.exports.imageGeneration = async (prompt, count = 1) => {
             continue;
         };
 
-        if (response.data?.data) {
+        if (response.data?.data?.length > 0) {
             console.log('Used API', api.url, 'with model', api.model, '-', response.data);
 
             return response.data.data;
