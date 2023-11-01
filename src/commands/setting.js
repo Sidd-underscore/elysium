@@ -184,7 +184,7 @@ module.exports = {
 
                 let adsMessage = randomItem(ads);
 
-                interaction.editReply(`${localize(locale, 'SETTING_SET')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}}`);
+                interaction.editReply(`${localize(locale, 'SETTING_SET')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact **[@tolgchu](discord://-/users/329671025312923648)** to advertise here.`}}`);
             } else if (subcommand === 'set-possibility') {
                 let possibility = interaction.options.getInteger('possibility');
 
@@ -199,7 +199,7 @@ module.exports = {
 
                 let adsMessage = randomItem(ads);
 
-                interaction.editReply(`${localize(locale, 'SETTING_SET')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`);
+                interaction.editReply(`${localize(locale, 'SETTING_SET')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact **[@tolgchu](discord://-/users/329671025312923648)** to advertise here.`}`);
             };
         } else if (subcommandGroup === 'ai-channel') {
             if (subcommand === 'toggle') {
@@ -216,7 +216,7 @@ module.exports = {
 
                 let adsMessage = randomItem(ads);
 
-                interaction.editReply(`${localize(locale, 'SETTING_SET')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`);
+                interaction.editReply(`${localize(locale, 'SETTING_SET')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact **[@tolgchu](discord://-/users/329671025312923648)** to advertise here.`}`);
             } else if (subcommand === 'set') {
                 let channel = interaction.options.getChannel('channel');
 
@@ -231,7 +231,7 @@ module.exports = {
 
                 let adsMessage = randomItem(ads);
 
-                interaction.editReply(`${localize(locale, 'SETTING_SET')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`);
+                interaction.editReply(`${localize(locale, 'SETTING_SET')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact **[@tolgchu](discord://-/users/329671025312923648)** to advertise here.`}`);
             };
         } else if (subcommandGroup === 'welcomer') {
             if (subcommand === 'toggle') {
@@ -247,7 +247,7 @@ module.exports = {
 
                 let adsMessage = randomItem(ads);
 
-                interaction.editReply(`${localize(locale, 'SETTING_SET')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`);
+                interaction.editReply(`${localize(locale, 'SETTING_SET')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact **[@tolgchu](discord://-/users/329671025312923648)** to advertise here.`}`);
             };
         };
     }
