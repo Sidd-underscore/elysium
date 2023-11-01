@@ -39,6 +39,6 @@ module.exports = {
 
         let adsMessage = randomItem(ads);
 
-        interaction.editReply(`${localize(locale, 'MESSAGE_REMOVED')}${user.tier >= 2 ? '' : `\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`);
+        interaction.editReply(`${localize(locale, 'MESSAGE_REMOVED')}${user.tier >= 2 ? '' : `\n**ADS (buy premium to remove):** ${adsMessage}\nContact **[@tolgchu](discord://-/users/329671025312923648)** to advertise here.`}`);
     }
 };
