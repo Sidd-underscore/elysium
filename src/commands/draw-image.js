@@ -60,7 +60,7 @@ module.exports = {
             let adsMessage = randomItem(ads);
 
             await interaction.editReply({
-                content: user.tier >= 2 ? null : `**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`,
+                content: user.tier >= 2 ? null : `**ADS (buy premium to remove):** ${adsMessage}\nContact **[@tolgchu](discord://-/users/329671025312923648)** to advertise here.`,
                 files: response.map(image => image.url)
             });
 
