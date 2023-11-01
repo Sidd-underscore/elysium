@@ -31,6 +31,6 @@ module.exports = {
 
         let adsMessage = randomItem(ads);
 
-        await interaction.editReply(`${localize(locale, 'CHAT_HISTORY_RESET')}${user.tier >= 2 ? null : `\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`);
+        await interaction.editReply(`${localize(locale, 'CHAT_HISTORY_RESET')}${user.tier >= 2 ? null : `\n**ADS (buy premium to remove):** ${adsMessage}\nContact **[@tolgchu](discord://-/users/329671025312923648)** to advertise here.`}`);
     }
 };
