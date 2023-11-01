@@ -183,7 +183,7 @@ module.exports = {
             adsMessage = randomItem(ads);
 
             await interaction.editReply({
-                content: user.tier >= 2 ? null : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`,
+                content: user.tier >= 2 ? null : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact **[@tolgchu](discord://-/users/329671025312923648)** to advertise here.`,
                 embeds: [
                     new EmbedMaker(interaction.client)
                         .setTitle('Channels')
@@ -251,7 +251,7 @@ module.exports = {
                     adsMessage = randomItem(ads);
 
                     await interaction.editReply({
-                        content: user.tier >= 2 ? '' : `**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`,
+                        content: user.tier >= 2 ? '' : `**ADS (buy premium to remove):** ${adsMessage}\nContact **[@tolgchu](discord://-/users/329671025312923648)** to advertise here.`,
                     });
 
                     let message = int.fields.getTextInputValue('message');
@@ -375,7 +375,7 @@ module.exports = {
                     adsMessage = randomItem(ads);
 
                     await interaction.editReply({
-                        content: `${localize(locale, 'CHANNELS_SETUP')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}}`,
+                        content: `${localize(locale, 'CHANNELS_SETUP')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact **[@tolgchu](discord://-/users/329671025312923648)** to advertise here.`}}`,
                         components: [],
                         embeds: []
                     });
@@ -467,7 +467,7 @@ module.exports = {
             adsMessage = randomItem(ads);
 
             await interaction.editReply({
-                content: user.tier >= 2 ? null : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`,
+                content: user.tier >= 2 ? null : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact **[@tolgchu](discord://-/users/329671025312923648)** to advertise here.`,
                 embeds: [
                     new EmbedMaker(interaction.client)
                         .setTitle('Roles')
@@ -551,7 +551,7 @@ module.exports = {
                     adsMessage = randomItem(ads);
 
                     await interaction.editReply({
-                        content: user.tier >= 2 ? '' : `**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`,
+                        content: user.tier >= 2 ? '' : `**ADS (buy premium to remove):** ${adsMessage}\nContact **[@tolgchu](discord://-/users/329671025312923648)** to advertise here.`,
                     });
 
                     let message = int.fields.getTextInputValue('message');
@@ -619,7 +619,7 @@ module.exports = {
                     adsMessage = randomItem(ads);
 
                     await interaction.editReply({
-                        content: user.tier >= 2 ? null : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`,
+                        content: user.tier >= 2 ? null : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact **[@tolgchu](discord://-/users/329671025312923648)** to advertise here.`,
                         embeds: [
                             new EmbedMaker(interaction.client)
                                 .setTitle('Roles')
@@ -688,7 +688,7 @@ module.exports = {
                     adsMessage = randomItem(ads);
 
                     await interaction.editReply({
-                        content: `${localize(locale, 'ROLES_SETUP')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact with **[@tolgchu](discord://-/users/329671025312923648)** to add your ad here.`}`,
+                        content: `${localize(locale, 'ROLES_SETUP')}${user.tier >= 2 ? '' : `\n\n**ADS (buy premium to remove):** ${adsMessage}\nContact **[@tolgchu](discord://-/users/329671025312923648)** to advertise here.`}`,
                         components: [],
                         embeds: []
                     });
